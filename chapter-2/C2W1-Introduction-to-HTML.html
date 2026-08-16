@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 2 - Tuần 1: Bố cục trang Web</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip h4{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 2 - Tuần 1: Giới thiệu về HTML</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Bấm vào vùng bất kỳ trên trang để xem thẻ HTML định nghĩa và ví dụ minh hoạ.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức tuần 1</h2>
+
+      <div class="k-item" data-k="k1">
+        <div class="num">MỤC 2.1</div>
+        <div class="name">Tạo tài liệu HTML</div>
+        <div class="tags">DOCTYPE · html · head · body</div>
+      </div>
+      <div class="k-item" data-k="k2">
+        <div class="num">MỤC 2.2</div>
+        <div class="name">Phần tử HTML</div>
+        <div class="tags">thẻ · thuộc tính · thẻ rỗng</div>
+      </div>
+      <div class="k-item" data-k="k3">
+        <div class="num">MỤC 2.3</div>
+        <div class="name">Quy ước viết mã</div>
+        <div class="tags">chữ thường · thụt lề · nháy kép</div>
+      </div>
+      <div class="k-item" data-k="k4">
+        <div class="num">MỤC 2.4</div>
+        <div class="name">Phần đầu (head)</div>
+        <div class="tags">title · favicon · meta</div>
+      </div>
+      <div class="k-item" data-k="k5">
+        <div class="num">MỤC 2.5</div>
+        <div class="name">Khối và nội tuyến</div>
+        <div class="tags">p · strong · em · span</div>
+      </div>
+      <div class="k-item" data-k="k6">
+        <div class="num">MỤC 2.6</div>
+        <div class="name">Phần tử ngữ nghĩa</div>
+        <div class="tags">header · nav · main · section · article · aside · footer · figure · hr</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="seg" style="margin-bottom:10px">
+        <button id="mPlain" class="on">Chưa sử dụng CSS</button>
+        <button id="mStyled">Có sử dụng CSS</button>
+      </div>
+      <div class="browser">
+
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="ann" data-k="k4" data-tag="title" style="border-radius:6px">
+            <span class="lbl">&lt;title&gt; + favicon</span>
+            <div class="tabpill"><span class="fav"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K" alt=""></span> Nguyễn Phúc An</div>
+          </div>
+        </div>
+
+        <div class="page ann" data-k="k1" data-tag="body">
+          <span class="lbl">&lt;body&gt;</span>
+          <div class="demo plain" id="demo">
+
+            <header class="d-header ann" data-k="k6" data-tag="header">
+              <span class="lbl">&lt;header&gt;</span>
+              <h1>Nguyễn Phúc An</h1>
+              <p class="tagline">Sinh viên Khoa Công nghệ thông tin</p>
+            </header>
+
+            <nav class="d-nav ann" data-k="k6" data-tag="nav">
+              <span class="lbl">&lt;nav&gt;</span>
+              <a class="ann inline" data-k="k6" data-tag="a" href="#gioi-thieu"><span class="lbl">&lt;a href&gt;</span>Giới thiệu</a>
+              <a class="ann inline" data-k="k6" data-tag="a" href="#hoc-tap">Học tập</a>
+              <a class="ann inline" data-k="k6" data-tag="a" href="#so-thich">Sở thích</a>
+              <a class="ann inline" data-k="k6" data-tag="a" href="#lien-he">Liên hệ</a>
+            </nav>
+
+            <div class="d-body">
+              <main class="d-main ann" data-k="k6" data-tag="main">
+                <span class="lbl">&lt;main&gt;</span>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="gioi-thieu">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2>Giới thiệu</h2>
+
+                  <figure class="d-figure ann" data-k="k6" data-tag="figure">
+                    <span class="lbl">&lt;figure&gt; + &lt;figcaption&gt;</span>
+                    <span class="ann" data-k="k2" data-tag="img" style="display:block">
+                      <span class="lbl">&lt;img src alt&gt;</span>
+                      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K" alt="Ảnh đại diện của Nguyễn Phúc An">
+                    </span>
+                    <figcaption>Ảnh đại diện của mình chụp năm 2026.</figcaption>
+                  </figure>
+
+                  <p class="ann" data-k="k5" data-tag="p">
+                    <span class="lbl">&lt;p&gt;</span>
+                    Tôi là sinh viên năm hai Khoa Công nghệ thông tin.
+                    Hướng đi tôi lựa chọn là
+                    <strong class="ann inline" data-k="k5" data-tag="strong" style="outline-offset:0"><span class="lbl">&lt;strong&gt;</span>phát triển ứng dụng web</strong>
+                    và <em class="ann inline" data-k="k5" data-tag="em" style="outline-offset:0"><span class="lbl">&lt;em&gt;</span>thiết kế giao diện người dùng</em>.
+                  </p>
+                  <p>Trang này được thực hiện trong học phần Thiết kế Web, dùng để giới thiệu
+                     bản thân và lưu lại những sản phẩm tôi đã hoàn thành.</p>
+                </section>
+
+                <div class="ann" data-k="k6" data-tag="hr">
+                  <span class="lbl">&lt;hr&gt;</span>
+                  <hr>
+                </div>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="hoc-tap">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2>Học tập</h2>
+                  <p>Tôi đang theo học chương trình cử nhân Công nghệ thông tin, lớp CNTT 66A.
+                     Các học phần chính trong năm nay gồm Thiết kế Web, Cơ sở dữ liệu và
+                     Lập trình hướng đối tượng.</p>
+                  <p>Ngoài giờ lên lớp, tôi tự học thêm HTML, CSS và JavaScript qua tài liệu
+                     của MDN Web Docs.</p>
+                </section>
+
+                <div class="ann" data-k="k6" data-tag="hr">
+                  <span class="lbl">&lt;hr&gt;</span>
+                  <hr>
+                </div>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="so-thich">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2>Sở thích</h2>
+
+                  <article class="ann" data-k="k6" data-tag="article">
+                    <span class="lbl">&lt;article&gt;</span>
+                    <h3>Thiết kế giao diện</h3>
+                    <p>Tôi quan tâm tới cách sắp xếp thông tin trên trang sao cho người đọc tìm
+                       được thứ cần tìm nhanh nhất. Các ví dụ tôi tham khảo chủ yếu từ những
+                       trang tài liệu kỹ thuật.</p>
+                  </article>
+
+                  <article class="ann" data-k="k6" data-tag="article">
+                    <span class="lbl">&lt;article&gt;</span>
+                    <h3>Vẽ minh hoạ</h3>
+                    <p>Tôi vẽ minh hoạ bằng bút cảm ứng, phần lớn là hình dùng cho tài liệu học
+                       tập của lớp. Ảnh đại diện ở đầu trang là một hình trong số đó.</p>
+                  </article>
+                </section>
+              </main>
+
+              <aside class="d-aside ann" data-k="k6" data-tag="aside" id="lien-he">
+                <span class="lbl">&lt;aside&gt;</span>
+                <h3 style="margin-top:0">Liên hệ</h3>
+                <p style="margin:0">Email:
+                  <span class="ann inline" data-k="k5" data-tag="span" style="outline-offset:0"><span class="lbl">&lt;span&gt;</span>an.nguyen@sv.neu.edu.vn</span>
+                </p>
+                <p style="margin:6px 0 0">Lớp: CNTT</p>
+              </aside>
+            </div>
+
+            <footer class="d-footer ann" data-k="k6" data-tag="footer">
+              <span class="lbl">&lt;footer&gt;</span>
+              © 2026 Nguyễn Phúc An. Bài tập môn Thiết kế Web.
+            </footer>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcShort" class="on">Rút gọn</button>
+          <button id="srcFull">Đầy đủ</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải file .html</button>
+        </div>
+        <pre id="srcView"></pre>
+        <p class="note-src" id="srcNote">Bản rút gọn chỉ giữ bộ khung. Xem để nắm trang gồm mấy phần.</p>
+      </div>
+
+      <div class="foot">Học liệu môn Thiết kế Web · Khoa CNTT · Học kỳ 2026.1</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <h4>Cú pháp</h4>
+    <pre id="tipCode"></pre>
+    <h4>Kết quả</h4>
+    <div class="t-out"><iframe id="tipOut" title="Kết quả"></iframe></div>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K";
+
+/* ---------- tô màu mã nguồn ---------- */
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_SHORT = [
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <title>Nguyễn Phúc An</title>',
+'</head>',
+'<body>',
+'',
+'  <header> ... </header>',
+'  <nav> ... </nav>',
+'',
+'  <main>',
+'    <section id="gioi-thieu"> ... </section>',
+'    <hr>',
+'    <section id="hoc-tap"> ... </section>',
+'    <hr>',
+'    <section id="so-thich">',
+'      <article> ... </article>',
+'      <article> ... </article>',
+'    </section>',
+'  </main>',
+'',
+'  <aside id="lien-he"> ... </aside>',
+'  <footer> ... </footer>',
+'',
+'</body>',
+'</html>'
+].join('\n');
+
+var SRC_FULL = [
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'  <meta name="description" content="Trang giới thiệu của Nguyễn Phúc An">',
+'  <title>Nguyễn Phúc An</title>',
+'  <link rel="icon" href="anh-dai-dien.svg">',
+'</head>',
+'<body>',
+'',
+'  <header>',
+'    <h1>Nguyễn Phúc An</h1>',
+'    <p>Sinh viên Khoa Công nghệ thông tin</p>',
+'  </header>',
+'',
+'  <nav>',
+'    <a href="#gioi-thieu">Giới thiệu</a>',
+'    <a href="#hoc-tap">Học tập</a>',
+'    <a href="#so-thich">Sở thích</a>',
+'    <a href="#lien-he">Liên hệ</a>',
+'  </nav>',
+'',
+'  <main>',
+'',
+'    <section id="gioi-thieu">',
+'      <h2>Giới thiệu</h2>',
+'',
+'      <figure>',
+'        <img src="anh-dai-dien.svg" alt="Ảnh đại diện của Nguyễn Phúc An">',
+'        <figcaption>Ảnh đại diện của mình chụp năm 2026.</figcaption>',
+'      </figure>',
+'',
+'      <p>',
+'        Tôi là sinh viên năm hai Khoa Công nghệ thông tin.',
+'        Hướng đi tôi lựa chọn là <strong>phát triển ứng dụng web</strong>',
+'        và <em>thiết kế giao diện người dùng</em>.',
+'      </p>',
+'',
+'      <p>',
+'        Trang này được thực hiện trong học phần Thiết kế Web, dùng để giới thiệu',
+'        bản thân và lưu lại những sản phẩm tôi đã hoàn thành.',
+'      </p>',
+'    </section>',
+'',
+'    <hr>',
+'',
+'    <section id="hoc-tap">',
+'      <h2>Học tập</h2>',
+'      <p>',
+'        Tôi đang theo học chương trình cử nhân Công nghệ thông tin, lớp CNTT 66A.',
+'        Các học phần chính trong năm nay gồm Thiết kế Web, Cơ sở dữ liệu và',
+'        Lập trình hướng đối tượng.',
+'      </p>',
+'      <p>',
+'        Ngoài giờ lên lớp, tôi tự học thêm HTML, CSS và JavaScript qua tài liệu',
+'        của MDN Web Docs.',
+'      </p>',
+'    </section>',
+'',
+'    <hr>',
+'',
+'    <section id="so-thich">',
+'      <h2>Sở thích</h2>',
+'',
+'      <article>',
+'        <h3>Thiết kế giao diện</h3>',
+'        <p>',
+'          Tôi quan tâm tới cách sắp xếp thông tin trên trang sao cho người đọc tìm',
+'          được thứ cần tìm nhanh nhất. Các ví dụ tôi tham khảo chủ yếu từ những',
+'          trang tài liệu kỹ thuật.',
+'        </p>',
+'      </article>',
+'',
+'      <article>',
+'        <h3>Vẽ minh hoạ</h3>',
+'        <p>',
+'          Tôi vẽ minh hoạ bằng bút cảm ứng, phần lớn là hình dùng cho tài liệu học',
+'          tập của lớp. Ảnh đại diện ở đầu trang là một hình trong số đó.',
+'        </p>',
+'      </article>',
+'    </section>',
+'',
+'  </main>',
+'',
+'  <aside id="lien-he">',
+'    <h3>Liên hệ</h3>',
+'    <p>Email: <span>an.nguyen@sv.neu.edu.vn</span></p>',
+'    <p>Lớp: CNTT</p>',
+'  </aside>',
+'',
+'  <footer>',
+'    <p>© 2026 Nguyễn Phúc An. Bài tập môn Thiết kế Web.</p>',
+'  </footer>',
+'',
+'</body>',
+'</html>'
+].join('\n');
+
+/* ---------- nội dung giải thích từng thẻ ---------- */
+var TAGS = {
+  body: {
+    tag:'&lt;body&gt;', kind:'Mục 2.1',
+    def:'Chứa mọi thứ hiện ra trên màn hình. Các thẻ khác của tuần 1 đều nằm bên trong body.',
+    code:'<!DOCTYPE html>\n<html lang="vi">\n\n<head>\n  <!-- thông tin cho máy đọc, không hiện ra -->\n  <meta charset="UTF-8">\n  <title>Nguyễn Phúc An</title>\n</head>\n\n<body>\n  <!-- nội dung cho người đọc -->\n  <header> ... </header>\n  <main> ... </main>\n  <footer> ... </footer>\n</body>\n\n</html>',
+    out:'<div style="border:1px solid #dfe4ea;border-radius:6px;overflow:hidden"><div style="background:#f0eafa;padding:5px 9px;font-size:11.5px;color:#7048b6;border-bottom:1px solid #dfe4ea">head: không hiện trên trang</div><div style="padding:9px"><div style="font-size:11.5px;color:#0f8a5f;margin-bottom:5px">body: phần hiện ra</div><div style="background:#0f2a43;color:#fff;padding:7px 9px;border-radius:4px;font-size:12.5px">Nguyễn Phúc An</div></div></div>',
+    note:'Gõ nội dung nhầm vào head thì trang trắng trơn mà không có lỗi nào báo ra.'
+  },
+  title: {
+    tag:'&lt;title&gt;', kind:'Mục 2.4',
+    def:'Tên của trang. Hiện trên tab trình duyệt và trên kết quả tìm kiếm Google.',
+    code:'<head>\n  <meta charset="UTF-8">\n  <title>Nguyễn Phúc An</title>\n  <link rel="icon" href="anh-dai-dien.svg">\n</head>',
+    out:'<div style="background:#eceff2;padding:8px;border-radius:5px"><span style="background:#fff;border:1px solid #dfe4ea;border-radius:5px;padding:4px 10px;font-size:12.5px">Nguyễn Phúc An</span></div>',
+    note:'Quên meta charset thì tiếng Việt hiện thành ký tự lạ. Lỗi này hay gặp nhất khi mới học.'
+  },
+  header: {
+    tag:'&lt;header&gt;', kind:'Mục 2.6',
+    def:'Phần đầu trang: tên trang, logo, tiêu đề.',
+    code:'<header>\n  <h1>Nguyễn Phúc An</h1>\n  <p>Sinh viên Khoa Công nghệ thông tin</p>\n</header>',
+    out:'<h1>Nguyễn Phúc An</h1><p>Sinh viên Khoa Công nghệ thông tin</p>',
+    note:'Đừng nhầm với head. Header thì nhìn thấy được, head thì không.'
+  },
+  nav: {
+    tag:'&lt;nav&gt;', kind:'Mục 2.6',
+    def:'Chứa các liên kết dẫn sang mục khác, tức là menu của trang.',
+    code:'<nav>\n  <a href="#gioi-thieu">Giới thiệu</a>\n  <a href="#so-thich">Sở thích</a>\n</nav>',
+    out:'<a href="#">Giới thiệu</a> <a href="#">Học tập</a> <a href="#">Sở thích</a>',
+    note:'Chỉ dùng cho menu chính. Vài liên kết nằm lẫn trong bài viết thì không cần nav.'
+  },
+  a: {
+    tag:'&lt;a href&gt;', kind:'Liên kết',
+    def:'Tạo liên kết. Phần href cho biết bấm vào sẽ đi đâu.',
+    code:'<a href="#gioi-thieu">Giới thiệu</a>\n<a href="https://neu.edu.vn">Trang trường</a>',
+    out:'<a href="#">Giới thiệu</a> &nbsp; <a href="#">Trang trường</a>',
+    note:'Tuần này chỉ cần viết được liên kết cho menu bấm được. Tuần sau học kỹ hơn.'
+  },
+  main: {
+    tag:'&lt;main&gt;', kind:'Mục 2.6',
+    def:'Nội dung chính của trang, phần không lặp lại ở các trang khác.',
+    code:'<main>\n  <section> ... </section>\n  <article> ... </article>\n</main>',
+    out:'<div style="border:2px dashed #0f8a5f;padding:8px;font-size:14px">Vùng nội dung chính. Header, nav, footer nằm ngoài vùng này.</div>',
+    note:'Mỗi trang chỉ có một main.'
+  },
+  section: {
+    tag:'&lt;section&gt;', kind:'Mục 2.6',
+    def:'Một mục nội dung, thường có tiêu đề riêng.',
+    code:'<section id="hoc-tap">\n  <h2>Học tập</h2>\n  <p>Tôi đang theo học chương trình cử nhân...</p>\n</section>',
+    out:'<h2>Học tập</h2><p>Tôi đang theo học chương trình cử nhân...</p>',
+    note:'Nếu chỉ gom lại cho dễ trang trí thì dùng div. Có tiêu đề thì mới dùng section.'
+  },
+  article: {
+    tag:'&lt;article&gt;', kind:'Mục 2.6',
+    def:'Một khối nội dung đứng riêng vẫn hiểu được. Ví dụ bài viết, tin tức, bình luận.',
+    code:'<article>\n  <h3>Vẽ minh hoạ</h3>\n  <p>Tôi vẽ minh hoạ bằng bút cảm ứng...</p>\n</article>',
+    out:'<h3>Vẽ minh hoạ</h3><p>Tôi vẽ minh hoạ bằng bút cảm ứng, phần lớn là hình dùng cho tài liệu học tập.</p>',
+    note:'Cách phân biệt với section: thử đem khối đó đăng sang trang khác, vẫn hiểu được thì là article.'
+  },
+  aside: {
+    tag:'&lt;aside&gt;', kind:'Mục 2.6',
+    def:'Nội dung phụ đặt bên cạnh nội dung chính. Ví dụ khung liên hệ, bài viết liên quan.',
+    code:'<aside id="lien-he">\n  <h3>Liên hệ</h3>\n  <p>Email: an.nguyen@sv.neu.edu.vn</p>\n</aside>',
+    out:'<h3>Liên hệ</h3><p>Email: an.nguyen@sv.neu.edu.vn</p>',
+    note:'Nhiều bạn nghĩ aside là cột bên phải. Không phải. Nó nằm ở đâu là do CSS quyết định.'
+  },
+  footer: {
+    tag:'&lt;footer&gt;', kind:'Mục 2.6',
+    def:'Chân trang. Thường ghi bản quyền, thông tin liên hệ.',
+    code:'<footer>\n  <p>© 2026 Nguyễn Phúc An. Bài tập môn Thiết kế Web.</p>\n</footer>',
+    out:'<p>© 2026 Nguyễn Phúc An. Bài tập môn Thiết kế Web.</p>',
+    note:'Footer cũng dùng được bên trong article, để ghi tác giả và ngày đăng của riêng bài đó.'
+  },
+  figure: {
+    tag:'&lt;figure&gt;', kind:'Mục 2.6',
+    def:'Gộp ảnh với lời chú thích của nó thành một khối.',
+    code:'<figure>\n  <img src="anh-dai-dien.svg" alt="Ảnh đại diện của Nguyễn Phúc An">\n  <figcaption>Ảnh đại diện của mình chụp năm 2026.</figcaption>\n</figure>',
+    out:'<figure><img src="' + AVATAR + '" alt="" width="70"><figcaption>Ảnh đại diện của mình chụp năm 2026.</figcaption></figure>',
+    note:'figcaption khác alt. Alt dành cho người không xem được ảnh, figcaption thì ai cũng đọc.'
+  },
+  img: {
+    tag:'&lt;img&gt;', kind:'Mục 2.2',
+    def:'Chèn ảnh. src là đường dẫn tới file ảnh, alt là dòng chữ thay thế khi ảnh không hiện.',
+    code:'<img src="anh-dai-dien.svg" alt="Ảnh đại diện của Nguyễn Phúc An">\n\n<!-- viết sai đường dẫn thì alt hiện ra -->\n<img src="sai.svg" alt="Ảnh đại diện của Nguyễn Phúc An">',
+    out:'<img src="' + AVATAR + '" alt="" width="60"><p style="border:1px solid #999;display:inline-block;padding:3px 6px;margin:6px 0 0">Ảnh đại diện của Nguyễn Phúc An</p>',
+    note:'img không có thẻ đóng. Ảnh chỉ để trang trí thì viết alt rỗng, đừng bỏ hẳn.'
+  },
+  p: {
+    tag:'&lt;p&gt;', kind:'Mục 2.5',
+    def:'Đoạn văn. Mỗi thẻ p xuống một dòng mới và chiếm hết chiều ngang.',
+    code:'<p>Đoạn thứ nhất.</p>\n<p>Đoạn thứ hai, tự xuống dòng mới.</p>',
+    out:'<p style="background:#e8f1fe">Đoạn thứ nhất.</p><p style="background:#e8f1fe">Đoạn thứ hai, tự xuống dòng mới.</p><p style="font-size:12px;color:#5b6672">Nền xanh cho thấy mỗi đoạn chiếm trọn chiều ngang.</p>',
+    note:'Muốn hai đoạn cách xa nhau hơn thì chỉnh bằng CSS, đừng chèn thêm thẻ p rỗng.'
+  },
+  strong: {
+    tag:'&lt;strong&gt;', kind:'Mục 2.5',
+    def:'Đánh dấu chỗ quan trọng. Chữ nằm ngay giữa dòng, không xuống dòng mới.',
+    code:'<p>Hướng đi tôi lựa chọn là <strong>phát triển ứng dụng web</strong>.</p>',
+    out:'<p>Hướng đi tôi lựa chọn là <strong style="background:#e8f1fe">phát triển ứng dụng web</strong>.</p><p style="font-size:12px;color:#5b6672">Chỉ tô đúng mấy chữ đó, không chiếm cả dòng.</p>',
+    note:'strong và b trông giống nhau. Khác ở chỗ strong nói rằng chỗ này quan trọng, b chỉ là in đậm.'
+  },
+  em: {
+    tag:'&lt;em&gt;', kind:'Mục 2.5',
+    def:'Nhấn giọng khi đọc. Trình duyệt hiển thị chữ nghiêng.',
+    code:'<p>Tôi quan tâm tới <em>thiết kế giao diện người dùng</em>.</p>',
+    out:'<p>Tôi quan tâm tới <em style="background:#e8f1fe">thiết kế giao diện người dùng</em>.</p>',
+    note:'Quan hệ giữa em và i giống strong với b.'
+  },
+  span: {
+    tag:'&lt;span&gt;', kind:'Mục 2.5',
+    def:'Đánh dấu một đoạn chữ nhỏ để CSS hoặc JavaScript nhắm vào. Bản thân nó không có nghĩa gì.',
+    code:'<p>Email: <span class="email">an.nguyen@sv.neu.edu.vn</span></p>',
+    out:'<p>Email: <span style="background:#e8f1fe">an.nguyen@sv.neu.edu.vn</span></p>',
+    note:'Chỉ dùng khi không tìm được thẻ nào đúng nghĩa hơn.'
+  },
+  hr: {
+    tag:'&lt;hr&gt;', kind:'Mục 2.6',
+    def:'Đánh dấu chỗ chuyển sang chủ đề khác. Trình duyệt vẽ một đường kẻ ngang.',
+    code:'<section> ... </section>\n<hr>\n<article> ... </article>',
+    out:'<p>Phần giới thiệu</p><hr><p>Sang phần nhật ký</p>',
+    note:'Chỉ muốn vẽ đường kẻ cho đẹp thì dùng CSS, đừng dùng hr.'
+  }
+};
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- chế độ hiển thị --- */
+  var demo = document.getElementById('demo');
+  var mP = document.getElementById('mPlain'), mS = document.getElementById('mStyled');
+  function mode(styled){
+    demo.classList.toggle('styled', styled);
+    demo.classList.toggle('plain', !styled);
+    mS.classList.toggle('on', styled);
+    mP.classList.toggle('on', !styled);
+  }
+  mP.addEventListener('click', function(){ mode(false); });
+  mS.addEventListener('click', function(){ mode(true); });
+
+  /* --- mã nguồn --- */
+  var view = document.getElementById('srcView');
+  var bS = document.getElementById('srcShort'), bF = document.getElementById('srcFull');
+  var note = document.getElementById('srcNote');
+  function showSrc(full){
+    view.innerHTML = hl(full ? SRC_FULL : SRC_SHORT);
+    bF.classList.toggle('on', full); bS.classList.toggle('on', !full);
+    note.textContent = full
+      ? 'Bản đầy đủ chạy được ngay. Không có một dòng CSS nào, đúng những gì học trong tuần 1.'
+      : 'Bản rút gọn chỉ giữ bộ khung. Xem để nắm trang gồm mấy phần.';
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bS.addEventListener('click', function(){ showSrc(false); });
+  bF.addEventListener('click', function(){ showSrc(true); });
+  showSrc(false);
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var out = SRC_FULL.split('anh-dai-dien.svg').join(AVATAR);
+    var blob = new Blob([out], {type:'text/html;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nguyen-phuc-an.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+  var FRAME_CSS = 'body{margin:8px;font-family:"Times New Roman",Times,serif;font-size:15px;color:#000}'
+                + 'h1{font-size:1.6em}h2{font-size:1.35em}h3{font-size:1.15em}';
+
+  function fill(key){
+    var d = TAGS[key];
+    if(!d) return false;
+    document.getElementById('tipTag').innerHTML = d.tag;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = hl(d.code);
+    document.getElementById('tipNote').textContent = d.note;
+    var f = document.getElementById('tipOut');
+    f.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>' + FRAME_CSS + '</style>' + d.out;
+    f.onload = function(){
+      try{
+        var h = f.contentDocument.body.scrollHeight;
+        f.style.height = Math.min(Math.max(h + 6, 46), 200) + 'px';
+      }catch(e){}
+    };
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-tag]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-tag');
+    if(pinned && current === key){ hideTip(); return; }
+    current = key;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+</script>
+</body>
+</html>
