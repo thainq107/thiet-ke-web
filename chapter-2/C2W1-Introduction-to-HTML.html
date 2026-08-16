@@ -352,7 +352,7 @@
         <pre id="srcView"></pre>
       </div>
 
-      <div class="foot">Tài liệu học phần Thiết kế Web · Khoa CNTT</div>
+      <div class="foot">Tài liệu Thiết kế Web</div>
     </div>
   </div>
 </div>
@@ -668,13 +668,9 @@ var TAGS = {
   /* --- mã nguồn --- */
   var view = document.getElementById('srcView');
   var bS = document.getElementById('srcShort'), bF = document.getElementById('srcFull');
-  var note = document.getElementById('srcNote');
   function showSrc(full){
     view.innerHTML = hl(full ? SRC_FULL : SRC_SHORT);
     bF.classList.toggle('on', full); bS.classList.toggle('on', !full);
-    note.textContent = full
-      ? 'Bản đầy đủ chạy được ngay. Không có một dòng CSS nào, đúng những gì học trong tuần 1.'
-      : 'Bản rút gọn chỉ giữ bộ khung. Xem để nắm trang gồm mấy phần.';
   }
   var bT = document.getElementById('srcToggle');
   bT.addEventListener('click', function(){
