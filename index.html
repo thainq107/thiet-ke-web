@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Học liệu môn Thiết kế Web, Khoa Công nghệ thông tin">
+<title>Thiết kế Web — Học liệu</title>
+<style>
+  :root{
+    --ink:#16202b; --muted:#5b6b7b; --line:#d8e3ee; --bg:#eef4fb; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e4eefc; --blue-deep:#0f3d6e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:11px 24px;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600; color:var(--blue-deep)}
+  .topbar .who{font-size:13px; color:var(--muted)}
+
+  .wrap{max-width:880px; margin:0 auto; padding:26px 24px 48px}
+
+  .chap{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:18px 20px; margin-bottom:16px;
+  }
+  .chap h2{font-size:16px; margin:0 0 2px; color:var(--blue-deep)}
+  .chap .sub{font-size:13.5px; color:var(--muted); margin:0}
+  .chap .sub.has-list{margin-bottom:14px}
+
+  .item{
+    display:flex; align-items:center; gap:12px; padding:10px 12px;
+    border:1px solid var(--line); border-radius:8px; margin-bottom:8px;
+    text-decoration:none; color:inherit; background:#fff;
+  }
+  .item:last-child{margin-bottom:0}
+  a.item:hover{border-color:var(--blue); background:var(--blue-soft)}
+  .item .no{
+    flex:none; width:34px; font-size:12px; font-weight:700; letter-spacing:.4px;
+    color:var(--blue); font-family:"SF Mono",Menlo,Consolas,monospace;
+  }
+  .item .txt{flex:1; min-width:0}
+  .item .name{font-size:14.5px; font-weight:600}
+  .item .desc{font-size:13px; color:var(--muted)}
+  .item .arrow{flex:none; color:var(--blue); font-size:16px}
+  .item.soon{background:#f7fafd; border-style:dashed; color:var(--muted)}
+  .item.soon .no{color:#9fb2c4}
+  .item.soon .name{font-weight:500}
+  .item.soon .tag{
+    flex:none; font-size:11.5px; color:var(--muted);
+    border:1px solid var(--line); border-radius:20px; padding:1px 9px; background:#fff;
+  }
+
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:22px 0 0}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Thiết kế Web</h1>
+  <div class="who">Khoa Công nghệ thông tin (FIT)</div>
+</div>
+
+<div class="wrap">
+
+  <div class="chap">
+    <h2>Chương 1 · Tổng quan về thiết kế Website</h2>
+    <p class="sub">Khái niệm, quy trình phát triển, công cụ</p>
+  </div>
+
+  <div class="chap">
+    <h2>Chương 2 · Ngôn ngữ đánh dấu siêu văn bản HTML</h2>
+    <p class="sub has-list">Sử dụng HTML để xây dựng trang Web</p>
+
+    <a class="item" href="chapter-2/C2W1-Introduction-to-HTML.html">
+      <div class="no">W1</div>
+      <div class="txt">
+        <div class="name">Giới thiệu về HTML</div>
+        <div class="desc">Bộ khung tài liệu, phần tử, quy ước viết mã, thẻ ngữ nghĩa, khối và nội tuyến</div>
+      </div>
+      <div class="arrow">&rarr;</div>
+    </a>
+
+    <div class="item soon">
+      <div class="no">W2</div>
+      <div class="txt">
+        <div class="name">Văn bản, bảng, danh sách, liên kết</div>
+      </div>
+      <div class="tag">sắp có</div>
+    </div>
+
+    <div class="item soon">
+      <div class="no">W3</div>
+      <div class="txt">
+        <div class="name">Biểu mẫu và nội dung đa phương tiện</div>
+      </div>
+      <div class="tag">sắp có</div>
+    </div>
+  </div>
+
+  <div class="chap">
+    <h2>Chương 3 · Thuộc tính định dạng cơ bản của CSS</h2>
+    <p class="sub">Bộ chọn, màu sắc, nền, viền, văn bản</p>
+  </div>
+
+  <div class="chap">
+    <h2>Chương 4 · Thiết kế bố cục</h2>
+    <p class="sub">Mô hình hộp, vị trí, Flex, Grid</p>
+  </div>
+
+  <div class="foot">Tài liệu Thiết kế Web</div>
+</div>
+
+</body>
+</html>
