@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 2 - Tuần 2: Văn bản, danh sách và bảng biểu</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+
+  /* bảng và danh sách ở chế độ có CSS */
+  .styled table{border-collapse:collapse; width:100%; font-size:13.5px; margin-bottom:12px}
+  .styled caption{text-align:left; font-weight:600; padding-bottom:6px}
+  .styled th, .styled td{border:1px solid var(--line); padding:6px 9px; text-align:left}
+  .styled thead th{background:#eef3f8}
+  .styled tfoot td{background:#f6f8fa; font-weight:600}
+  .styled ul, .styled ol, .styled dl{margin:0 0 12px; padding-left:22px}
+  .styled dl{padding-left:0}
+  .styled dt{font-weight:600; margin-top:6px}
+  .styled dd{margin:0 0 0 18px}
+  .styled pre{background:#f6f8fa; color:var(--ink); padding:10px 12px; font-size:12.5px}
+  .demo.plain pre{background:transparent; color:#000; padding:0; font-size:14px; overflow:visible}
+
+  /* bài tập */
+  .note-ex{font-size:13.5px; color:var(--muted); margin:0 0 14px}
+  .ex{border:1px solid var(--line); border-radius:9px; padding:14px 16px; margin-bottom:12px}
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:9px; margin-bottom:6px}
+  .ex-no{font-weight:700; color:var(--blue); font-size:14px}
+  .ex-title{font-weight:600; font-size:15px}
+  .ex-topic{font-size:12px; color:var(--muted); border:1px solid var(--line);
+            border-radius:20px; padding:1px 9px}
+  .ex-goal{font-size:14px; margin:0 0 8px}
+  .ex-req{font-size:13.5px; margin:0 0 12px; padding-left:20px}
+  .ex-req li{margin-bottom:4px}
+  .ex-req code, .ex-goal code{background:#f1f4f7; padding:1px 5px; border-radius:4px;
+            font-size:12.5px; color:#a1155a; font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ex .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+         color:var(--muted); margin:12px 0 6px; font-weight:700}
+  .ex-code{max-height:420px}
+  .ex-out{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff}
+  .ex-out iframe{width:100%; border:0; display:block; height:200px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 2 - Tuần 2: Văn bản, danh sách và bảng biểu</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Bấm vào vùng bất kỳ trên trang để xem thẻ HTML định nghĩa và ví dụ minh hoạ.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức tuần 2</h2>
+
+      <div class="k-item" data-k="k7">
+        <div class="num">MỤC 2.7</div>
+        <div class="name">Văn bản</div>
+        <div class="tags">h1–h6 · strong · em · mark · abbr · del · ins · sub · sup · small · br · pre · code</div>
+      </div>
+
+      <div class="k-item" data-k="k9">
+        <div class="num">MỤC 2.9</div>
+        <div class="name">Danh sách</div>
+        <div class="tags">ul · ol · li · dl · dt · dd</div>
+      </div>
+
+      <div class="k-item" data-k="k8">
+        <div class="num">MỤC 2.8</div>
+        <div class="name">Bảng biểu</div>
+        <div class="tags">table · caption · thead · tbody · tfoot · tr · th · td · colspan · rowspan</div>
+      </div>
+
+      <div class="k-item" data-k="k6" style="border-left-color:#c9d6e4">
+        <div class="num">ÔN TUẦN 1</div>
+        <div class="name">Thẻ ngữ nghĩa</div>
+        <div class="tags">header · nav · main · section · aside · footer</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="seg" style="margin-bottom:10px">
+        <button id="mPlain" class="on">Chưa sử dụng CSS</button>
+        <button id="mStyled">Có sử dụng CSS</button>
+      </div>
+      <div class="browser">
+
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="ann" data-k="k4" data-tag="title" style="border-radius:6px">
+            <span class="lbl">&lt;title&gt; + favicon</span>
+            <div class="tabpill"><span class="fav"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K" alt=""></span> Nguyễn Phúc An</div>
+          </div>
+        </div>
+
+        <div class="page ann" data-k="k1" data-tag="body">
+          <span class="lbl">&lt;body&gt;</span>
+          <div class="demo plain" id="demo">
+
+            <header class="d-header ann" data-k="k6" data-tag="header">
+              <span class="lbl">&lt;header&gt;</span>
+              <h1 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h1&gt;</span>Nguyễn Phúc An</h1>
+              <p class="tagline">Sinh viên Khoa Công nghệ thông tin</p>
+            </header>
+
+            <nav class="d-nav ann" data-k="k6" data-tag="nav">
+              <span class="lbl">&lt;nav&gt;</span>
+              <a href="#gioi-thieu">Giới thiệu</a>
+              <a href="#hoc-tap">Học tập</a>
+              <a href="#so-thich">Sở thích</a>
+              <a href="#lien-he">Liên hệ</a>
+            </nav>
+
+            <div class="d-body">
+              <main class="d-main ann" data-k="k6" data-tag="main">
+                <span class="lbl">&lt;main&gt;</span>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="gioi-thieu">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h2&gt;</span>Giới thiệu</h2>
+
+                  <p>Tôi là sinh viên năm hai Khoa <abbr class="ann inline" data-k="k7" data-tag="abbr" title="Công nghệ thông tin"><span class="lbl">&lt;abbr&gt;</span>CNTT</abbr>,
+                     quan tâm tới <strong class="ann inline" data-k="k7" data-tag="strong"><span class="lbl">&lt;strong&gt;</span>phát triển ứng dụng web</strong>
+                     và <em class="ann inline" data-k="k7" data-tag="em"><span class="lbl">&lt;em&gt;</span>thiết kế giao diện người dùng</em>.</p>
+
+                  <p>Lớp: <del class="ann inline" data-k="k7" data-tag="delins"><span class="lbl">&lt;del&gt; &lt;ins&gt;</span>CNTT 66A</del>
+                     <ins class="ann inline" data-k="k7" data-tag="delins">CNTT 66B</ins>.
+                     Học phần <mark class="ann inline" data-k="k7" data-tag="mark"><span class="lbl">&lt;mark&gt;</span>Thiết kế Web</mark>
+                     là môn tôi theo sát nhất học kỳ này.</p>
+
+                  <p class="ann" data-k="k7" data-tag="br">
+                    <span class="lbl">&lt;br&gt;</span>
+                    Địa chỉ liên hệ:<br>
+                    Khoa Công nghệ thông tin<br>
+                    Phòng 305, nhà A2
+                  </p>
+                </section>
+
+                <hr>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="hoc-tap">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h2&gt;</span>Học tập</h2>
+
+                  <div class="ann" data-k="k8" data-tag="table">
+                    <span class="lbl">&lt;table&gt;</span>
+                    <table>
+                      <caption class="ann" data-k="k8" data-tag="caption"><span class="lbl">&lt;caption&gt;</span>Kết quả học tập học kỳ 2026.1</caption>
+                      <thead class="ann inline" data-k="k8" data-tag="tsec">
+                        <tr class="ann inline" data-k="k8" data-tag="tr">
+                          <th class="ann inline" data-k="k8" data-tag="th" scope="col">Nhóm</th>
+                          <th scope="col">Học phần</th>
+                          <th scope="col">Tín chỉ</th>
+                          <th scope="col">Điểm</th>
+                        </tr>
+                      </thead>
+                      <tbody class="ann inline" data-k="k8" data-tag="tsec">
+                        <tr>
+                          <th class="ann inline" data-k="k8" data-tag="rowspan" scope="row" rowspan="2">Bắt buộc</th>
+                          <td class="ann inline" data-k="k8" data-tag="td">Thiết kế Web</td>
+                          <td>3</td>
+                          <td>8.5</td>
+                        </tr>
+                        <tr>
+                          <td>Cơ sở dữ liệu</td>
+                          <td>3</td>
+                          <td>8.0</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Tự chọn</th>
+                          <td>Lập trình hướng đối tượng</td>
+                          <td>3</td>
+                          <td>9.0</td>
+                        </tr>
+                      </tbody>
+                      <tfoot class="ann inline" data-k="k8" data-tag="tsec">
+                        <tr>
+                          <td class="ann inline" data-k="k8" data-tag="colspan" colspan="2">Tổng kết</td>
+                          <td>9</td>
+                          <td>8.5</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  <p>Điểm trung bình tính theo công thức
+                     (x<sub class="ann inline" data-k="k7" data-tag="supsub"><span class="lbl">&lt;sub&gt; &lt;sup&gt;</span>1</sub> +
+                     x<sub>2</sub> + x<sub>3</sub>) / 3, làm tròn tới chữ số thập phân thứ nhất<sup>(*)</sup>.</p>
+                </section>
+
+                <hr>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="so-thich">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h2&gt;</span>Sở thích</h2>
+
+                  <div class="ann" data-k="k9" data-tag="ul">
+                    <span class="lbl">&lt;ul&gt;</span>
+                    <ul>
+                      <li class="ann inline" data-k="k9" data-tag="li">Thiết kế giao diện</li>
+                      <li>Vẽ minh hoạ</li>
+                      <li>Đọc tài liệu kỹ thuật</li>
+                    </ul>
+                  </div>
+
+                  <h3 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h3&gt;</span>Lộ trình tự học</h3>
+
+                  <div class="ann" data-k="k9" data-tag="ol">
+                    <span class="lbl">&lt;ol&gt;</span>
+                    <ol>
+                      <li>Học HTML
+                        <ul>
+                          <li>Thẻ ngữ nghĩa</li>
+                          <li>Danh sách và bảng biểu</li>
+                        </ul>
+                      </li>
+                      <li>Học CSS</li>
+                      <li>Học JavaScript</li>
+                    </ol>
+                  </div>
+
+                  <h3 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h3&gt;</span>Thuật ngữ hay gặp</h3>
+
+                  <div class="ann" data-k="k9" data-tag="dl">
+                    <span class="lbl">&lt;dl&gt;</span>
+                    <dl>
+                      <dt class="ann inline" data-k="k9" data-tag="dt">HTML</dt>
+                      <dd class="ann inline" data-k="k9" data-tag="dd">Ngôn ngữ đánh dấu dùng để mô tả cấu trúc trang web.</dd>
+                      <dt>Thẻ</dt>
+                      <dd>Cặp ký hiệu bao quanh nội dung, cho biết nội dung đó là gì.</dd>
+                      <dt>Thuộc tính</dt>
+                      <dd>Thông tin thêm viết trong thẻ mở, dạng tên bằng giá trị.</dd>
+                    </dl>
+                  </div>
+
+                  <h3 class="ann inline" data-k="k7" data-tag="heading"><span class="lbl">&lt;h3&gt;</span>Đoạn mã tôi hay dùng lại</h3>
+
+                  <div class="ann" data-k="k7" data-tag="pre">
+                    <span class="lbl">&lt;pre&gt; + &lt;code&gt;</span>
+<pre><code class="ann inline" data-k="k7" data-tag="code">&lt;table&gt;
+  &lt;caption&gt;Tiêu đề bảng&lt;/caption&gt;
+  &lt;thead&gt;...&lt;/thead&gt;
+  &lt;tbody&gt;...&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                  </div>
+                </section>
+              </main>
+
+              <aside class="d-aside ann" data-k="k6" data-tag="aside" id="lien-he">
+                <span class="lbl">&lt;aside&gt;</span>
+                <h3 style="margin-top:0">Liên hệ</h3>
+                <p style="margin:0">Email: an.nguyen@sv.neu.edu.vn</p>
+                <p style="margin:6px 0 0">Lớp: CNTT</p>
+              </aside>
+            </div>
+
+            <footer class="d-footer ann" data-k="k6" data-tag="footer">
+              <span class="lbl">&lt;footer&gt;</span>
+              © 2026 Nguyễn Phúc An.
+              <small class="ann inline" data-k="k7" data-tag="small"><span class="lbl">&lt;small&gt;</span>Cập nhật lần cuối: 10/9/2026</small>
+            </footer>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcShort" class="on">Rút gọn</button>
+          <button id="srcFull">Đầy đủ</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải file .html</button>
+        </div>
+        <pre id="srcView"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bài tập</h2>
+        <p class="note-ex">Ba bài, mỗi bài cho một nội dung của tuần này. Làm xong hãy tự đối chiếu với lời giải.</p>
+        <div id="exList"></div>
+      </div>
+
+      <div class="foot">Tài liệu Thiết kế Web</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <p class="sec-lbl">Cú pháp</p>
+    <pre id="tipCode"></pre>
+    <p class="sec-lbl">Kết quả</p>
+    <div class="t-out"><iframe id="tipOut" title="Kết quả"></iframe></div>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K";
+
+/* ---------- tô màu mã nguồn ---------- */
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_SHORT = [
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <title>Nguyễn Phúc An</title>',
+'</head>',
+'<body>',
+'',
+'  <header> ... </header>',
+'  <nav> ... </nav>',
+'',
+'  <main>',
+'    <section id="gioi-thieu">   <!-- văn bản: abbr, mark, del, ins, br -->',
+'      ...',
+'    </section>',
+'    <hr>',
+'    <section id="hoc-tap">      <!-- bảng biểu -->',
+'      <table>',
+'        <caption> ... </caption>',
+'        <thead> ... </thead>',
+'        <tbody> ... </tbody>',
+'        <tfoot> ... </tfoot>',
+'      </table>',
+'    </section>',
+'    <hr>',
+'    <section id="so-thich">     <!-- danh sách -->',
+'      <ul> ... </ul>',
+'      <ol> ... </ol>',
+'      <dl> ... </dl>',
+'      <pre><code> ... </code></pre>',
+'    </section>',
+'  </main>',
+'',
+'  <aside id="lien-he"> ... </aside>',
+'  <footer> ... </footer>',
+'',
+'</body>',
+'</html>'
+].join('\n');
+
+var SRC_FULL = [
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'  <title>Nguyễn Phúc An</title>',
+'</head>',
+'<body>',
+'',
+'  <header>',
+'    <h1>Nguyễn Phúc An</h1>',
+'    <p>Sinh viên Khoa Công nghệ thông tin</p>',
+'  </header>',
+'',
+'  <nav>',
+'    <a href="#gioi-thieu">Giới thiệu</a>',
+'    <a href="#hoc-tap">Học tập</a>',
+'    <a href="#so-thich">Sở thích</a>',
+'    <a href="#lien-he">Liên hệ</a>',
+'  </nav>',
+'',
+'  <main>',
+'',
+'    <section id="gioi-thieu">',
+'      <h2>Giới thiệu</h2>',
+'',
+'      <p>',
+'        Tôi là sinh viên năm hai Khoa <abbr title="Công nghệ thông tin">CNTT</abbr>,',
+'        quan tâm tới <strong>phát triển ứng dụng web</strong>',
+'        và <em>thiết kế giao diện người dùng</em>.',
+'      </p>',
+'',
+'      <p>',
+'        Lớp: <del>CNTT 66A</del> <ins>CNTT 66B</ins>.',
+'        Học phần <mark>Thiết kế Web</mark> là môn tôi theo sát nhất học kỳ này.',
+'      </p>',
+'',
+'      <p>',
+'        Địa chỉ liên hệ:<br>',
+'        Khoa Công nghệ thông tin<br>',
+'        Phòng 305, nhà A2',
+'      </p>',
+'    </section>',
+'',
+'    <hr>',
+'',
+'    <section id="hoc-tap">',
+'      <h2>Học tập</h2>',
+'',
+'      <table>',
+'        <caption>Kết quả học tập học kỳ 2026.1</caption>',
+'',
+'        <thead>',
+'          <tr>',
+'            <th scope="col">Nhóm</th>',
+'            <th scope="col">Học phần</th>',
+'            <th scope="col">Tín chỉ</th>',
+'            <th scope="col">Điểm</th>',
+'          </tr>',
+'        </thead>',
+'',
+'        <tbody>',
+'          <tr>',
+'            <th scope="row" rowspan="2">Bắt buộc</th>',
+'            <td>Thiết kế Web</td>',
+'            <td>3</td>',
+'            <td>8.5</td>',
+'          </tr>',
+'          <tr>',
+'            <td>Cơ sở dữ liệu</td>',
+'            <td>3</td>',
+'            <td>8.0</td>',
+'          </tr>',
+'          <tr>',
+'            <th scope="row">Tự chọn</th>',
+'            <td>Lập trình hướng đối tượng</td>',
+'            <td>3</td>',
+'            <td>9.0</td>',
+'          </tr>',
+'        </tbody>',
+'',
+'        <tfoot>',
+'          <tr>',
+'            <td colspan="2">Tổng kết</td>',
+'            <td>9</td>',
+'            <td>8.5</td>',
+'          </tr>',
+'        </tfoot>',
+'      </table>',
+'',
+'      <p>',
+'        Điểm trung bình tính theo công thức',
+'        (x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub>) / 3,',
+'        làm tròn tới chữ số thập phân thứ nhất<sup>(*)</sup>.',
+'      </p>',
+'    </section>',
+'',
+'    <hr>',
+'',
+'    <section id="so-thich">',
+'      <h2>Sở thích</h2>',
+'',
+'      <ul>',
+'        <li>Thiết kế giao diện</li>',
+'        <li>Vẽ minh hoạ</li>',
+'        <li>Đọc tài liệu kỹ thuật</li>',
+'      </ul>',
+'',
+'      <h3>Lộ trình tự học</h3>',
+'      <ol>',
+'        <li>Học HTML',
+'          <ul>',
+'            <li>Thẻ ngữ nghĩa</li>',
+'            <li>Danh sách và bảng biểu</li>',
+'          </ul>',
+'        </li>',
+'        <li>Học CSS</li>',
+'        <li>Học JavaScript</li>',
+'      </ol>',
+'',
+'      <h3>Thuật ngữ hay gặp</h3>',
+'      <dl>',
+'        <dt>HTML</dt>',
+'        <dd>Ngôn ngữ đánh dấu dùng để mô tả cấu trúc trang web.</dd>',
+'        <dt>Thẻ</dt>',
+'        <dd>Cặp ký hiệu bao quanh nội dung, cho biết nội dung đó là gì.</dd>',
+'        <dt>Thuộc tính</dt>',
+'        <dd>Thông tin thêm viết trong thẻ mở, dạng tên bằng giá trị.</dd>',
+'      </dl>',
+'',
+'      <h3>Đoạn mã tôi hay dùng lại</h3>',
+'      <pre><code>&lt;table&gt;',
+'  &lt;caption&gt;Tiêu đề bảng&lt;/caption&gt;',
+'  &lt;thead&gt;...&lt;/thead&gt;',
+'  &lt;tbody&gt;...&lt;/tbody&gt;',
+'&lt;/table&gt;</code></pre>',
+'    </section>',
+'',
+'  </main>',
+'',
+'  <aside id="lien-he">',
+'    <h3>Liên hệ</h3>',
+'    <p>Email: an.nguyen@sv.neu.edu.vn</p>',
+'    <p>Lớp: CNTT</p>',
+'  </aside>',
+'',
+'  <footer>',
+'    <p>© 2026 Nguyễn Phúc An. <small>Cập nhật lần cuối: 10/9/2026</small></p>',
+'  </footer>',
+'',
+'</body>',
+'</html>'
+].join('\n');
+
+/* ---------- nội dung giải thích từng thẻ ---------- */
+var TAGS = {
+  header: {
+    tag:'&lt;header&gt;', kind:'Tuần 1',
+    def:'Phần đầu trang: tên trang, logo, tiêu đề.',
+    code:'<header>\n  <h1>Nguyễn Phúc An</h1>\n  <p>Sinh viên Khoa Công nghệ thông tin</p>\n</header>',
+    out:'<h1>Nguyễn Phúc An</h1><p>Sinh viên Khoa Công nghệ thông tin</p>',
+    note:'Đừng nhầm với head. Header thì nhìn thấy được, head thì không.'
+  },
+  nav: {
+    tag:'&lt;nav&gt;', kind:'Tuần 1',
+    def:'Chứa các liên kết dẫn sang mục khác, tức là menu của trang.',
+    code:'<nav>\n  <a href="#gioi-thieu">Giới thiệu</a>\n  <a href="#hoc-tap">Học tập</a>\n</nav>',
+    out:'<a href="#">Giới thiệu</a> <a href="#">Học tập</a>',
+    note:'Thẻ a sẽ học kỹ ở tuần sau. Tuần này chỉ cần biết menu nằm trong nav.'
+  },
+  main: {
+    tag:'&lt;main&gt;', kind:'Tuần 1',
+    def:'Nội dung chính của trang, phần không lặp lại ở các trang khác.',
+    code:'<main>\n  <section> ... </section>\n</main>',
+    out:'<div style="border:2px dashed #0f8a5f;padding:8px;font-size:14px">Vùng nội dung chính</div>',
+    note:'Mỗi trang chỉ có một main.'
+  },
+  section: {
+    tag:'&lt;section&gt;', kind:'Tuần 1',
+    def:'Một mục nội dung, thường có tiêu đề riêng.',
+    code:'<section id="hoc-tap">\n  <h2>Học tập</h2>\n  <table> ... </table>\n</section>',
+    out:'<h2>Học tập</h2><p>Bảng kết quả nằm trong mục này.</p>',
+    note:'Có tiêu đề thì dùng section. Chỉ gom lại cho dễ trang trí thì dùng div.'
+  },
+  aside: {
+    tag:'&lt;aside&gt;', kind:'Tuần 1',
+    def:'Nội dung phụ đặt bên cạnh nội dung chính.',
+    code:'<aside id="lien-he">\n  <h3>Liên hệ</h3>\n  <p>Email: an.nguyen@sv.neu.edu.vn</p>\n</aside>',
+    out:'<h3>Liên hệ</h3><p>Email: an.nguyen@sv.neu.edu.vn</p>',
+    note:'Nó nằm ở đâu là do CSS quyết định, không phải do tên thẻ.'
+  },
+  footer: {
+    tag:'&lt;footer&gt;', kind:'Tuần 1',
+    def:'Chân trang. Thường ghi bản quyền, thông tin liên hệ.',
+    code:'<footer>\n  <p>© 2026 Nguyễn Phúc An.</p>\n</footer>',
+    out:'<p>© 2026 Nguyễn Phúc An.</p>',
+    note:'Footer cũng dùng được bên trong article.'
+  },
+
+  heading: {
+    tag:'&lt;h1&gt; … &lt;h6&gt;', kind:'Mục 2.7',
+    def:'Tiêu đề, sáu cấp từ lớn tới nhỏ. Cấp của tiêu đề cho biết mục này nằm trong mục nào.',
+    code:'<h1>Nguyễn Phúc An</h1>\n\n<h2>Sở thích</h2>\n  <h3>Lộ trình tự học</h3>\n  <h3>Thuật ngữ hay gặp</h3>',
+    out:'<h1>Nguyễn Phúc An</h1><h2>Sở thích</h2><h3>Lộ trình tự học</h3>',
+    note:'Mỗi trang một h1. Không nhảy từ h2 xuống h4 chỉ vì thấy h4 nhỏ hơn cho đẹp.'
+  },
+  strong: {
+    tag:'&lt;strong&gt;', kind:'Mục 2.7',
+    def:'Đánh dấu chỗ quan trọng. Trình duyệt hiển thị chữ đậm.',
+    code:'<p>Tôi quan tâm tới <strong>phát triển ứng dụng web</strong>.</p>',
+    out:'<p>Tôi quan tâm tới <strong>phát triển ứng dụng web</strong>.</p>',
+    note:'strong nói rằng chỗ này quan trọng, b chỉ là in đậm cho khác đi. Ưu tiên strong.'
+  },
+  em: {
+    tag:'&lt;em&gt;', kind:'Mục 2.7',
+    def:'Nhấn giọng khi đọc. Trình duyệt hiển thị chữ nghiêng.',
+    code:'<p>Đây là <em>thiết kế giao diện</em>, không phải lập trình.</p>',
+    out:'<p>Đây là <em>thiết kế giao diện</em>, không phải lập trình.</p>',
+    note:'Quan hệ giữa em và i giống strong với b.'
+  },
+  mark: {
+    tag:'&lt;mark&gt;', kind:'Mục 2.7',
+    def:'Bôi vàng một đoạn chữ để người đọc chú ý, giống dùng bút dạ quang.',
+    code:'<p>Học phần <mark>Thiết kế Web</mark> là môn tôi theo sát nhất.</p>',
+    out:'<p>Học phần <mark>Thiết kế Web</mark> là môn tôi theo sát nhất.</p>',
+    note:'Dùng khi muốn người đọc để ý, không dùng thay cho strong.'
+  },
+  abbr: {
+    tag:'&lt;abbr&gt;', kind:'Mục 2.7',
+    def:'Đánh dấu từ viết tắt. Thuộc tính title ghi nghĩa đầy đủ, rê chuột vào sẽ hiện ra.',
+    code:'<abbr title="Công nghệ thông tin">CNTT</abbr>',
+    out:'<p>Khoa <abbr title="Công nghệ thông tin">CNTT</abbr> (rê chuột vào chữ CNTT)</p>',
+    note:'Luôn viết title. Không có title thì thẻ này chẳng để làm gì.'
+  },
+  delins: {
+    tag:'&lt;del&gt; &amp; &lt;ins&gt;', kind:'Mục 2.7',
+    def:'del đánh dấu phần đã bỏ, ins đánh dấu phần mới thêm. Hay dùng khi sửa lại nội dung cũ.',
+    code:'<p>Lớp: <del>CNTT 66A</del> <ins>CNTT 66B</ins></p>',
+    out:'<p>Lớp: <del>CNTT 66A</del> <ins>CNTT 66B</ins></p>',
+    note:'Chữ gạch ngang và chữ gạch chân là do trình duyệt vẽ, không phải do mình tô.'
+  },
+  supsub: {
+    tag:'&lt;sup&gt; &amp; &lt;sub&gt;', kind:'Mục 2.7',
+    def:'sup đưa chữ lên cao, sub hạ chữ xuống thấp. Dùng cho số mũ, chỉ số dưới, ký hiệu chú thích.',
+    code:'<p>(x<sub>1</sub> + x<sub>2</sub>) / 2</p>\n<p>Diện tích 45 m<sup>2</sup></p>',
+    out:'<p>(x<sub>1</sub> + x<sub>2</sub>) / 2 &nbsp;&nbsp; 45 m<sup>2</sup></p>',
+    note:'Đừng dùng để thu nhỏ chữ. Muốn chữ nhỏ thì dùng small hoặc CSS.'
+  },
+  small: {
+    tag:'&lt;small&gt;', kind:'Mục 2.7',
+    def:'Chữ ghi chú, in nhỏ hơn. Hay dùng cho bản quyền, điều khoản, ngày cập nhật.',
+    code:'<footer>\n  <p>© 2026 Nguyễn Phúc An. <small>Cập nhật: 10/9/2026</small></p>\n</footer>',
+    out:'<p>© 2026 Nguyễn Phúc An. <small>Cập nhật: 10/9/2026</small></p>',
+    note:'small mang ý nghĩa ghi chú phụ, không phải lệnh thu nhỏ chữ.'
+  },
+  br: {
+    tag:'&lt;br&gt;', kind:'Mục 2.7',
+    def:'Xuống dòng ngay trong một đoạn văn. Là thẻ rỗng, không có thẻ đóng.',
+    code:'<p>\n  Địa chỉ liên hệ:<br>\n  Khoa Công nghệ thông tin<br>\n  Phòng 305, nhà A2\n</p>',
+    out:'<p>Địa chỉ liên hệ:<br>Khoa Công nghệ thông tin<br>Phòng 305, nhà A2</p>',
+    note:'Chỉ dùng khi nội dung buộc phải xuống dòng như địa chỉ hay thơ. Muốn cách đoạn thì dùng thẻ p.'
+  },
+  pre: {
+    tag:'&lt;pre&gt;', kind:'Mục 2.7',
+    def:'Giữ nguyên khoảng trắng và xuống dòng như lúc gõ. Trình duyệt hiển thị bằng font đều nét.',
+    code:'<pre><code>&lt;table&gt;\n  &lt;caption&gt;Tiêu đề bảng&lt;/caption&gt;\n&lt;/table&gt;</code></pre>',
+    out:'<pre><code>&lt;table&gt;\n  &lt;caption&gt;Tiêu đề bảng&lt;/caption&gt;\n&lt;/table&gt;</code></pre>',
+    note:'Bình thường trình duyệt gộp nhiều dấu cách thành một. Trong pre thì không.'
+  },
+  code: {
+    tag:'&lt;code&gt;', kind:'Mục 2.7',
+    def:'Đánh dấu một đoạn mã lệnh. Muốn giữ nguyên cách thụt lề thì đặt trong pre.',
+    code:'<p>Thẻ <code>&lt;table&gt;</code> dùng để tạo bảng.</p>',
+    out:'<p>Thẻ <code>&lt;table&gt;</code> dùng để tạo bảng.</p>',
+    note:'Muốn hiện dấu &lt; trên trang thì phải viết &amp;lt;, nếu không trình duyệt tưởng đó là thẻ.'
+  },
+
+  ul: {
+    tag:'&lt;ul&gt;', kind:'Mục 2.9',
+    def:'Danh sách không có thứ tự. Dùng khi các mục ngang hàng nhau, đổi chỗ vẫn được.',
+    code:'<ul>\n  <li>Thiết kế giao diện</li>\n  <li>Vẽ minh hoạ</li>\n</ul>',
+    out:'<ul><li>Thiết kế giao diện</li><li>Vẽ minh hoạ</li></ul>',
+    note:'Trong ul chỉ được đặt li. Đặt thẳng p hay div vào là sai.'
+  },
+  ol: {
+    tag:'&lt;ol&gt;', kind:'Mục 2.9',
+    def:'Danh sách có thứ tự. Dùng khi thứ tự mang ý nghĩa, ví dụ các bước làm.',
+    code:'<ol>\n  <li>Học HTML\n    <ul>\n      <li>Thẻ ngữ nghĩa</li>\n    </ul>\n  </li>\n  <li>Học CSS</li>\n</ol>',
+    out:'<ol><li>Học HTML<ul><li>Thẻ ngữ nghĩa</li></ul></li><li>Học CSS</li></ol>',
+    note:'Danh sách con phải nằm BÊN TRONG thẻ li của mục cha, không nằm giữa hai li.'
+  },
+  li: {
+    tag:'&lt;li&gt;', kind:'Mục 2.9',
+    def:'Một mục trong danh sách. Dùng chung cho cả ul và ol.',
+    code:'<ol type="a" start="3">\n  <li>Mục thứ ba</li>\n  <li>Mục thứ tư</li>\n</ol>',
+    out:'<ol type="a" start="3"><li>Mục thứ ba</li><li>Mục thứ tư</li></ol>',
+    note:'ol có thêm type để đổi kiểu đánh số và start để bắt đầu từ số khác 1.'
+  },
+  dl: {
+    tag:'&lt;dl&gt;', kind:'Mục 2.9',
+    def:'Danh sách định nghĩa, gồm từng cặp thuật ngữ và lời giải thích.',
+    code:'<dl>\n  <dt>HTML</dt>\n  <dd>Ngôn ngữ đánh dấu cấu trúc trang web.</dd>\n</dl>',
+    out:'<dl><dt>HTML</dt><dd>Ngôn ngữ đánh dấu cấu trúc trang web.</dd></dl>',
+    note:'Hợp cho bảng thuật ngữ, thông tin dạng nhãn và giá trị, câu hỏi và trả lời.'
+  },
+  dt: {
+    tag:'&lt;dt&gt;', kind:'Mục 2.9',
+    def:'Thuật ngữ được định nghĩa. Viết trước, sát lề.',
+    code:'<dt>Thuộc tính</dt>\n<dd>Thông tin thêm viết trong thẻ mở.</dd>',
+    out:'<dl><dt>Thuộc tính</dt><dd>Thông tin thêm viết trong thẻ mở.</dd></dl>',
+    note:'Một dt được phép có nhiều dd, và ngược lại.'
+  },
+  dd: {
+    tag:'&lt;dd&gt;', kind:'Mục 2.9',
+    def:'Phần giải thích cho dt đứng ngay trước nó. Trình duyệt tự thụt vào.',
+    code:'<dt>Thẻ</dt>\n<dd>Cặp ký hiệu bao quanh nội dung.</dd>',
+    out:'<dl><dt>Thẻ</dt><dd>Cặp ký hiệu bao quanh nội dung.</dd></dl>',
+    note:'Phần thụt lề là do trình duyệt vẽ sẵn, không phải mình gõ dấu cách.'
+  },
+
+  table: {
+    tag:'&lt;table&gt;', kind:'Mục 2.8',
+    def:'Bảng dữ liệu. Bên trong xếp theo từng hàng, mỗi hàng là một thẻ tr, trong hàng mới tới các ô.',
+    code:'<table>\n  <caption>Kết quả học tập</caption>\n  <thead> ... </thead>\n  <tbody> ... </tbody>\n  <tfoot> ... </tfoot>\n</table>',
+    out:'<table><tr><th>Học phần</th><th>Điểm</th></tr><tr><td>Thiết kế Web</td><td>8.5</td></tr></table>',
+    note:'Bảng chưa có đường kẻ vì kẻ khung là việc của CSS. Và đừng dùng bảng để dàn bố cục trang.'
+  },
+  caption: {
+    tag:'&lt;caption&gt;', kind:'Mục 2.8',
+    def:'Tiêu đề của bảng. Phải viết ngay sau thẻ table mở.',
+    code:'<table>\n  <caption>Kết quả học tập học kỳ 2026.1</caption>\n  ...\n</table>',
+    out:'<table><caption>Kết quả học tập học kỳ 2026.1</caption><tr><td>Thiết kế Web</td><td>8.5</td></tr></table>',
+    note:'Đặt caption trong bảng chứ đừng viết một thẻ p bên ngoài, vì như vậy máy không biết dòng đó là tên bảng.'
+  },
+  tsec: {
+    tag:'&lt;thead&gt; &lt;tbody&gt; &lt;tfoot&gt;', kind:'Mục 2.8',
+    def:'Chia bảng thành ba phần: hàng tiêu đề, phần dữ liệu, hàng tổng kết.',
+    code:'<thead>\n  <tr><th>Học phần</th><th>Điểm</th></tr>\n</thead>\n<tbody>\n  <tr><td>Thiết kế Web</td><td>8.5</td></tr>\n</tbody>\n<tfoot>\n  <tr><td>Trung bình</td><td>8.5</td></tr>\n</tfoot>',
+    out:'<table><thead><tr><th>Học phần</th><th>Điểm</th></tr></thead><tbody><tr><td>Thiết kế Web</td><td>8.5</td></tr></tbody><tfoot><tr><td>Trung bình</td><td>8.5</td></tr></tfoot></table>',
+    note:'Bảng dài in ra nhiều trang thì hàng trong thead được lặp lại ở đầu mỗi trang.'
+  },
+  tr: {
+    tag:'&lt;tr&gt;', kind:'Mục 2.8',
+    def:'Một hàng của bảng. Mọi ô đều phải nằm trong một tr.',
+    code:'<tr>\n  <th scope="col">Học phần</th>\n  <td>Thiết kế Web</td>\n</tr>',
+    out:'<table><tr><th>Học phần</th><td>Thiết kế Web</td></tr></table>',
+    note:'Bảng viết theo hàng, không viết theo cột. Muốn thêm cột thì phải thêm ô vào từng hàng.'
+  },
+  th: {
+    tag:'&lt;th&gt;', kind:'Mục 2.8',
+    def:'Ô tiêu đề. Trình duyệt in đậm và căn giữa, trình đọc màn hình đọc nó trước mỗi ô dữ liệu.',
+    code:'<th scope="col">Điểm</th>\n<th scope="row">Bắt buộc</th>',
+    out:'<table><tr><th>Nhóm</th><th>Điểm</th></tr><tr><td>Bắt buộc</td><td>8.5</td></tr></table>',
+    note:'Thuộc tính scope cho biết ô này là tiêu đề của cột (col) hay của hàng (row).'
+  },
+  td: {
+    tag:'&lt;td&gt;', kind:'Mục 2.8',
+    def:'Ô dữ liệu bình thường của bảng.',
+    code:'<tr>\n  <td>Thiết kế Web</td>\n  <td>3</td>\n  <td>8.5</td>\n</tr>',
+    out:'<table><tr><td>Thiết kế Web</td><td>3</td><td>8.5</td></tr></table>',
+    note:'Số ô của mỗi hàng phải khớp nhau, trừ khi có gộp ô bằng colspan hoặc rowspan.'
+  },
+  colspan: {
+    tag:'colspan', kind:'Mục 2.8',
+    def:'Thuộc tính cho một ô trải ngang qua nhiều cột.',
+    code:'<tfoot>\n  <tr>\n    <td colspan="2">Tổng kết</td>\n    <td>9</td>\n    <td>8.5</td>\n  </tr>\n</tfoot>',
+    out:'<table><tr><th>Nhóm</th><th>Học phần</th><th>Tín chỉ</th></tr><tr><td colspan="2">Tổng kết</td><td>9</td></tr></table>',
+    note:'Gộp hai cột thì hàng đó bớt đi một ô. Quên bớt là bảng lệch sang phải.'
+  },
+  rowspan: {
+    tag:'rowspan', kind:'Mục 2.8',
+    def:'Thuộc tính cho một ô trải dọc qua nhiều hàng.',
+    code:'<tr>\n  <th rowspan="2">Bắt buộc</th>\n  <td>Thiết kế Web</td>\n</tr>\n<tr>\n  <td>Cơ sở dữ liệu</td>\n</tr>',
+    out:'<table><tr><th rowspan="2">Bắt buộc</th><td>Thiết kế Web</td></tr><tr><td>Cơ sở dữ liệu</td></tr></table>',
+    note:'Hàng thứ hai không viết lại ô đã bị gộp. Viết lại là bảng thừa ô.'
+  }
+};
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- chế độ hiển thị --- */
+  var demo = document.getElementById('demo');
+  var mP = document.getElementById('mPlain'), mS = document.getElementById('mStyled');
+  function mode(styled){
+    demo.classList.toggle('styled', styled);
+    demo.classList.toggle('plain', !styled);
+    mS.classList.toggle('on', styled);
+    mP.classList.toggle('on', !styled);
+  }
+  mP.addEventListener('click', function(){ mode(false); });
+  mS.addEventListener('click', function(){ mode(true); });
+
+  /* --- mã nguồn --- */
+  var view = document.getElementById('srcView');
+  var bS = document.getElementById('srcShort'), bF = document.getElementById('srcFull');
+  function showSrc(full){
+    view.innerHTML = hl(full ? SRC_FULL : SRC_SHORT);
+    bF.classList.toggle('on', full); bS.classList.toggle('on', !full);
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bS.addEventListener('click', function(){ showSrc(false); });
+  bF.addEventListener('click', function(){ showSrc(true); });
+  showSrc(false);
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var out = SRC_FULL.split('anh-dai-dien.svg').join(AVATAR);
+    var blob = new Blob([out], {type:'text/html;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nguyen-phuc-an-tuan2.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+  var FRAME_CSS = 'body{margin:8px;font-family:"Times New Roman",Times,serif;font-size:15px;color:#000}'
+                + 'h1{font-size:1.6em}h2{font-size:1.35em}h3{font-size:1.15em}';
+
+  function fill(key){
+    var d = TAGS[key];
+    if(!d) return false;
+    document.getElementById('tipTag').innerHTML = d.tag;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = hl(d.code);
+    document.getElementById('tipNote').textContent = d.note;
+    var f = document.getElementById('tipOut');
+    f.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>' + FRAME_CSS + '</style>' + d.out;
+    f.onload = function(){
+      try{
+        var h = f.contentDocument.body.scrollHeight;
+        f.style.height = Math.min(Math.max(h + 6, 46), 200) + 'px';
+      }catch(e){}
+    };
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-tag]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-tag');
+    if(pinned && current === key){ hideTip(); return; }
+    current = key;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+
+/* ---------- ba bài tập và lời giải ---------- */
+var EX = [
+{
+  no:'Bài 1', topic:'Mục 2.7 · Văn bản',
+  title:'Trang giới thiệu học phần',
+  goal:'Tạo một trang HTML giới thiệu học phần Thiết kế Web.',
+  reqs:[
+    '<b>Cấu trúc:</b> dùng các thẻ ngữ nghĩa <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>.',
+    '<b>Tiêu đề:</b> đúng một <code>&lt;h1&gt;</code>, ít nhất hai <code>&lt;h2&gt;</code> và một <code>&lt;h3&gt;</code>, không nhảy cấp.',
+    '<b>Định dạng văn bản:</b> dùng ít nhất 6 thẻ trong số <code>&lt;abbr&gt;</code>, <code>&lt;mark&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;del&gt;</code>, <code>&lt;ins&gt;</code>, <code>&lt;sub&gt;</code>, <code>&lt;sup&gt;</code>, <code>&lt;small&gt;</code>.',
+    '<b>Mã lệnh:</b> có một khối <code>&lt;pre&gt;</code> lồng <code>&lt;code&gt;</code> giữ nguyên thụt lề.',
+    '<b>Ngắt dòng:</b> dùng <code>&lt;br&gt;</code> đúng mục đích, ví dụ địa chỉ hoặc lịch học nhiều dòng.',
+    '<b>Bắt buộc:</b> không dùng CSS. Bài nộp phải qua W3C Validator không còn lỗi.'
+  ],
+  code:[
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'  <title>Học phần Thiết kế Web</title>',
+'</head>',
+'<body>',
+'',
+'  <header>',
+'    <h1>Học phần Thiết kế Web</h1>',
+'    <p>Khoa <abbr title="Công nghệ thông tin">CNTT</abbr>, 3 tín chỉ</p>',
+'  </header>',
+'',
+'  <main>',
+'',
+'    <section>',
+'      <h2>Giới thiệu chung</h2>',
+'      <p>',
+'        Học phần trang bị kiến thức về <strong>HTML</strong> và <strong>CSS</strong>,',
+'        hướng tới việc <em>tự xây dựng một website hoàn chỉnh</em>.',
+'        Phần <mark>thẻ ngữ nghĩa</mark> là nội dung trọng tâm của chương 2.',
+'      </p>',
+'',
+'      <h3>Điều kiện tiên quyết</h3>',
+'      <p>Sinh viên cần hoàn thành học phần Tin học đại cương.</p>',
+'    </section>',
+'',
+'    <section>',
+'      <h2>Cách đánh giá</h2>',
+'      <p>',
+'        Trọng số điểm quá trình: <del>30%</del> <ins>40%</ins> theo quy chế mới.',
+'      </p>',
+'      <p>',
+'        Điểm tổng kết = (x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub>) / 3,',
+'        tính theo thang 10<sup>(*)</sup>.',
+'      </p>',
+'    </section>',
+'',
+'    <section>',
+'      <h2>Ví dụ mã lệnh</h2>',
+'      <pre><code>&lt;section&gt;',
+'  &lt;h2&gt;Giới thiệu&lt;/h2&gt;',
+'  &lt;p&gt;Nội dung của mục.&lt;/p&gt;',
+'&lt;/section&gt;</code></pre>',
+'    </section>',
+'',
+'    <section>',
+'      <h2>Thời gian và địa điểm</h2>',
+'      <p>',
+'        Giảng đường D2-401<br>',
+'        Thứ Ba, tiết 1 đến tiết 3<br>',
+'        Bắt đầu từ ngày 8/9/2026',
+'      </p>',
+'    </section>',
+'',
+'  </main>',
+'',
+'  <footer>',
+'    <p><small>(*) Theo quy chế đào tạo hiện hành. Cập nhật: 10/9/2026</small></p>',
+'  </footer>',
+'',
+'</body>',
+'</html>'
+  ].join('\n'),
+  file:'bai-1-van-ban.html'
+},
+{
+  no:'Bài 2', topic:'Mục 2.9 · Danh sách',
+  title:'Lộ trình học Thiết kế Web',
+  goal:'Tạo một trang HTML trình bày lộ trình học của môn Thiết kế Web.',
+  reqs:[
+    '<b>Cấu trúc:</b> dùng <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>.',
+    '<b>Danh sách không thứ tự:</b> một <code>&lt;ul&gt;</code> có ít nhất 3 mục.',
+    '<b>Danh sách có thứ tự:</b> một <code>&lt;ol&gt;</code> có ít nhất 3 mục, bên trong một mục phải lồng thêm một danh sách con.',
+    '<b>Thuộc tính:</b> dùng ít nhất một lần <code>type</code> và một lần <code>start</code> trên thẻ <code>&lt;ol&gt;</code>.',
+    '<b>Danh sách định nghĩa:</b> một <code>&lt;dl&gt;</code> có ít nhất 3 cặp <code>&lt;dt&gt;</code> và <code>&lt;dd&gt;</code>.',
+    '<b>Kết hợp:</b> dùng <code>&lt;code&gt;</code> để viết tên thẻ trong danh sách.',
+    '<b>Bắt buộc:</b> không dùng CSS. Bài nộp phải qua W3C Validator không còn lỗi.'
+  ],
+  code:[
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'  <title>Lộ trình học Thiết kế Web</title>',
+'</head>',
+'<body>',
+'',
+'  <header>',
+'    <h1>Lộ trình học Thiết kế Web</h1>',
+'    <p>Dành cho sinh viên năm hai Khoa Công nghệ thông tin</p>',
+'  </header>',
+'',
+'  <main>',
+'',
+'    <section>',
+'      <h2>Công cụ cần chuẩn bị</h2>',
+'      <ul>',
+'        <li>Trình duyệt Google Chrome</li>',
+'        <li>Trình soạn thảo Visual Studio Code</li>',
+'        <li>Tài khoản GitHub để nộp bài</li>',
+'      </ul>',
+'    </section>',
+'',
+'    <section>',
+'      <h2>Chương 2: HTML</h2>',
+'      <ol type="1">',
+'        <li>Thẻ ngữ nghĩa',
+'          <ul>',
+'            <li><code>&lt;header&gt;</code> và <code>&lt;footer&gt;</code></li>',
+'            <li><code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code></li>',
+'          </ul>',
+'        </li>',
+'        <li>Văn bản, danh sách, bảng biểu',
+'          <ol type="a">',
+'            <li>Định dạng văn bản</li>',
+'            <li>Ba loại danh sách</li>',
+'            <li>Bảng và cách gộp ô</li>',
+'          </ol>',
+'        </li>',
+'        <li>Liên kết và nội dung đa phương tiện</li>',
+'        <li>Biểu mẫu</li>',
+'      </ol>',
+'    </section>',
+'',
+'    <section>',
+'      <h2>Các chương tiếp theo</h2>',
+'      <ol start="5">',
+'        <li>Thuộc tính định dạng cơ bản của CSS</li>',
+'        <li>Thiết kế bố cục</li>',
+'      </ol>',
+'    </section>',
+'',
+'    <section>',
+'      <h2>Thuật ngữ cần nhớ</h2>',
+'      <dl>',
+'        <dt>Thẻ ngữ nghĩa</dt>',
+'        <dd>Thẻ mà tên của nó cho biết nội dung bên trong là gì.</dd>',
+'',
+'        <dt>Phần tử rỗng</dt>',
+'        <dd>Phần tử không có thẻ đóng, ví dụ <code>&lt;br&gt;</code> và <code>&lt;hr&gt;</code>.</dd>',
+'',
+'        <dt>Thuộc tính</dt>',
+'        <dd>Thông tin thêm viết trong thẻ mở, dạng tên bằng giá trị.</dd>',
+'      </dl>',
+'    </section>',
+'',
+'  </main>',
+'',
+'  <footer>',
+'    <p><small>Tài liệu học phần Thiết kế Web</small></p>',
+'  </footer>',
+'',
+'</body>',
+'</html>'
+  ].join('\n'),
+  file:'bai-2-danh-sach.html'
+},
+{
+  no:'Bài 3', topic:'Mục 2.8 · Bảng biểu',
+  title:'Phiếu kết quả học tập',
+  goal:'Tạo một trang HTML hiển thị Phiếu Kết Quả Học Tập của một sinh viên.',
+  reqs:[
+    '<b>Cấu trúc:</b> dùng các thẻ ngữ nghĩa <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>.',
+    '<b>Định dạng văn bản:</b> dùng ít nhất 3 thẻ trong số <code>&lt;abbr&gt;</code>, <code>&lt;mark&gt;</code>, <code>&lt;sub&gt;</code>, <code>&lt;sup&gt;</code>, <code>&lt;ins&gt;</code>.',
+    '<b>Bảng:</b> có <code>&lt;caption&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code> và <code>&lt;tfoot&gt;</code>.',
+    '<b>Gộp ô:</b> ít nhất một ô gộp cột bằng <code>colspan</code> và một ô gộp hàng bằng <code>rowspan</code>.',
+    '<b>Ô tiêu đề:</b> dùng <code>&lt;th&gt;</code> kèm thuộc tính <code>scope</code> cho cả tiêu đề cột và tiêu đề hàng.',
+    '<b>Bắt buộc:</b> không dùng CSS. Bài nộp phải qua W3C Validator không còn lỗi.'
+  ],
+  code:[
+'<!DOCTYPE html>',
+'<html lang="vi">',
+'<head>',
+'  <meta charset="UTF-8">',
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'  <title>Phiếu kết quả học tập</title>',
+'</head>',
+'<body>',
+'',
+'  <header>',
+'    <h1>Phiếu Kết Quả Học Tập</h1>',
+'    <p>',
+'      Sinh viên: Nguyễn Phúc An, lớp',
+'      <abbr title="Công nghệ thông tin 66B">CNTT 66B</abbr>',
+'    </p>',
+'  </header>',
+'',
+'  <main>',
+'    <section>',
+'      <h2>Học kỳ 2026.1</h2>',
+'',
+'      <table>',
+'        <caption>Bảng điểm chi tiết các học phần</caption>',
+'',
+'        <thead>',
+'          <tr>',
+'            <th scope="col">Nhóm</th>',
+'            <th scope="col">Tên học phần</th>',
+'            <th scope="col">Tín chỉ</th>',
+'            <th scope="col">Điểm</th>',
+'          </tr>',
+'        </thead>',
+'',
+'        <tbody>',
+'          <tr>',
+'            <th scope="row" rowspan="3">Bắt buộc</th>',
+'            <td>Thiết kế Web</td>',
+'            <td>3</td>',
+'            <td><mark>9.0</mark></td>',
+'          </tr>',
+'          <tr>',
+'            <td>Cơ sở dữ liệu</td>',
+'            <td>3</td>',
+'            <td>8.0</td>',
+'          </tr>',
+'          <tr>',
+'            <td>Lập trình hướng đối tượng</td>',
+'            <td>3</td>',
+'            <td>8.5</td>',
+'          </tr>',
+'          <tr>',
+'            <th scope="row" rowspan="2">Tự chọn</th>',
+'            <td>Trí tuệ nhân tạo</td>',
+'            <td>2</td>',
+'            <td>7.5</td>',
+'          </tr>',
+'          <tr>',
+'            <td>Thương mại điện tử</td>',
+'            <td>2</td>',
+'            <td><ins>7.0</ins></td>',
+'          </tr>',
+'        </tbody>',
+'',
+'        <tfoot>',
+'          <tr>',
+'            <td colspan="2">Tổng số tín chỉ và điểm trung bình</td>',
+'            <td>13</td>',
+'            <td>8.2</td>',
+'          </tr>',
+'        </tfoot>',
+'      </table>',
+'',
+'      <p>',
+'        Điểm trung bình = (x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub>',
+'        + x<sub>4</sub> + x<sub>5</sub>) / 5, tính theo thang 10<sup>(*)</sup>.',
+'      </p>',
+'    </section>',
+'  </main>',
+'',
+'  <footer>',
+'    <p><small>(*) Theo quy chế đào tạo hiện hành.</small></p>',
+'  </footer>',
+'',
+'</body>',
+'</html>'
+  ].join('\n'),
+  file:'bai-3-bang-bieu.html'
+}
+];
+
+(function(){
+  var list = document.getElementById('exList');
+  if(!list) return;
+
+  EX.forEach(function(ex, i){
+    var box = document.createElement('div');
+    box.className = 'ex';
+
+    var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
+
+    box.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-no">' + ex.no + '</span>' +
+        '<span class="ex-title">' + ex.title + '</span>' +
+        '<span class="ex-topic">' + ex.topic + '</span>' +
+      '</div>' +
+      '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
+      '<ol class="ex-req">' + reqs + '</ol>' +
+      '<div class="seg">' +
+        '<button class="ex-btn">Xem lời giải</button>' +
+        '<button class="ex-dl">Tải file .html</button>' +
+      '</div>' +
+      '<div class="ex-sol" style="display:none">' +
+        '<p class="sec-lbl">Mã nguồn</p>' +
+        '<pre class="ex-code"></pre>' +
+        '<p class="sec-lbl">Kết quả trên trình duyệt</p>' +
+        '<div class="ex-out"><iframe title="Kết quả"></iframe></div>' +
+      '</div>';
+
+    list.appendChild(box);
+
+    var btn = box.querySelector('.ex-btn');
+    var sol = box.querySelector('.ex-sol');
+    var pre = box.querySelector('.ex-code');
+    var fr  = box.querySelector('iframe');
+    var built = false;
+
+    btn.addEventListener('click', function(){
+      var open = sol.style.display === 'none';
+      sol.style.display = open ? 'block' : 'none';
+      btn.textContent = open ? 'Ẩn lời giải' : 'Xem lời giải';
+      if(open && !built){
+        pre.innerHTML = hl(ex.code);
+        fr.srcdoc = ex.code;
+        fr.onload = function(){
+          try{
+            var h = fr.contentDocument.body.scrollHeight;
+            fr.style.height = Math.min(Math.max(h + 20, 120), 620) + 'px';
+          }catch(e){}
+        };
+        built = true;
+      }
+    });
+
+    box.querySelector('.ex-dl').addEventListener('click', function(){
+      var blob = new Blob([ex.code], {type:'text/html;charset=utf-8'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = ex.file;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
