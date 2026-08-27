@@ -444,7 +444,7 @@
 
       <div class="card">
         <h2>Bài tập</h2>
-        <p class="note-ex">Ba bài, mỗi bài cho một nội dung của tuần này. Làm xong hãy tự đối chiếu với lời giải.</p>
+        <p class="note-ex">Ba bài, mỗi bài cho một nội dung của tuần này. Đề bài đầy đủ có trong tệp phát trên lớp.</p>
         <div id="exList"></div>
       </div>
 
@@ -1056,7 +1056,7 @@ var TAGS = {
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
 })();
 
-/* ---------- ba bài tập và lời giải ---------- */
+/* ---------- ba bài tập ---------- */
 var EX = [
 {
   no:'Bài 1', topic:'Mục 2.7 · Văn bản',
@@ -1069,74 +1069,7 @@ var EX = [
     '<b>Mã lệnh:</b> có một khối <code>&lt;pre&gt;</code> lồng <code>&lt;code&gt;</code> giữ nguyên thụt lề.',
     '<b>Ngắt dòng:</b> dùng <code>&lt;br&gt;</code> đúng mục đích, ví dụ địa chỉ hoặc lịch học nhiều dòng.',
     '<b>Bắt buộc:</b> không dùng CSS. Bài nộp phải qua W3C Validator không còn lỗi.'
-  ],
-  code:[
-'<!DOCTYPE html>',
-'<html lang="vi">',
-'<head>',
-'  <meta charset="UTF-8">',
-'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-'  <title>Học phần Thiết kế Web</title>',
-'</head>',
-'<body>',
-'',
-'  <header>',
-'    <h1>Học phần Thiết kế Web</h1>',
-'    <p>Khoa <abbr title="Công nghệ thông tin">CNTT</abbr>, 3 tín chỉ</p>',
-'  </header>',
-'',
-'  <main>',
-'',
-'    <section>',
-'      <h2>Giới thiệu chung</h2>',
-'      <p>',
-'        Học phần trang bị kiến thức về <strong>HTML</strong> và <strong>CSS</strong>,',
-'        hướng tới việc <em>tự xây dựng một website hoàn chỉnh</em>.',
-'        Phần <mark>thẻ ngữ nghĩa</mark> là nội dung trọng tâm của chương 2.',
-'      </p>',
-'',
-'      <h3>Điều kiện tiên quyết</h3>',
-'      <p>Sinh viên cần hoàn thành học phần Tin học đại cương.</p>',
-'    </section>',
-'',
-'    <section>',
-'      <h2>Cách đánh giá</h2>',
-'      <p>',
-'        Trọng số điểm quá trình: <del>30%</del> <ins>40%</ins> theo quy chế mới.',
-'      </p>',
-'      <p>',
-'        Điểm tổng kết = (x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub>) / 3,',
-'        tính theo thang 10<sup>(*)</sup>.',
-'      </p>',
-'    </section>',
-'',
-'    <section>',
-'      <h2>Ví dụ mã lệnh</h2>',
-'      <pre><code>&lt;section&gt;',
-'  &lt;h2&gt;Giới thiệu&lt;/h2&gt;',
-'  &lt;p&gt;Nội dung của mục.&lt;/p&gt;',
-'&lt;/section&gt;</code></pre>',
-'    </section>',
-'',
-'    <section>',
-'      <h2>Thời gian và địa điểm</h2>',
-'      <p>',
-'        Giảng đường D2-401<br>',
-'        Thứ Ba, tiết 1 đến tiết 3<br>',
-'        Bắt đầu từ ngày 8/9/2026',
-'      </p>',
-'    </section>',
-'',
-'  </main>',
-'',
-'  <footer>',
-'    <p><small>(*) Theo quy chế đào tạo hiện hành. Cập nhật: 10/9/2026</small></p>',
-'  </footer>',
-'',
-'</body>',
-'</html>'
-  ].join('\n'),
-  file:'bai-1-van-ban.html'
+  ]
 },
 {
   no:'Bài 2', topic:'Mục 2.9 · Danh sách',
@@ -1150,86 +1083,7 @@ var EX = [
     '<b>Danh sách định nghĩa:</b> một <code>&lt;dl&gt;</code> có ít nhất 3 cặp <code>&lt;dt&gt;</code> và <code>&lt;dd&gt;</code>.',
     '<b>Kết hợp:</b> dùng <code>&lt;code&gt;</code> để viết tên thẻ trong danh sách.',
     '<b>Bắt buộc:</b> không dùng CSS. Bài nộp phải qua W3C Validator không còn lỗi.'
-  ],
-  code:[
-'<!DOCTYPE html>',
-'<html lang="vi">',
-'<head>',
-'  <meta charset="UTF-8">',
-'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-'  <title>Lộ trình học Thiết kế Web</title>',
-'</head>',
-'<body>',
-'',
-'  <header>',
-'    <h1>Lộ trình học Thiết kế Web</h1>',
-'    <p>Dành cho sinh viên năm hai Khoa Công nghệ thông tin</p>',
-'  </header>',
-'',
-'  <main>',
-'',
-'    <section>',
-'      <h2>Công cụ cần chuẩn bị</h2>',
-'      <ul>',
-'        <li>Trình duyệt Google Chrome</li>',
-'        <li>Trình soạn thảo Visual Studio Code</li>',
-'        <li>Tài khoản GitHub để nộp bài</li>',
-'      </ul>',
-'    </section>',
-'',
-'    <section>',
-'      <h2>Chương 2: HTML</h2>',
-'      <ol type="1">',
-'        <li>Thẻ ngữ nghĩa',
-'          <ul>',
-'            <li><code>&lt;header&gt;</code> và <code>&lt;footer&gt;</code></li>',
-'            <li><code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code></li>',
-'          </ul>',
-'        </li>',
-'        <li>Văn bản, danh sách, bảng biểu',
-'          <ol type="a">',
-'            <li>Định dạng văn bản</li>',
-'            <li>Ba loại danh sách</li>',
-'            <li>Bảng và cách gộp ô</li>',
-'          </ol>',
-'        </li>',
-'        <li>Liên kết và nội dung đa phương tiện</li>',
-'        <li>Biểu mẫu</li>',
-'      </ol>',
-'    </section>',
-'',
-'    <section>',
-'      <h2>Các chương tiếp theo</h2>',
-'      <ol start="5">',
-'        <li>Thuộc tính định dạng cơ bản của CSS</li>',
-'        <li>Thiết kế bố cục</li>',
-'      </ol>',
-'    </section>',
-'',
-'    <section>',
-'      <h2>Thuật ngữ cần nhớ</h2>',
-'      <dl>',
-'        <dt>Thẻ ngữ nghĩa</dt>',
-'        <dd>Thẻ mà tên của nó cho biết nội dung bên trong là gì.</dd>',
-'',
-'        <dt>Phần tử rỗng</dt>',
-'        <dd>Phần tử không có thẻ đóng, ví dụ <code>&lt;br&gt;</code> và <code>&lt;hr&gt;</code>.</dd>',
-'',
-'        <dt>Thuộc tính</dt>',
-'        <dd>Thông tin thêm viết trong thẻ mở, dạng tên bằng giá trị.</dd>',
-'      </dl>',
-'    </section>',
-'',
-'  </main>',
-'',
-'  <footer>',
-'    <p><small>Tài liệu học phần Thiết kế Web</small></p>',
-'  </footer>',
-'',
-'</body>',
-'</html>'
-  ].join('\n'),
-  file:'bai-2-danh-sach.html'
+  ]
 },
 {
   no:'Bài 3', topic:'Mục 2.8 · Bảng biểu',
@@ -1242,95 +1096,7 @@ var EX = [
     '<b>Gộp ô:</b> ít nhất một ô gộp cột bằng <code>colspan</code> và một ô gộp hàng bằng <code>rowspan</code>.',
     '<b>Ô tiêu đề:</b> dùng <code>&lt;th&gt;</code> kèm thuộc tính <code>scope</code> cho cả tiêu đề cột và tiêu đề hàng.',
     '<b>Bắt buộc:</b> không dùng CSS. Bài nộp phải qua W3C Validator không còn lỗi.'
-  ],
-  code:[
-'<!DOCTYPE html>',
-'<html lang="vi">',
-'<head>',
-'  <meta charset="UTF-8">',
-'  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-'  <title>Phiếu kết quả học tập</title>',
-'</head>',
-'<body>',
-'',
-'  <header>',
-'    <h1>Phiếu Kết Quả Học Tập</h1>',
-'    <p>',
-'      Sinh viên: Nguyễn Phúc An, lớp',
-'      <abbr title="Công nghệ thông tin 66B">CNTT 66B</abbr>',
-'    </p>',
-'  </header>',
-'',
-'  <main>',
-'    <section>',
-'      <h2>Học kỳ 2026.1</h2>',
-'',
-'      <table>',
-'        <caption>Bảng điểm chi tiết các học phần</caption>',
-'',
-'        <thead>',
-'          <tr>',
-'            <th scope="col">Nhóm</th>',
-'            <th scope="col">Tên học phần</th>',
-'            <th scope="col">Tín chỉ</th>',
-'            <th scope="col">Điểm</th>',
-'          </tr>',
-'        </thead>',
-'',
-'        <tbody>',
-'          <tr>',
-'            <th scope="row" rowspan="3">Bắt buộc</th>',
-'            <td>Thiết kế Web</td>',
-'            <td>3</td>',
-'            <td><mark>9.0</mark></td>',
-'          </tr>',
-'          <tr>',
-'            <td>Cơ sở dữ liệu</td>',
-'            <td>3</td>',
-'            <td>8.0</td>',
-'          </tr>',
-'          <tr>',
-'            <td>Lập trình hướng đối tượng</td>',
-'            <td>3</td>',
-'            <td>8.5</td>',
-'          </tr>',
-'          <tr>',
-'            <th scope="row" rowspan="2">Tự chọn</th>',
-'            <td>Trí tuệ nhân tạo</td>',
-'            <td>2</td>',
-'            <td>7.5</td>',
-'          </tr>',
-'          <tr>',
-'            <td>Thương mại điện tử</td>',
-'            <td>2</td>',
-'            <td><ins>7.0</ins></td>',
-'          </tr>',
-'        </tbody>',
-'',
-'        <tfoot>',
-'          <tr>',
-'            <td colspan="2">Tổng số tín chỉ và điểm trung bình</td>',
-'            <td>13</td>',
-'            <td>8.2</td>',
-'          </tr>',
-'        </tfoot>',
-'      </table>',
-'',
-'      <p>',
-'        Điểm trung bình = (x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub>',
-'        + x<sub>4</sub> + x<sub>5</sub>) / 5, tính theo thang 10<sup>(*)</sup>.',
-'      </p>',
-'    </section>',
-'  </main>',
-'',
-'  <footer>',
-'    <p><small>(*) Theo quy chế đào tạo hiện hành.</small></p>',
-'  </footer>',
-'',
-'</body>',
-'</html>'
-  ].join('\n'),
-  file:'bai-3-bang-bieu.html'
+  ]
 }
 ];
 
@@ -1338,12 +1104,10 @@ var EX = [
   var list = document.getElementById('exList');
   if(!list) return;
 
-  EX.forEach(function(ex, i){
+  EX.forEach(function(ex){
     var box = document.createElement('div');
     box.className = 'ex';
-
     var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
-
     box.innerHTML =
       '<div class="ex-head">' +
         '<span class="ex-no">' + ex.no + '</span>' +
@@ -1351,51 +1115,8 @@ var EX = [
         '<span class="ex-topic">' + ex.topic + '</span>' +
       '</div>' +
       '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
-      '<ol class="ex-req">' + reqs + '</ol>' +
-      '<div class="seg">' +
-        '<button class="ex-btn">Xem lời giải</button>' +
-        '<button class="ex-dl">Tải file .html</button>' +
-      '</div>' +
-      '<div class="ex-sol" style="display:none">' +
-        '<p class="sec-lbl">Mã nguồn</p>' +
-        '<pre class="ex-code"></pre>' +
-        '<p class="sec-lbl">Kết quả trên trình duyệt</p>' +
-        '<div class="ex-out"><iframe title="Kết quả"></iframe></div>' +
-      '</div>';
-
+      '<ol class="ex-req">' + reqs + '</ol>';
     list.appendChild(box);
-
-    var btn = box.querySelector('.ex-btn');
-    var sol = box.querySelector('.ex-sol');
-    var pre = box.querySelector('.ex-code');
-    var fr  = box.querySelector('iframe');
-    var built = false;
-
-    btn.addEventListener('click', function(){
-      var open = sol.style.display === 'none';
-      sol.style.display = open ? 'block' : 'none';
-      btn.textContent = open ? 'Ẩn lời giải' : 'Xem lời giải';
-      if(open && !built){
-        pre.innerHTML = hl(ex.code);
-        fr.srcdoc = ex.code;
-        fr.onload = function(){
-          try{
-            var h = fr.contentDocument.body.scrollHeight;
-            fr.style.height = Math.min(Math.max(h + 20, 120), 620) + 'px';
-          }catch(e){}
-        };
-        built = true;
-      }
-    });
-
-    box.querySelector('.ex-dl').addEventListener('click', function(){
-      var blob = new Blob([ex.code], {type:'text/html;charset=utf-8'});
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = ex.file;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
-    });
   });
 })();
 </script>
