@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 2 - Tuần 4: Biểu mẫu</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+
+  /* bảng và danh sách ở chế độ có CSS */
+  .styled table{border-collapse:collapse; width:100%; font-size:13.5px; margin-bottom:12px}
+  .styled caption{text-align:left; font-weight:600; padding-bottom:6px}
+  .styled th, .styled td{border:1px solid var(--line); padding:6px 9px; text-align:left}
+  .styled thead th{background:#eef3f8}
+  .styled tfoot td{background:#f6f8fa; font-weight:600}
+  .styled ul, .styled ol, .styled dl{margin:0 0 12px; padding-left:22px}
+  .styled dl{padding-left:0}
+  .styled dt{font-weight:600; margin-top:6px}
+  .styled dd{margin:0 0 0 18px}
+  .styled pre{background:#f6f8fa; color:var(--ink); padding:10px 12px; font-size:12.5px}
+  .demo.plain pre{background:transparent; color:#000; padding:0; font-size:14px; overflow:visible}
+
+  /* biểu mẫu */
+  .demo.plain fieldset{margin-bottom:10px}
+  .demo .d-form p{margin:9px 0}
+  .demo .ann[data-tag="radio"], .demo .ann[data-tag="checkbox"],
+  .demo .ann[data-tag="button"]{padding:5px 0 5px 7px}
+  /* chú thích của fieldset dời sang phải để không che mất legend */
+  .demo .ann[data-tag="fieldset"] > .lbl{left:auto; right:0}
+  .styled .d-form{background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:16px}
+  .styled .d-form label{display:inline-block; min-width:132px; font-weight:600; font-size:13.5px}
+  .styled .d-form input[type="text"], .styled .d-form input[type="email"],
+  .styled .d-form input[type="tel"], .styled .d-form input[type="password"],
+  .styled .d-form input[type="url"], .styled .d-form input[type="number"],
+  .styled .d-form input[type="date"], .styled .d-form textarea, .styled .d-form select{
+    border:1px solid #c8d2dd; border-radius:6px; padding:6px 9px; font-size:13.5px;
+    font-family:inherit; background:#fff}
+  .styled .d-form textarea{vertical-align:top; width:100%; max-width:380px}
+  .styled .d-form fieldset{border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:0 0 14px}
+  .styled .d-form legend{font-weight:600; font-size:13.5px; color:var(--blue-deep, #0f3d6e); padding:0 6px}
+  .styled .d-form button{background:var(--blue); color:#fff; border:0; border-radius:7px;
+    padding:8px 16px; font-size:13.5px; font-weight:600; cursor:pointer; margin-right:8px}
+  .styled .d-form button[type="reset"]{background:#e6ecf3; color:var(--ink)}
+
+  /* bài tập */
+  .note-ex{font-size:13.5px; color:var(--muted); margin:0 0 14px}
+  .ex{border:1px solid var(--line); border-radius:9px; padding:14px 16px; margin-bottom:12px}
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:9px; margin-bottom:6px}
+  .ex-no{font-weight:700; color:var(--blue); font-size:14px}
+  .ex-title{font-weight:600; font-size:15px}
+  .ex-topic{font-size:12px; color:var(--muted); border:1px solid var(--line);
+            border-radius:20px; padding:1px 9px}
+  .ex-goal{font-size:14px; margin:0 0 8px}
+  .ex-req{font-size:13.5px; margin:0 0 12px; padding-left:20px}
+  .ex-req li{margin-bottom:4px}
+  .ex-req code, .ex-goal code{background:#f1f4f7; padding:1px 5px; border-radius:4px;
+            font-size:12.5px; color:#a1155a; font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ex .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+         color:var(--muted); margin:12px 0 6px; font-weight:700}
+  .ex-code{max-height:420px}
+  .ex-warn{background:var(--amber-soft); border-left:3px solid var(--amber);
+           border-radius:0 5px 5px 0; padding:9px 11px; font-size:13px;
+           color:#6b4a08; margin:10px 0 0}
+  .ex-warn code{background:#fff; color:#8a4b06; padding:1px 5px; border-radius:4px;
+           font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12px}
+  pre.tree{background:#f7f9fb; color:var(--ink); border:1px solid var(--line);
+           padding:11px 13px; font-size:12.5px; line-height:1.55; max-height:none}
+  td.dl-cell{white-space:nowrap; text-align:right}
+  a.dl{display:inline-block; text-decoration:none; background:var(--blue-soft);
+       border:1px solid #bcd6fb; color:var(--blue); font-size:12px; font-weight:600;
+       padding:3px 11px; border-radius:20px}
+  a.dl:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+  .dl-all{margin:10px 0 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .dl-all .note{font-size:12.5px; color:var(--muted)}
+  .ex-out{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff}
+  table.ck{width:100%; border-collapse:collapse; font-size:13px; margin-top:4px}
+  table.ck th{background:#f7f9fb; text-align:left; padding:7px 9px; border-bottom:1px solid var(--line);
+              font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted)}
+  table.ck td{padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.ck td.ck-tag{font-family:"SF Mono",Menlo,Consolas,monospace; color:#a1155a; white-space:nowrap}
+  table.ck tr:last-child td{border-bottom:0}
+  .ex-out iframe{width:100%; border:0; display:block; height:200px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 2 - Tuần 4: Biểu mẫu</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Bấm vào một vùng bất kỳ trên trang để xem thẻ HTML tạo ra vùng đó, kèm định nghĩa, cú pháp và kết quả.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức tuần 4</h2>
+
+      <div class="k-item" data-k="k11">
+        <div class="num">MỤC 2.11</div>
+        <div class="name">Biểu mẫu</div>
+        <div class="tags">form · label · input · select · textarea · button · fieldset · required · pattern</div>
+      </div>
+
+      <div class="k-item" data-k="k6" style="border-left-color:#c9d6e4">
+        <div class="num">ÔN TẬP</div>
+        <div class="name">Thẻ ngữ nghĩa</div>
+        <div class="tags">header · nav · main · section · aside · footer</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="seg" style="margin-bottom:10px">
+        <button id="mPlain" class="on">Chưa sử dụng CSS</button>
+        <button id="mStyled">Có sử dụng CSS</button>
+      </div>
+      <div class="browser">
+
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="tabpill"><span class="fav"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K" alt=""></span> Nguyễn Phúc An</div>
+        </div>
+
+                <div class="page ann" data-k="k6" data-tag="body">
+          <span class="lbl">&lt;body&gt;</span>
+          <div class="demo plain" id="demo">
+
+            <header class="d-header ann" data-k="k6" data-tag="header">
+              <span class="lbl">&lt;header&gt;</span>
+              <h1>Nguyễn Phúc An</h1>
+              <p class="tagline">Sinh viên Khoa Công nghệ thông tin</p>
+            </header>
+
+            <nav class="d-nav ann" data-k="k6" data-tag="nav">
+              <span class="lbl">&lt;nav&gt;</span>
+              <a href="#lien-he">Liên hệ</a>
+              <a href="#dang-ky">Đăng ký</a>
+            </nav>
+
+            <div class="d-body">
+              <main class="d-main ann" data-k="k6" data-tag="main">
+                <span class="lbl">&lt;main&gt;</span>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="lien-he">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2>Gửi lời nhắn</h2>
+
+                  <form class="d-form ann" data-k="k11" data-tag="form" action="cam-on.html" method="get">
+                    <span class="lbl">&lt;form action method&gt;</span>
+
+                    <p><label class="ann inline" data-k="k11" data-tag="label" for="f-ten"><span class="lbl">&lt;label for&gt;</span>Họ và tên:</label>
+                       <input class="ann inline" data-k="k11" data-tag="text" type="text" id="f-ten" name="ten" placeholder="Nguyễn Phúc An" maxlength="60" required></p>
+
+                    <p><label for="f-mail">Email:</label>
+                       <input class="ann inline" data-k="k11" data-tag="email" type="email" id="f-mail" name="email" placeholder="ten@sv.neu.edu.vn" required></p>
+
+                    <p><label for="f-chude">Chủ đề:</label>
+                       <select class="ann inline" data-k="k11" data-tag="select" id="f-chude" name="chude">
+                         <optgroup label="Học tập">
+                           <option value="bai-tap">Hỏi về bài tập</option>
+                           <option value="tai-lieu" selected>Xin tài liệu</option>
+                         </optgroup>
+                         <optgroup label="Khác">
+                           <option value="hop-tac">Hợp tác</option>
+                         </optgroup>
+                       </select></p>
+
+                    <p><label for="f-loi">Lời nhắn:</label><br>
+                       <textarea class="ann inline" data-k="k11" data-tag="textarea" id="f-loi" name="loinhan" rows="3" cols="40" placeholder="Nội dung cần trao đổi"></textarea></p>
+
+                    <div class="ann" data-k="k11" data-tag="checkbox">
+                      <span class="lbl">&lt;input type="checkbox"&gt;</span>
+                      <input type="checkbox" id="f-copy" name="ban-sao" value="co" checked>
+                      <label for="f-copy">Gửi cho tôi một bản sao</label>
+                    </div>
+
+                    <div class="ann" data-k="k11" data-tag="button">
+                      <span class="lbl">&lt;button&gt;</span>
+                      <button type="submit">Gửi lời nhắn</button>
+                      <button type="reset">Nhập lại</button>
+                    </div>
+                  </form>
+                </section>
+
+                <hr>
+
+                <section class="d-section ann" data-k="k6" data-tag="section" id="dang-ky">
+                  <span class="lbl">&lt;section&gt;</span>
+                  <h2>Đăng ký câu lạc bộ</h2>
+
+                  <form class="d-form ann" data-k="k11" data-tag="form" action="cam-on.html" method="get">
+                    <span class="lbl">&lt;form action method&gt;</span>
+
+                    <fieldset class="ann" data-k="k11" data-tag="fieldset">
+                      <legend>Thông tin cá nhân</legend>
+                      <span class="lbl">&lt;fieldset&gt; + &lt;legend&gt;</span>
+
+                      <p><label class="ann inline" data-k="k11" data-tag="label" for="f-ns"><span class="lbl">&lt;label for&gt;</span>Ngày sinh:</label>
+                         <input class="ann inline" data-k="k11" data-tag="date" type="date" id="f-ns" name="ngay-sinh" value="2006-09-16"></p>
+
+                      <p><label for="f-dt">Điện thoại:</label>
+                         <input class="ann inline" data-k="k11" data-tag="tel" type="tel" id="f-dt" name="dien-thoai" pattern="0[0-9]{9}" placeholder="0912345678"></p>
+
+                      <p><label for="f-mk">Mật khẩu:</label>
+                         <input class="ann inline" data-k="k11" data-tag="password" type="password" id="f-mk" name="mat-khau" minlength="6" required></p>
+
+                      <p><label for="f-web">Trang cá nhân:</label>
+                         <input class="ann inline" data-k="k11" data-tag="url" type="url" id="f-web" name="trang-ca-nhan" placeholder="https://"></p>
+                    </fieldset>
+
+                    <div class="ann" data-k="k11" data-tag="radio">
+                      <span class="lbl">&lt;input type="radio"&gt;</span>
+                      Khối lớp:
+                      <input type="radio" id="f-k64" name="khoi" value="64">
+                      <label for="f-k64">K64</label>
+                      <input type="radio" id="f-k65" name="khoi" value="65" checked>
+                      <label for="f-k65">K65</label>
+                      <input type="radio" id="f-k66" name="khoi" value="66">
+                      <label for="f-k66">K66</label>
+                    </div>
+
+                    <p><label for="f-buoi">Số buổi mỗi tuần:</label>
+                       <input class="ann inline" data-k="k11" data-tag="number" type="number" id="f-buoi" name="so-buoi" min="1" max="5" step="1" value="2"></p>
+
+                    <p><label for="f-ho-so">Tệp hồ sơ:</label>
+                       <input class="ann inline" data-k="k11" data-tag="file" type="file" id="f-ho-so" name="ho-so" accept=".pdf,.png"></p>
+
+                    <p><label for="f-kn">Mức kinh nghiệm:</label>
+                       <input class="ann inline" data-k="k11" data-tag="range" type="range" id="f-kn" name="kinh-nghiem" min="0" max="10" step="1" value="5"></p>
+
+                    <p><label for="f-mau">Màu yêu thích:</label>
+                       <input class="ann inline" data-k="k11" data-tag="color" type="color" id="f-mau" name="mau" value="#1f6feb"></p>
+
+                    <div class="ann" data-k="k11" data-tag="button">
+                      <span class="lbl">&lt;button&gt;</span>
+                      <button type="submit">Gửi đăng ký</button>
+                    </div>
+                  </form>
+                </section>
+              </main>
+
+              <aside class="d-aside ann" data-k="k6" data-tag="aside">
+                <span class="lbl">&lt;aside&gt;</span>
+                <h3 style="margin-top:0">Lưu ý khi điền</h3>
+                <p style="margin:0">Ô có dấu sao là bắt buộc.</p>
+                <p style="margin:6px 0 0">Ban chủ nhiệm trả lời trong 3 ngày.</p>
+              </aside>
+            </div>
+
+            <footer class="d-footer ann" data-k="k6" data-tag="footer">
+              <span class="lbl">&lt;footer&gt;</span>
+              © 2026 Nguyễn Phúc An.
+            </footer>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcShort" class="on">Rút gọn</button>
+          <button id="srcFull">Đầy đủ</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải tệp .html</button>
+        </div>
+        <pre id="srcView"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bài tập</h2>
+        <p class="note-ex">Hai bài, cộng lại dùng hết mọi thẻ và thuộc tính của tuần này. Đề đầy đủ có trong tệp phát trên lớp.</p>
+        <div id="exList"></div>
+      </div>
+
+      <div class="foot">Tài liệu Thiết kế Web</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <p class="sec-lbl">Cú pháp</p>
+    <pre id="tipCode"></pre>
+    <p class="sec-lbl">Kết quả</p>
+    <div class="t-out"><iframe id="tipOut" title="Kết quả"></iframe></div>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZENFQkY3Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4NiIgcj0iNjYiIGZpbGw9IiNGNkM5QTgiLz4KICAgIDxwYXRoIGQ9Ik0zNCA4NGE2NiA2NiAwIDAgMSAxMzIgMGMwLTE0LTYtMjItMTQtMjYgMi0xMC00LTE2LTEyLTE2LTEwLTgtMjYtMTItNDAtMTAtMjAgMy0zNiAxNC00MiAzMC02IDYtOCAxNC02IDIyeiIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjNDYgMCA3MiAyMiA3OCA0OEgyMmM2LTI2IDMyLTQ4IDc4LTQ4eiIgZmlsbD0iIzJGNkZCMCIvPgogICAgPHBhdGggZD0iTTEwMCAxNTJjOCAwIDE0IDYgMTQgMTRzLTYgMTQtMTQgMTQtMTQtNi0xNC0xNCA2LTE0IDE0LTE0eiIgZmlsbD0iI0Y2QzlBOCIvPgogICAgPHBhdGggZD0iTTg2IDE1NGgyOGwtMTQgMjB6IiBmaWxsPSIjZmZmIi8+CiAgICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjkyIiByPSI4IiBmaWxsPSIjMkUzNDQwIi8+CiAgICA8Y2lyY2xlIGN4PSIxMjQiIGN5PSI5MiIgcj0iOCIgZmlsbD0iIzJFMzQ0MCIvPgogICAgPGNpcmNsZSBjeD0iNzkiIGN5PSI4OSIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogICAgPGNpcmNsZSBjeD0iMTI3IiBjeT0iODkiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICAgIDxlbGxpcHNlIGN4PSI2MiIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPGVsbGlwc2UgY3g9IjEzOCIgY3k9IjEwOCIgcng9IjkiIHJ5PSI2IiBmaWxsPSIjRjE5QTlBIiBvcGFjaXR5PSIuNiIvPgogICAgPHBhdGggZD0iTTg4IDExMmM0IDYgMjAgNiAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTM0NDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPC9nPgo8L3N2Zz4K";
+
+/* ---------- tô màu mã nguồn ---------- */
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr','form','fieldset','legend','label'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_SHORT = [
+"<!DOCTYPE html>",
+"<html lang=\"vi\">",
+"<head>",
+"  <meta charset=\"UTF-8\">",
+"  <title>Nguyễn Phúc An</title>",
+"</head>",
+"<body>",
+"",
+"  <header> ... </header>",
+"  <nav> ... </nav>",
+"",
+"  <main>",
+"    <section id=\"lien-he\">",
+"      <h2>Gửi lời nhắn</h2>",
+"      <form action=\"cam-on.html\" method=\"get\">",
+"        <p><label for=\"ten\">Họ và tên:</label>",
+"           <input type=\"text\" id=\"ten\" name=\"ten\" required></p>",
+"        <p><label for=\"mail\">Email:</label>",
+"           <input type=\"email\" id=\"mail\" name=\"email\" required></p>",
+"        <p><label for=\"chude\">Chủ đề:</label>",
+"           <select id=\"chude\" name=\"chude\"> ... </select></p>",
+"        <p><label for=\"loi\">Lời nhắn:</label><br>",
+"           <textarea id=\"loi\" name=\"loinhan\" rows=\"3\" cols=\"40\"></textarea></p>",
+"        <p><input type=\"checkbox\" id=\"copy\" name=\"ban-sao\" value=\"co\">",
+"           <label for=\"copy\">Gửi cho tôi một bản sao</label></p>",
+"        <p><button type=\"submit\">Gửi lời nhắn</button>",
+"           <button type=\"reset\">Nhập lại</button></p>",
+"      </form>",
+"    </section>",
+"",
+"    <hr>",
+"",
+"    <section id=\"dang-ky\">",
+"      <h2>Đăng ký câu lạc bộ</h2>",
+"      <form action=\"cam-on.html\" method=\"get\">",
+"        <fieldset>",
+"          <legend>Thông tin cá nhân</legend>",
+"          ... ngày sinh, điện thoại, mật khẩu, trang cá nhân ...",
+"        </fieldset>",
+"        ... khối lớp, số buổi, tệp hồ sơ, mức kinh nghiệm, màu ...",
+"        <p><button type=\"submit\">Gửi đăng ký</button></p>",
+"      </form>",
+"    </section>",
+"  </main>",
+"",
+"  <aside> ... </aside>",
+"  <footer> ... </footer>",
+"",
+"</body>",
+"</html>"
+].join('\n');
+
+var SRC_FULL = [
+"<!DOCTYPE html>",
+"<html lang=\"vi\">",
+"<head>",
+"  <meta charset=\"UTF-8\">",
+"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+"  <title>Nguyễn Phúc An</title>",
+"</head>",
+"<body>",
+"",
+"  <header>",
+"    <h1>Nguyễn Phúc An</h1>",
+"    <p>Sinh viên Khoa Công nghệ thông tin</p>",
+"  </header>",
+"",
+"  <nav>",
+"    <a href=\"#lien-he\">Liên hệ</a>",
+"    <a href=\"#dang-ky\">Đăng ký</a>",
+"  </nav>",
+"",
+"  <main>",
+"",
+"    <!-- Biểu mẫu ngắn: mỗi ô nhập có đúng một nhãn đi kèm -->",
+"    <section id=\"lien-he\">",
+"      <h2>Gửi lời nhắn</h2>",
+"",
+"      <!-- action: nơi nhận dữ liệu. method=\"get\": giá trị hiện trên thanh địa chỉ -->",
+"      <form action=\"cam-on.html\" method=\"get\">",
+"",
+"        <!-- for của label trùng id của ô nhập thì bấm vào chữ cũng nhảy vào ô -->",
+"        <p><label for=\"ten\">Họ và tên:</label>",
+"           <input type=\"text\" id=\"ten\" name=\"ten\" placeholder=\"Nguyễn Phúc An\" maxlength=\"60\" required></p>",
+"",
+"        <p><label for=\"mail\">Email:</label>",
+"           <input type=\"email\" id=\"mail\" name=\"email\" placeholder=\"ten@sv.neu.edu.vn\" required></p>",
+"",
+"        <p><label for=\"chude\">Chủ đề:</label>",
+"           <select id=\"chude\" name=\"chude\">",
+"             <optgroup label=\"Học tập\">",
+"               <option value=\"bai-tap\">Hỏi về bài tập</option>",
+"               <option value=\"tai-lieu\" selected>Xin tài liệu</option>",
+"             </optgroup>",
+"             <optgroup label=\"Khác\">",
+"               <option value=\"hop-tac\">Hợp tác</option>",
+"             </optgroup>",
+"           </select></p>",
+"",
+"        <p><label for=\"loi\">Lời nhắn:</label><br>",
+"           <textarea id=\"loi\" name=\"loinhan\" rows=\"3\" cols=\"40\" placeholder=\"Nội dung cần trao đổi\"></textarea></p>",
+"",
+"        <p><input type=\"checkbox\" id=\"copy\" name=\"ban-sao\" value=\"co\" checked>",
+"           <label for=\"copy\">Gửi cho tôi một bản sao</label></p>",
+"",
+"        <p><button type=\"submit\">Gửi lời nhắn</button>",
+"           <button type=\"reset\">Nhập lại</button></p>",
+"",
+"      </form>",
+"    </section>",
+"",
+"    <hr>",
+"",
+"    <!-- Biểu mẫu dài: dùng đủ các loại type -->",
+"    <section id=\"dang-ky\">",
+"      <h2>Đăng ký câu lạc bộ</h2>",
+"",
+"      <form action=\"cam-on.html\" method=\"get\">",
+"",
+"        <!-- fieldset gom các ô cùng nhóm, legend là tên của nhóm -->",
+"        <fieldset>",
+"          <legend>Thông tin cá nhân</legend>",
+"",
+"          <p><label for=\"ns\">Ngày sinh:</label>",
+"             <input type=\"date\" id=\"ns\" name=\"ngay-sinh\" value=\"2006-09-16\"></p>",
+"",
+"          <p><label for=\"dt\">Điện thoại:</label>",
+"             <input type=\"tel\" id=\"dt\" name=\"dien-thoai\" pattern=\"0[0-9]{9}\" placeholder=\"0912345678\"></p>",
+"",
+"          <p><label for=\"mk\">Mật khẩu:</label>",
+"             <input type=\"password\" id=\"mk\" name=\"mat-khau\" minlength=\"6\" required></p>",
+"",
+"          <p><label for=\"web\">Trang cá nhân:</label>",
+"             <input type=\"url\" id=\"web\" name=\"trang-ca-nhan\" placeholder=\"https://\"></p>",
+"        </fieldset>",
+"",
+"        <!-- Các ô radio cùng một name thì chỉ chọn được một -->",
+"        <p>Khối lớp:",
+"           <input type=\"radio\" id=\"k64\" name=\"khoi\" value=\"64\">",
+"           <label for=\"k64\">K64</label>",
+"           <input type=\"radio\" id=\"k65\" name=\"khoi\" value=\"65\" checked>",
+"           <label for=\"k65\">K65</label>",
+"           <input type=\"radio\" id=\"k66\" name=\"khoi\" value=\"66\">",
+"           <label for=\"k66\">K66</label></p>",
+"",
+"        <p><label for=\"buoi\">Số buổi mỗi tuần:</label>",
+"           <input type=\"number\" id=\"buoi\" name=\"so-buoi\" min=\"1\" max=\"5\" step=\"1\" value=\"2\"></p>",
+"",
+"        <p><label for=\"hoso\">Tệp hồ sơ:</label>",
+"           <input type=\"file\" id=\"hoso\" name=\"ho-so\" accept=\".pdf,.png\"></p>",
+"",
+"        <p><label for=\"kn\">Mức kinh nghiệm:</label>",
+"           <input type=\"range\" id=\"kn\" name=\"kinh-nghiem\" min=\"0\" max=\"10\" step=\"1\" value=\"5\"></p>",
+"",
+"        <p><label for=\"mau\">Màu yêu thích:</label>",
+"           <input type=\"color\" id=\"mau\" name=\"mau\" value=\"#1f6feb\"></p>",
+"",
+"        <p><button type=\"submit\">Gửi đăng ký</button></p>",
+"",
+"      </form>",
+"    </section>",
+"",
+"  </main>",
+"",
+"  <aside>",
+"    <h3>Lưu ý khi điền</h3>",
+"    <p>Ô có dấu sao là bắt buộc.</p>",
+"    <p>Ban chủ nhiệm trả lời trong 3 ngày.</p>",
+"  </aside>",
+"",
+"  <footer>",
+"    <p>© 2026 Nguyễn Phúc An.</p>",
+"  </footer>",
+"",
+"</body>",
+"</html>"
+].join('\n');
+
+/* ---------- nội dung giải thích từng thẻ ---------- */
+var TAGS = {
+  body: {
+    tag:"&lt;body&gt;", kind:"Đã học",
+    def:"Chứa mọi thứ hiện ra trên màn hình. Các thẻ khác đều nằm bên trong body.",
+    code:"<!DOCTYPE html>\n<html lang=\"vi\">\n<head>\n  <!-- thông tin cho máy đọc -->\n</head>\n<body>\n  <!-- nội dung cho người đọc -->\n</body>\n</html>",
+    out:"<div style=\"border:1px solid #dfe4ea;border-radius:6px;overflow:hidden\"><div style=\"background:#f0eafa;padding:5px 9px;font-size:11.5px;color:#7048b6;border-bottom:1px solid #dfe4ea\">head: không hiện trên trang</div><div style=\"padding:9px;font-size:12.5px;color:#0f8a5f\">body: phần hiện ra</div></div>",
+    note:"Gõ nội dung nhầm vào head thì trang trắng trơn mà không có lỗi nào báo ra."
+  },
+  header: {
+    tag:"&lt;header&gt;", kind:"Đã học",
+    def:"Phần đầu trang: tên trang, logo, tiêu đề.",
+    code:"<header>\n  <h1>Nguyễn Phúc An</h1>\n</header>",
+    out:"<h1>Nguyễn Phúc An</h1><p>Sinh viên Khoa Công nghệ thông tin</p>",
+    note:"Đừng nhầm với head. Header thì nhìn thấy được, head thì không."
+  },
+  nav: {
+    tag:"&lt;nav&gt;", kind:"Đã học",
+    def:"Chứa các liên kết dẫn sang mục khác, tức là menu của trang.",
+    code:"<nav>\n  <a href=\"#lien-he\">Liên hệ</a>\n  <a href=\"#dang-ky\">Đăng ký</a>\n</nav>",
+    out:"<a href=\"#\">Liên hệ</a> <a href=\"#\">Đăng ký</a>",
+    note:"Chỉ dùng cho menu chính. Vài liên kết nằm lẫn trong bài viết thì không cần nav."
+  },
+  main: {
+    tag:"&lt;main&gt;", kind:"Đã học",
+    def:"Nội dung chính của trang, phần không lặp lại ở các trang khác.",
+    code:"<main>\n  <section> ... </section>\n</main>",
+    out:"<div style=\"border:2px dashed #0f8a5f;padding:8px;font-size:14px\">Vùng nội dung chính</div>",
+    note:"Mỗi trang chỉ có một main."
+  },
+  section: {
+    tag:"&lt;section&gt;", kind:"Đã học",
+    def:"Một mục nội dung, thường có tiêu đề riêng. Gắn id để menu nhảy tới.",
+    code:"<section id=\"lien-he\">\n  <h2>Gửi lời nhắn</h2>\n  <form> ... </form>\n</section>",
+    out:"<h2 style=\"margin:0 0 6px\">Gửi lời nhắn</h2><p style=\"margin:0\">Biểu mẫu nằm trong mục này.</p>",
+    note:"id phải là duy nhất trong một trang. Hai chỗ trùng id thì liên kết đánh dấu nhảy sai."
+  },
+  aside: {
+    tag:"&lt;aside&gt;", kind:"Đã học",
+    def:"Nội dung phụ đặt bên cạnh nội dung chính.",
+    code:"<aside>\n  <h3>Lưu ý khi điền</h3>\n</aside>",
+    out:"<h3 style=\"margin:0 0 4px\">Lưu ý khi điền</h3><p style=\"margin:0\">Ô có dấu sao là bắt buộc.</p>",
+    note:"Nó nằm ở đâu là do CSS quyết định, không phải do tên thẻ."
+  },
+  footer: {
+    tag:"&lt;footer&gt;", kind:"Đã học",
+    def:"Chân trang. Thường ghi bản quyền, thông tin liên hệ.",
+    code:"<footer>\n  <p>© 2026 Nguyễn Phúc An.</p>\n</footer>",
+    out:"<p style=\"margin:0\">© 2026 Nguyễn Phúc An.</p>",
+    note:"Footer cũng dùng được bên trong article."
+  },
+  form: {
+    tag:"&lt;form action method&gt;", kind:"Mục 2.11",
+    def:"Khung chứa các ô nhập. action cho biết dữ liệu gửi tới đâu, method cho biết gửi theo cách nào.",
+    code:"<form action=\"cam-on.html\" method=\"get\">\n  <label for=\"ten\">Họ và tên:</label>\n  <input type=\"text\" id=\"ten\" name=\"ten\">\n  <button type=\"submit\">Gửi</button>\n</form>",
+    out:"<form><label for=\"d1\">Họ và tên:</label> <input type=\"text\" id=\"d1\" name=\"ten\"> <button type=\"button\">Gửi</button></form>",
+    note:"method=\"get\" ghép dữ liệu vào thanh địa chỉ nên nhìn thấy ngay, tiện lúc học. method=\"post\" gửi kín, cần máy chủ mới nhận được."
+  },
+  label: {
+    tag:"&lt;label for&gt;", kind:"Mục 2.11",
+    def:"Nhãn của một ô nhập. Thuộc tính for trùng với id của ô thì bấm vào chữ cũng nhảy được vào ô.",
+    code:"<label for=\"ten\">Họ và tên:</label>\n<input type=\"text\" id=\"ten\" name=\"ten\">",
+    out:"<label for=\"d2\">Họ và tên:</label> <input type=\"text\" id=\"d2\" name=\"ten\"><br><small>Bấm thử vào dòng chữ bên trái.</small>",
+    note:"for gắn với id chứ không phải name. Thiếu label thì trình đọc màn hình không biết ô này hỏi gì."
+  },
+  text: {
+    tag:"&lt;input type=\"text\"&gt;", kind:"Mục 2.11",
+    def:"Ô nhập một dòng chữ. name là tên dữ liệu gửi đi, placeholder là dòng chữ mờ gợi ý.",
+    code:"<input type=\"text\" id=\"ten\" name=\"ten\"\n       placeholder=\"Nguyễn Phúc An\" maxlength=\"60\" required>",
+    out:"<input type=\"text\" placeholder=\"Nguyễn Phúc An\" maxlength=\"60\" size=\"28\">",
+    note:"placeholder không thay được label. required bắt buộc điền, maxlength chặn số ký tự tối đa."
+  },
+  email: {
+    tag:"&lt;input type=\"email\"&gt;", kind:"Mục 2.11",
+    def:"Ô nhập địa chỉ thư. Trình duyệt tự báo lỗi nếu chuỗi gõ vào không có dạng địa chỉ thư.",
+    code:"<input type=\"email\" id=\"mail\" name=\"email\"\n       placeholder=\"ten@sv.neu.edu.vn\" required>",
+    out:"<input type=\"email\" placeholder=\"ten@sv.neu.edu.vn\" size=\"28\">",
+    note:"Máy chỉ xét dạng chữ có đúng khuôn hay không, không biết địa chỉ đó có thật hay không."
+  },
+  tel: {
+    tag:"&lt;input type=\"tel\" pattern&gt;", kind:"Mục 2.11",
+    def:"Ô nhập số điện thoại. Kèm pattern để quy định dạng số nào được chấp nhận.",
+    code:"<input type=\"tel\" id=\"dt\" name=\"dien-thoai\"\n       pattern=\"0[0-9]{9}\" placeholder=\"0912345678\">",
+    out:"<input type=\"tel\" pattern=\"0[0-9]{9}\" placeholder=\"0912345678\" size=\"24\">",
+    note:"Riêng type=\"tel\" không kiểm tra gì cả, phải có pattern mới chặn được. pattern viết bằng biểu thức chính quy."
+  },
+  password: {
+    tag:"&lt;input type=\"password\"&gt;", kind:"Mục 2.11",
+    def:"Ô nhập mật khẩu, chữ gõ vào hiện thành dấu chấm. minlength quy định độ dài tối thiểu.",
+    code:"<input type=\"password\" id=\"mk\" name=\"mat-khau\"\n       minlength=\"6\" required>",
+    out:"<input type=\"password\" minlength=\"6\" value=\"matkhau\" size=\"24\">",
+    note:"Chỉ che mắt người ngồi cạnh. Muốn an toàn thật thì trang phải chạy trên https."
+  },
+  date: {
+    tag:"&lt;input type=\"date\"&gt;", kind:"Mục 2.11",
+    def:"Ô chọn ngày, trình duyệt tự mở lịch. Giá trị viết theo dạng năm-tháng-ngày.",
+    code:"<input type=\"date\" id=\"ns\" name=\"ngay-sinh\" value=\"2006-09-16\">",
+    out:"<input type=\"date\" value=\"2006-09-16\">",
+    note:"value luôn viết 2006-09-16, dù màn hình hiện theo kiểu ngày/tháng/năm của máy người dùng."
+  },
+  number: {
+    tag:"&lt;input type=\"number\"&gt;", kind:"Mục 2.11",
+    def:"Ô nhập số, có nút tăng giảm. min và max chặn hai đầu, step là bước nhảy mỗi lần bấm.",
+    code:"<input type=\"number\" id=\"buoi\" name=\"so-buoi\"\n       min=\"1\" max=\"5\" step=\"1\" value=\"2\">",
+    out:"<input type=\"number\" min=\"1\" max=\"5\" step=\"1\" value=\"2\">",
+    note:"Mã số sinh viên hay số nhà thì dùng type=\"text\", vì chúng không phải số để tính toán."
+  },
+  url: {
+    tag:"&lt;input type=\"url\"&gt;", kind:"Mục 2.11",
+    def:"Ô nhập địa chỉ trang web. Trình duyệt đòi phải có phần https:// ở đầu.",
+    code:"<input type=\"url\" id=\"web\" name=\"trang-ca-nhan\"\n       placeholder=\"https://\">",
+    out:"<input type=\"url\" placeholder=\"https://\" size=\"26\">",
+    note:"Gõ thiếu https:// là báo lỗi ngay. Đặt placeholder=\"https://\" để nhắc người điền."
+  },
+  file: {
+    tag:"&lt;input type=\"file\" accept&gt;", kind:"Mục 2.11",
+    def:"Nút chọn tệp từ máy. accept giới hạn những đuôi tệp được phép chọn.",
+    code:"<input type=\"file\" id=\"hoso\" name=\"ho-so\"\n       accept=\".pdf,.png\">",
+    out:"<input type=\"file\" accept=\".pdf,.png\">",
+    note:"Muốn gửi tệp lên máy chủ thật thì form phải có method=\"post\" và enctype=\"multipart/form-data\"."
+  },
+  range: {
+    tag:"&lt;input type=\"range\"&gt;", kind:"Mục 2.11",
+    def:"Thanh kéo chọn một số trong khoảng. Người dùng thấy vị trí chứ không thấy con số.",
+    code:"<input type=\"range\" id=\"kn\" name=\"kinh-nghiem\"\n       min=\"0\" max=\"10\" step=\"1\" value=\"5\">",
+    out:"<input type=\"range\" min=\"0\" max=\"10\" step=\"1\" value=\"5\">",
+    note:"Dùng khi con số chính xác không quan trọng. Cần đúng con số thì dùng type=\"number\"."
+  },
+  color: {
+    tag:"&lt;input type=\"color\"&gt;", kind:"Mục 2.11",
+    def:"Ô chọn màu, bấm vào là mở bảng màu. Giá trị là mã màu dạng #rrggbb.",
+    code:"<input type=\"color\" id=\"mau\" name=\"mau\" value=\"#1f6feb\">",
+    out:"<input type=\"color\" value=\"#1f6feb\">",
+    note:"value bắt buộc viết đủ sáu chữ số, viết tắt kiểu #fff là không nhận."
+  },
+  radio: {
+    tag:"&lt;input type=\"radio\"&gt;", kind:"Mục 2.11",
+    def:"Các ô tròn chọn một trong nhiều. Cùng một name thì chọn ô này sẽ tự bỏ ô kia.",
+    code:"<input type=\"radio\" id=\"k65\" name=\"khoi\" value=\"65\" checked>\n<label for=\"k65\">K65</label>\n<input type=\"radio\" id=\"k66\" name=\"khoi\" value=\"66\">\n<label for=\"k66\">K66</label>",
+    out:"<input type=\"radio\" id=\"d3\" name=\"k\" value=\"65\" checked> <label for=\"d3\">K65</label> <input type=\"radio\" id=\"d4\" name=\"k\" value=\"66\"> <label for=\"d4\">K66</label>",
+    note:"Quên đặt cùng name là chọn được nhiều ô một lúc. value mới là thứ gửi đi, không phải chữ hiện ra."
+  },
+  checkbox: {
+    tag:"&lt;input type=\"checkbox\"&gt;", kind:"Mục 2.11",
+    def:"Ô vuông đánh dấu, chọn hoặc bỏ tuỳ ý. Mỗi ô độc lập với nhau.",
+    code:"<input type=\"checkbox\" id=\"copy\" name=\"ban-sao\" value=\"co\" checked>\n<label for=\"copy\">Gửi cho tôi một bản sao</label>",
+    out:"<input type=\"checkbox\" id=\"d5\" name=\"ban-sao\" value=\"co\" checked> <label for=\"d5\">Gửi cho tôi một bản sao</label>",
+    note:"Ô không đánh dấu thì không gửi gì cả, chứ không phải gửi giá trị rỗng."
+  },
+  select: {
+    tag:"&lt;select&gt; + &lt;option&gt;", kind:"Mục 2.11",
+    def:"Danh sách thả xuống. Mỗi dòng là một option, optgroup gom những dòng cùng nhóm.",
+    code:"<select id=\"chude\" name=\"chude\">\n  <optgroup label=\"Học tập\">\n    <option value=\"bai-tap\">Hỏi về bài tập</option>\n    <option value=\"tai-lieu\" selected>Xin tài liệu</option>\n  </optgroup>\n</select>",
+    out:"<select><optgroup label=\"Học tập\"><option>Hỏi về bài tập</option><option selected>Xin tài liệu</option></optgroup><optgroup label=\"Khác\"><option>Hợp tác</option></optgroup></select>",
+    note:"selected đặt dòng được chọn sẵn. Thêm multiple thì chọn được nhiều dòng một lúc."
+  },
+  textarea: {
+    tag:"&lt;textarea rows cols&gt;", kind:"Mục 2.11",
+    def:"Ô nhập nhiều dòng. rows là số dòng hiện ra, cols là số ký tự mỗi dòng.",
+    code:"<textarea id=\"loi\" name=\"loinhan\" rows=\"3\" cols=\"40\"></textarea>",
+    out:"<textarea rows=\"3\" cols=\"34\" placeholder=\"Nội dung cần trao đổi\"></textarea>",
+    note:"Không có thuộc tính value. Nội dung mặc định viết giữa hai thẻ, nên đừng để khoảng trắng thừa ở đó."
+  },
+  button: {
+    tag:"&lt;button type&gt;", kind:"Mục 2.11",
+    def:"Nút bấm. type=\"submit\" gửi biểu mẫu đi, type=\"reset\" đưa mọi ô về giá trị ban đầu.",
+    code:"<button type=\"submit\">Gửi lời nhắn</button>\n<button type=\"reset\">Nhập lại</button>",
+    out:"<button type=\"button\">Gửi lời nhắn</button> <button type=\"button\">Nhập lại</button>",
+    note:"Không ghi type thì button mặc định là submit. Nút không dùng để gửi thì phải ghi rõ type=\"button\"."
+  },
+  fieldset: {
+    tag:"&lt;fieldset&gt; + &lt;legend&gt;", kind:"Mục 2.11",
+    def:"Khung gom các ô cùng một nhóm. legend là tên của nhóm, hiện ngay trên viền khung.",
+    code:"<fieldset>\n  <legend>Thông tin cá nhân</legend>\n  <label for=\"ns\">Ngày sinh:</label>\n  <input type=\"date\" id=\"ns\" name=\"ngay-sinh\">\n</fieldset>",
+    out:"<fieldset><legend>Thông tin cá nhân</legend><label for=\"d6\">Ngày sinh:</label> <input type=\"date\" id=\"d6\"></fieldset>",
+    note:"legend phải là thẻ đầu tiên bên trong fieldset, viết sau thẻ khác là không qua được Validator."
+  }
+};
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- chế độ hiển thị --- */
+  var demo = document.getElementById('demo');
+  var mP = document.getElementById('mPlain'), mS = document.getElementById('mStyled');
+  function mode(styled){
+    demo.classList.toggle('styled', styled);
+    demo.classList.toggle('plain', !styled);
+    mS.classList.toggle('on', styled);
+    mP.classList.toggle('on', !styled);
+  }
+  mP.addEventListener('click', function(){ mode(false); });
+  mS.addEventListener('click', function(){ mode(true); });
+
+  /* --- mã nguồn --- */
+  var view = document.getElementById('srcView');
+  var bS = document.getElementById('srcShort'), bF = document.getElementById('srcFull');
+  function showSrc(full){
+    view.innerHTML = hl(full ? SRC_FULL : SRC_SHORT);
+    bF.classList.toggle('on', full); bS.classList.toggle('on', !full);
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bS.addEventListener('click', function(){ showSrc(false); });
+  bF.addEventListener('click', function(){ showSrc(true); });
+  showSrc(false);
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var blob = new Blob([SRC_FULL], {type:'text/html;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nguyen-phuc-an-tuan4.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+  var FRAME_CSS = 'body{margin:8px;font-family:"Times New Roman",Times,serif;font-size:15px;color:#000}'
+                + 'h1{font-size:1.6em}h2{font-size:1.35em}h3{font-size:1.15em}';
+
+  function fill(key){
+    var d = TAGS[key];
+    if(!d) return false;
+    document.getElementById('tipTag').innerHTML = d.tag;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = hl(d.code);
+    document.getElementById('tipNote').textContent = d.note;
+    var f = document.getElementById('tipOut');
+    f.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>' + FRAME_CSS + '</style>' + d.out;
+    f.onload = function(){
+      try{
+        var h = f.contentDocument.body.scrollHeight;
+        f.style.height = Math.min(Math.max(h + 6, 46), 200) + 'px';
+      }catch(e){}
+    };
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-tag]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-tag');
+    if(pinned && current === el){ hideTip(); return; }
+    current = el;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  [].forEach.call(document.querySelectorAll('#demo form'), function(f){
+    f.addEventListener('submit', function(e){ e.preventDefault(); });
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+
+/* ---------- hai bài tập ---------- */
+var EX = [
+ {
+  "no": "Bài 1",
+  "topic": "Mục 2.11 · Biểu mẫu",
+  "title": "Biểu mẫu liên hệ",
+  "goal": "Tạo tệp <code>lien-he.html</code> có một biểu mẫu để người xem gửi lời nhắn.",
+  "reqs": [
+   "<b>Cấu trúc:</b> dùng <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>.",
+   "<b>Khung biểu mẫu:</b> một <code>&lt;form&gt;</code> có <code>action=\"cam-on.html\"</code> và <code>method=\"get\"</code>.",
+   "<b>Nhãn:</b> mỗi ô nhập có đúng một <code>&lt;label&gt;</code>, thuộc tính <code>for</code> trùng <code>id</code> của ô đó.",
+   "<b>Ô một dòng:</b> một <code>type=\"text\"</code> có <code>placeholder</code>, <code>maxlength</code> và <code>required</code>; một <code>type=\"email\"</code> có <code>required</code>.",
+   "<b>Danh sách thả xuống:</b> một <code>&lt;select&gt;</code> gồm ít nhất 3 <code>&lt;option&gt;</code>, trong đó một option có <code>selected</code>.",
+   "<b>Ô nhiều dòng:</b> một <code>&lt;textarea&gt;</code> có <code>rows</code> và <code>cols</code>.",
+   "<b>Ô đánh dấu:</b> một <code>type=\"checkbox\"</code> có đủ <code>name</code> và <code>value</code>.",
+   "<b>Nút:</b> một <code>&lt;button type=\"submit\"&gt;</code> và một <code>&lt;button type=\"reset\"&gt;</code>.",
+   "<b>Mọi ô phải có <code>name</code></b>, vì thiếu name thì dữ liệu của ô đó không được gửi đi."
+  ]
+ },
+ {
+  "no": "Bài 2",
+  "topic": "Mục 2.11 · Biểu mẫu",
+  "title": "Biểu mẫu đăng ký câu lạc bộ",
+  "goal": "Tạo tệp <code>dang-ky.html</code> có một biểu mẫu đăng ký dùng đủ các loại ô nhập đã học.",
+  "reqs": [
+   "<b>Khung biểu mẫu:</b> một <code>&lt;form&gt;</code> có <code>action=\"cam-on.html\"</code> và <code>method=\"get\"</code>, mọi ô đều có <code>name</code> và <code>&lt;label for&gt;</code>.",
+   "<b>Gom nhóm:</b> ít nhất một <code>&lt;fieldset&gt;</code> kèm <code>&lt;legend&gt;</code>.",
+   "<b>Chọn một trong nhiều:</b> ba ô <code>type=\"radio\"</code> cùng một <code>name</code>, một ô có <code>checked</code>.",
+   "<b>Đủ các loại ô:</b> dùng cả <code>date</code>, <code>number</code>, <code>password</code>, <code>url</code>, <code>file</code>, <code>range</code> và <code>color</code>.",
+   "<b>Giới hạn giá trị:</b> ô <code>number</code> có <code>min</code>, <code>max</code>, <code>step</code>; ô <code>range</code> có <code>min</code> và <code>max</code>; ô <code>file</code> có <code>accept</code>.",
+   "<b>Kiểm tra đầu vào:</b> ít nhất một ô có <code>required</code>, một ô <code>type=\"tel\"</code> có <code>pattern</code>, ô <code>password</code> có <code>minlength</code>.",
+   "<b>Nút gửi:</b> một <code>&lt;button type=\"submit\"&gt;</code>.",
+   "<b>Trang đích:</b> tạo thêm <code>cam-on.html</code>. Bấm nút gửi phải sang được trang đó và thấy dữ liệu trên thanh địa chỉ."
+  ]
+ }
+];
+
+/* bảng kiểm: mọi thẻ và thuộc tính đã học trong tuần này */
+var CHECK = [["&lt;form action method&gt;", "Khung biểu mẫu, nơi gửi và cách gửi", "Bài 1 và 2"], ["&lt;label for&gt;", "Nhãn gắn với id của ô nhập", "Bài 1 và 2"], ["name", "Tên dữ liệu gửi đi, ô nào cũng phải có", "Bài 1 và 2"], ["&lt;input type=\"text\"&gt;", "Ô nhập một dòng chữ", "Bài 1"], ["placeholder maxlength", "Chữ gợi ý và số ký tự tối đa", "Bài 1"], ["&lt;input type=\"email\"&gt;", "Ô nhập địa chỉ thư", "Bài 1"], ["&lt;select&gt; &lt;option&gt;", "Danh sách thả xuống, có selected", "Bài 1"], ["&lt;textarea rows cols&gt;", "Ô nhập nhiều dòng", "Bài 1"], ["&lt;input type=\"checkbox\"&gt;", "Ô đánh dấu, có name và value", "Bài 1"], ["&lt;button type=\"submit\"&gt;", "Nút gửi biểu mẫu", "Bài 1 và 2"], ["&lt;button type=\"reset\"&gt;", "Nút xoá về giá trị ban đầu", "Bài 1"], ["&lt;fieldset&gt; &lt;legend&gt;", "Gom nhóm các ô và đặt tên nhóm", "Bài 2"], ["&lt;input type=\"radio\"&gt;", "Ba ô cùng name, một ô checked", "Bài 2"], ["&lt;input type=\"date\"&gt;", "Ô chọn ngày", "Bài 2"], ["&lt;input type=\"number\"&gt;", "Ô nhập số, có min max step", "Bài 2"], ["&lt;input type=\"password\"&gt;", "Ô mật khẩu, có minlength", "Bài 2"], ["&lt;input type=\"tel\" pattern&gt;", "Ô điện thoại kèm khuôn dạng", "Bài 2"], ["&lt;input type=\"url\"&gt;", "Ô nhập địa chỉ trang web", "Bài 2"], ["&lt;input type=\"file\" accept&gt;", "Nút chọn tệp, giới hạn đuôi tệp", "Bài 2"], ["&lt;input type=\"range\"&gt;", "Thanh kéo, có min và max", "Bài 2"], ["&lt;input type=\"color\"&gt;", "Ô chọn màu, giá trị #rrggbb", "Bài 2"], ["required", "Bắt buộc phải điền", "Bài 1 và 2"]];
+
+/* ---------- gợi ý và tệp thực hành ---------- */
+var HINT = {
+  "Bài 1": {code:"<form action=\"___\" method=\"___\">\n\n  <!-- for của label trùng id của ô nhập -->\n  <p><label for=\"___\">___</label>\n     <input type=\"text\" id=\"___\" name=\"___\" placeholder=\"___\" maxlength=\"___\" required></p>\n\n  <p><label for=\"___\">___</label>\n     <input type=\"___\" id=\"___\" name=\"___\" required></p>\n\n  <p><label for=\"___\">___</label>\n     <select id=\"___\" name=\"___\">\n       <option value=\"___\">___</option>\n       <option value=\"___\" selected>___</option>\n       <option value=\"___\">___</option>\n     </select></p>\n\n  <p><label for=\"___\">___</label><br>\n     <textarea id=\"___\" name=\"___\" rows=\"___\" cols=\"___\"></textarea></p>\n\n  <p><input type=\"checkbox\" id=\"___\" name=\"___\" value=\"___\">\n     <label for=\"___\">___</label></p>\n\n  <p><button type=\"submit\">___</button>\n     <button type=\"reset\">___</button></p>\n\n</form>", warn:"Ô nào thiếu <code>name</code> thì dữ liệu của ô đó không được gửi đi, mà trình duyệt cũng không báo lỗi — bấm Gửi rồi nhìn thanh địa chỉ là biết ngay ô nào bị sót. <code>for</code> của label phải trùng <code>id</code> của ô nhập, không phải <code>name</code>. Mỗi <code>id</code> chỉ được xuất hiện một lần trong trang. <code>&lt;textarea&gt;</code> không có thuộc tính <code>value</code>, để trống thì viết liền hai thẻ."},
+  "Bài 2": {code:"<form action=\"___\" method=\"___\">\n\n  <!-- legend phải là thẻ đầu tiên bên trong fieldset -->\n  <fieldset>\n    <legend>___</legend>\n\n    <p><label for=\"___\">___</label>\n       <input type=\"date\" id=\"___\" name=\"___\" value=\"___\"></p>\n\n    <p><label for=\"___\">___</label>\n       <input type=\"tel\" id=\"___\" name=\"___\" pattern=\"___\" placeholder=\"___\"></p>\n\n    <p><label for=\"___\">___</label>\n       <input type=\"password\" id=\"___\" name=\"___\" minlength=\"___\" required></p>\n\n    <p><label for=\"___\">___</label>\n       <input type=\"url\" id=\"___\" name=\"___\" placeholder=\"https://\"></p>\n  </fieldset>\n\n  <!-- ba ô radio dùng chung một name mới chọn được đúng một ô -->\n  <p>___\n     <input type=\"radio\" id=\"___\" name=\"___\" value=\"___\" checked>\n     <label for=\"___\">___</label>\n     <input type=\"radio\" id=\"___\" name=\"___\" value=\"___\">\n     <label for=\"___\">___</label>\n     <input type=\"radio\" id=\"___\" name=\"___\" value=\"___\">\n     <label for=\"___\">___</label></p>\n\n  <p><label for=\"___\">___</label>\n     <input type=\"number\" id=\"___\" name=\"___\" min=\"___\" max=\"___\" step=\"___\" value=\"___\"></p>\n\n  <p><label for=\"___\">___</label>\n     <input type=\"file\" id=\"___\" name=\"___\" accept=\"___\"></p>\n\n  <p><label for=\"___\">___</label>\n     <input type=\"range\" id=\"___\" name=\"___\" min=\"___\" max=\"___\" value=\"___\"></p>\n\n  <p><label for=\"___\">___</label>\n     <input type=\"color\" id=\"___\" name=\"___\" value=\"#______\"></p>\n\n  <p><button type=\"submit\">___</button></p>\n\n</form>", warn:"Ba ô radio phải cùng một <code>name</code>, khác <code>id</code>. Cùng id là label trỏ sai, khác name là chọn được nhiều ô cùng lúc. <code>&lt;legend&gt;</code> phải đứng ngay sau thẻ <code>&lt;fieldset&gt;</code> mở, viết sau thẻ khác là không qua được Validator. Giá trị của <code>type=\"color\"</code> bắt buộc đủ sáu chữ số, viết <code>#fff</code> là không nhận. Giá trị của <code>type=\"date\"</code> viết theo dạng năm-tháng-ngày dù màn hình hiện kiểu khác. Ô <code>type=\"file\"</code> chỉ gửi được tệp lên máy chủ thật khi form dùng <code>method=\"post\"</code>, bài này chỉ cần khai báo đúng cú pháp."}
+};
+
+var FILES = [{"n": "cam-on.html", "t": "text/html;charset=utf-8", "d": "", "kb": "0,9 KB", "u": "Bài 1 và 2 · trang đích cho thuộc tính action, mở ra là thấy dữ liệu vừa gửi trên thanh địa chỉ", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+xJDDoyBuaOG6rW4gxJHGsOG7o2MgdGjDtG5nIHRpbjwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CgogIDxoZWFkZXI+CiAgICA8aDE+xJDDoyBuaOG6rW4gxJHGsOG7o2MgdGjDtG5nIHRpbjwvaDE+CiAgPC9oZWFkZXI+CgogIDxtYWluPgogICAgPHNlY3Rpb24+CiAgICAgIDxoMj5D4bqjbSDGoW4gYuG6oW48L2gyPgogICAgICA8cD5CaeG7g3UgbeG6q3UgxJHDoyDEkcaw4bujYyBn4butaSDEkWkuIEjDo3kgbmjDrG4gbMOqbiB0aGFuaCDEkeG7i2EgY2jhu4kgY+G7p2EgdHLDrG5oIGR1eeG7h3Q6CiAgICAgICAgIHBo4bqnbiDEkeG7qW5nIHNhdSBk4bqldSBo4buPaSBjaMOtbmggbMOgIGThu68gbGnhu4d1IHbhu6thIGfhu61pLCB2aeG6v3QgdGhlbyBk4bqhbmcKICAgICAgICAgPGNvZGU+dMOqbj1nacOhIHRy4buLPC9jb2RlPiB2w6AgbuG7kWkgduG7m2kgbmhhdSBi4bqxbmcgZOG6pXUgdsOgLjwvcD4KICAgICAgPHA+w5QgbsOgbyBraMO0bmcgdGjhuqV5IHh14bqldCBoaeG7h24g4bufIMSRw7MgdGjDrCDDtCDEkcOzIGPDsm4gdGhp4bq/dSB0aHXhu5ljIHTDrW5oCiAgICAgICAgIDxjb2RlPm5hbWU8L2NvZGU+IHRyb25nIHThu4dwIGJp4buDdSBt4bqrdS48L3A+CiAgICAgIDxwPjxhIGhyZWY9ImluZGV4Lmh0bWwiPlF1YXkgduG7gSB0cmFuZyBjaOG7pzwvYT48L3A+CiAgICA8L3NlY3Rpb24+CiAgPC9tYWluPgoKICA8Zm9vdGVyPgogICAgPHA+wqkgMjAyNiBOZ3V54buFbiBQaMO6YyBBbi48L3A+CiAgPC9mb290ZXI+Cgo8L2JvZHk+CjwvaHRtbD4K"}];
+
+(function(){
+  var list = document.getElementById('exList');
+  if(!list) return;
+
+  EX.forEach(function(ex){
+    var box = document.createElement('div');
+    box.className = 'ex';
+    var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
+    box.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-no">' + ex.no + '</span>' +
+        '<span class="ex-title">' + ex.title + '</span>' +
+        '<span class="ex-topic">' + ex.topic + '</span>' +
+      '</div>' +
+      '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
+      '<ol class="ex-req">' + reqs + '</ol>' +
+      (HINT[ex.no]
+        ? '<p class="sec-lbl">Gợi ý</p>' +
+          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần thẻ nào và thuộc tính nào. Chỗ có dấu <code>___</code> là phần tự điền theo nội dung trang của mình.</p>' +
+          '<pre class="ex-code">' + hl(HINT[ex.no].code) + '</pre>' +
+          (HINT[ex.no].extra || '') +
+          '<div class="ex-warn"><b>Lưu ý:</b> ' + HINT[ex.no].warn + '</div>'
+        : '');
+    list.appendChild(box);
+  });
+
+  var frows = FILES.map(function(f){
+    return '<tr>' +
+      '<td class="ck-tag">' + f.d + f.n + '</td>' +
+      '<td>' + f.u + '</td>' +
+      '<td class="dl-cell">' + f.kb + '</td>' +
+      '<td class="dl-cell"><a class="dl" download="' + f.n +
+        '" href="data:' + f.t + ';base64,' + f.b + '">Tải</a></td></tr>';
+  }).join('');
+
+  var fb = document.createElement('div');
+  fb.className = 'ex';
+  fb.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Tệp thực hành</span>' +
+    '<span class="ex-title">Trang đích cho nút gửi</span></div>' +
+    '<p class="ex-goal">Tệp này để cùng thư mục với hai tệp bài làm. Thuộc tính <code>action</code> của biểu mẫu trỏ tới nó, bấm nút gửi là sang trang này.</p>' +
+    '<table class="ck"><thead><tr><th>Tệp</th><th>Dùng ở đâu</th><th>Cỡ</th><th></th></tr></thead>' +
+    '<tbody>' + frows + '</tbody></table>' +
+    '<div class="dl-all"><button id="dlAll">Tải tất cả</button>' +
+    '<span class="note">Trình duyệt sẽ hỏi có cho phép tải nhiều tệp một lúc không, chọn Cho phép.</span></div>';
+  list.appendChild(fb);
+
+  document.getElementById('dlAll').addEventListener('click', function(){
+    var links = fb.querySelectorAll('a.dl'), i = 0;
+    (function next(){
+      if(i >= links.length) return;
+      links[i++].click();
+      setTimeout(next, 350);
+    })();
+  });
+
+  var rows = CHECK.map(function(r){
+    return '<tr><td class="ck-tag">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
+  }).join('');
+
+  var ck = document.createElement('div');
+  ck.className = 'ex';
+  ck.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Bảng kiểm</span>' +
+    '<span class="ex-title">Mọi thẻ và thuộc tính của tuần này</span></div>' +
+    '<p class="ex-goal">Làm xong hai bài, đối chiếu lại bảng này. Thiếu dòng nào là bài chưa đủ yêu cầu.</p>' +
+    '<table class="ck"><thead><tr><th>Thẻ hoặc thuộc tính</th><th>Dùng để làm gì</th><th>Nằm ở bài</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+  list.appendChild(ck);
+
+  var TIPS = [
+  "Bấm vào từng dòng chữ nhãn, con trỏ phải nhảy vào đúng ô bên cạnh. Không nhảy nghĩa là <code>for</code> và <code>id</code> chưa khớp.",
+  "Bỏ trống ô có <code>required</code> rồi bấm Gửi, trình duyệt phải hiện lời nhắc và không cho gửi.",
+  "Điền đúng rồi bấm Gửi, nhìn thanh địa chỉ phải thấy đủ các cặp <code>tên=giá trị</code>. Ô nào không hiện là ô đó thiếu <code>name</code>.",
+  "Bấm nút Nhập lại, mọi ô phải quay về giá trị ban đầu.",
+  "Tìm trong mã nguồn xem có <code>id</code> nào bị lặp hai lần không.",
+  "Vào <code>validator.w3.org</code>, chọn <i>Validate by File Upload</i>, tải từng tệp lên và sửa cho tới khi nhận được dòng <i>Document checking completed. No errors or warnings to show.</i>"
+];
+  var tip = document.createElement('div');
+  tip.className = 'ex';
+  tip.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Trước khi nộp</span>' +
+    '<span class="ex-title">Tự kiểm tra lại bài</span></div>' +
+    '<ol class="ex-req">' + TIPS.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ol>';
+  list.appendChild(tip);
+})();
+</script>
+</body>
+</html>
