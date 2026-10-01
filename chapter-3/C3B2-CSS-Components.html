@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Học liệu chương 3 buổi 2: nền, viền, bảng, danh sách, liên kết, biểu mẫu và biến CSS">
+<title>Chương 3 - Buổi 2: Nền, viền, bảng, biểu mẫu và biến</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+
+  /* bảng và danh sách ở chế độ có CSS */
+  .styled table{border-collapse:collapse; width:100%; font-size:13.5px; margin-bottom:12px}
+  .styled caption{text-align:left; font-weight:600; padding-bottom:6px}
+  .styled th, .styled td{border:1px solid var(--line); padding:6px 9px; text-align:left}
+  .styled thead th{background:#eef3f8}
+  .styled tfoot td{background:#f6f8fa; font-weight:600}
+  .styled ul, .styled ol, .styled dl{margin:0 0 12px; padding-left:22px}
+  .styled dl{padding-left:0}
+  .styled dt{font-weight:600; margin-top:6px}
+  .styled dd{margin:0 0 0 18px}
+  .styled pre{background:#f6f8fa; color:var(--ink); padding:10px 12px; font-size:12.5px}
+  .demo.plain pre{background:transparent; color:#000; padding:0; font-size:14px; overflow:visible}
+
+  /* biểu mẫu */
+  .demo.plain fieldset{margin-bottom:10px}
+  .demo .d-form p{margin:9px 0}
+  .demo .ann[data-tag="radio"], .demo .ann[data-tag="checkbox"],
+  .demo .ann[data-tag="button"]{padding:5px 0 5px 7px}
+  /* chú thích của fieldset dời sang phải để không che mất legend */
+  .demo .ann[data-tag="fieldset"] > .lbl{left:auto; right:0}
+  .styled .d-form{background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:16px}
+  .styled .d-form label{display:inline-block; min-width:132px; font-weight:600; font-size:13.5px}
+  .styled .d-form input[type="text"], .styled .d-form input[type="email"],
+  .styled .d-form input[type="tel"], .styled .d-form input[type="password"],
+  .styled .d-form input[type="url"], .styled .d-form input[type="number"],
+  .styled .d-form input[type="date"], .styled .d-form textarea, .styled .d-form select{
+    border:1px solid #c8d2dd; border-radius:6px; padding:6px 9px; font-size:13.5px;
+    font-family:inherit; background:#fff}
+  .styled .d-form textarea{vertical-align:top; width:100%; max-width:380px}
+  .styled .d-form fieldset{border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:0 0 14px}
+  .styled .d-form legend{font-weight:600; font-size:13.5px; color:var(--blue-deep, #0f3d6e); padding:0 6px}
+  .styled .d-form button{background:var(--blue); color:#fff; border:0; border-radius:7px;
+    padding:8px 16px; font-size:13.5px; font-weight:600; cursor:pointer; margin-right:8px}
+  .styled .d-form button[type="reset"]{background:#e6ecf3; color:var(--ink)}
+
+  /* bài tập */
+  .note-ex{font-size:13.5px; color:var(--muted); margin:0 0 14px}
+  .ex{border:1px solid var(--line); border-radius:9px; padding:14px 16px; margin-bottom:12px}
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:9px; margin-bottom:6px}
+  .ex-no{font-weight:700; color:var(--blue); font-size:14px}
+  .ex-title{font-weight:600; font-size:15px}
+  .ex-topic{font-size:12px; color:var(--muted); border:1px solid var(--line);
+            border-radius:20px; padding:1px 9px}
+  .ex-goal{font-size:14px; margin:0 0 8px}
+  .ex-req{font-size:13.5px; margin:0 0 12px; padding-left:20px}
+  .ex-req li{margin-bottom:4px}
+  .ex-req code, .ex-goal code{background:#f1f4f7; padding:1px 5px; border-radius:4px;
+            font-size:12.5px; color:#a1155a; font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ex .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+         color:var(--muted); margin:12px 0 6px; font-weight:700}
+  .ex-code{max-height:420px}
+  .ex-warn{background:var(--amber-soft); border-left:3px solid var(--amber);
+           border-radius:0 5px 5px 0; padding:9px 11px; font-size:13px;
+           color:#6b4a08; margin:10px 0 0}
+  .ex-warn code{background:#fff; color:#8a4b06; padding:1px 5px; border-radius:4px;
+           font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12px}
+  pre.tree{background:#f7f9fb; color:var(--ink); border:1px solid var(--line);
+           padding:11px 13px; font-size:12.5px; line-height:1.55; max-height:none}
+  td.dl-cell{white-space:nowrap; text-align:right}
+  a.dl{display:inline-block; text-decoration:none; background:var(--blue-soft);
+       border:1px solid #bcd6fb; color:var(--blue); font-size:12px; font-weight:600;
+       padding:3px 11px; border-radius:20px}
+  a.dl:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+  .dl-all{margin:10px 0 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .dl-all .note{font-size:12.5px; color:var(--muted)}
+  .ex-out{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff}
+  table.ck{width:100%; border-collapse:collapse; font-size:13px; margin-top:4px}
+  table.ck th{background:#f7f9fb; text-align:left; padding:7px 9px; border-bottom:1px solid var(--line);
+              font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted)}
+  table.ck td{padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.ck td.ck-tag{font-family:"SF Mono",Menlo,Consolas,monospace; color:#a1155a; white-space:nowrap}
+  table.ck tr:last-child td{border-bottom:0}
+  .ex-out iframe{width:100%; border:0; display:block; height:200px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+
+/* ---------- trang mẫu ở chế độ có CSS ---------- */
+.demo.styled{
+  --mau-chinh:#0f3d6e; --mau-phu:#1f6feb; --bo-goc:10px;
+  font-family:Arial,Helvetica,sans-serif; color:#333333;
+  background-color:#eef2f6; padding:0;
+}
+.demo.styled header{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMzAwIj4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzBmM2Q2ZSIvPgogIDxjaXJjbGUgY3g9IjY2MCIgY3k9IjcwIiByPSIxMzAiIGZpbGw9IiMxZjZmZWIiIG9wYWNpdHk9IjAuNTUiLz4KICA8Y2lyY2xlIGN4PSIxMTAiIGN5PSIyNjAiIHI9Ijk1IiBmaWxsPSIjN2VlNzg3IiBvcGFjaXR5PSIwLjMwIi8+Cjwvc3ZnPgo=");
+  background-repeat:no-repeat; background-size:cover; background-position:center;
+}
+.demo.styled .lop-phu{
+  background-color:rgba(15,61,110,.55); padding:36px 20px; color:#fff; text-align:center;
+}
+.demo.styled .lop-phu h1{
+  margin:0 0 8px; font-size:26px; text-shadow:2px 2px 6px rgba(0,0,0,.6); color:#fff;
+}
+.demo.styled .cham-ngon{margin:0; font-style:italic; color:#dbe9f7}
+
+.demo.styled nav ul{
+  list-style-type:none; margin:0; padding:10px 20px;
+  background-color:var(--mau-chinh);
+}
+.demo.styled nav li{margin:4px 0}
+.demo.styled nav a{color:#cfe3f6; text-decoration:none}
+.demo.styled nav a:hover{color:#fff; text-decoration:underline}
+
+.demo.styled main{padding:18px 20px}
+.demo.styled h2{
+  color:var(--mau-chinh); font-size:19px; margin:18px 0 10px;
+  border-bottom:3px solid var(--mau-phu); padding-bottom:6px;
+}
+.demo.styled section:first-child h2{margin-top:0}
+.demo.styled .the{
+  border:2px solid var(--mau-phu); border-radius:var(--bo-goc);
+  background-color:#fff; padding:13px 15px; margin-bottom:14px;
+}
+.demo.styled .the p{margin:0; line-height:1.6}
+.demo.styled .viec{list-style-type:square; line-height:1.8; margin:0; padding-left:22px}
+
+.demo.styled table{border-collapse:collapse; width:100%; margin-bottom:6px; font-size:14px}
+.demo.styled caption{text-align:left; font-weight:bold; padding-bottom:6px}
+.demo.styled th, .demo.styled td{border:1px solid #c8d2dd; padding:7px 9px; text-align:left}
+.demo.styled thead th{background-color:#dbe9f7; color:var(--mau-chinh)}
+.demo.styled tbody td:last-child{text-align:right}
+
+.demo.styled form p{margin:10px 0}
+.demo.styled label{display:inline-block; width:100px; font-size:14px}
+.demo.styled input, .demo.styled textarea{
+  border:1px solid #c8d2dd; border-radius:6px; padding:7px 9px;
+  width:230px; font-family:inherit; font-size:14px;
+}
+.demo.styled button{
+  background-color:var(--mau-phu); color:#fff; border:none;
+  border-radius:var(--bo-goc); padding:9px 16px; font-size:14px; cursor:pointer;
+}
+.demo.styled button:hover{background-color:var(--mau-chinh)}
+
+.demo.styled footer{
+  background-color:var(--mau-chinh); color:#cfe3f6; padding:13px 20px; font-size:13px;
+}
+.demo.styled footer p{margin:0}
+
+/* chừa chỗ cho nhãn chú thích ở vài vùng nhỏ */
+.demo .ann[data-r="viec"], .demo .ann[data-r="table"]{padding:4px 0 4px 6px}
+.demo.plain .lop-phu{padding:0}
+
+/* nhãn của header và lớp phủ dời sang phải để không che tiêu đề */
+.demo .ann[data-r="lopphu"] > .lbl{left:auto; right:0}
+
+#tip .t-tag{white-space:normal; word-break:break-word}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 3 - Buổi 2: Nền, viền, bảng, biểu mẫu và biến</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Bấm vào một vùng bất kỳ trên trang để xem quy tắc CSS tạo ra vẻ ngoài đó, kèm giải thích, cú pháp và kết quả.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức buổi 2</h2>
+
+      <div class="k-item" data-k="k1">
+        <div class="num">MỤC 3.5</div>
+        <div class="name">Định dạng nền</div>
+        <div class="tags">background-color · background-image · url() · repeat · size · position</div>
+      </div>
+
+      <div class="k-item" data-k="k2">
+        <div class="num">MỤC 3.6</div>
+        <div class="name">Định dạng viền</div>
+        <div class="tags">border · viền từng phía · border-radius</div>
+      </div>
+
+      <div class="k-item" data-k="k3">
+        <div class="num">MỤC 3.8</div>
+        <div class="name">Định dạng bảng biểu</div>
+        <div class="tags">border-collapse · padding ô · tô hàng tiêu đề</div>
+      </div>
+
+      <div class="k-item" data-k="k4">
+        <div class="num">MỤC 3.9</div>
+        <div class="name">Định dạng danh sách</div>
+        <div class="tags">list-style-type · làm menu từ ul</div>
+      </div>
+
+      <div class="k-item" data-k="k5">
+        <div class="num">MỤC 3.10</div>
+        <div class="name">Định dạng liên kết</div>
+        <div class="tags">a · a:visited · a:hover · text-decoration</div>
+      </div>
+
+      <div class="k-item" data-k="k6">
+        <div class="num">MỤC 3.11</div>
+        <div class="name">Định dạng biểu mẫu</div>
+        <div class="tags">border · padding · width · cursor</div>
+      </div>
+
+      <div class="k-item" data-k="k7">
+        <div class="num">MỤC 3.12</div>
+        <div class="name">Sử dụng biến</div>
+        <div class="tags">--ten-bien · var() · :root</div>
+      </div>
+
+      <div class="k-item" data-k="k8" style="border-left-color:#c9d6e4">
+        <div class="num">MỤC 3.4 · 3.7</div>
+        <div class="name">Màu mờ và bóng chữ</div>
+        <div class="tags">rgba · opacity · text-shadow</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="seg" style="margin-bottom:10px">
+        <button id="mPlain">Chưa sử dụng CSS</button>
+        <button id="mStyled" class="on">Có sử dụng CSS</button>
+      </div>
+
+      <div class="browser">
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="tabpill">Câu lạc bộ Tin học</div>
+        </div>
+
+        <div class="page ann" data-k="k1" data-r="body">
+          <span class="lbl">body</span>
+          <div class="demo styled" id="demo">
+
+            <header class="ann" data-k="k1" data-r="header">
+              <span class="lbl">header · ảnh nền</span>
+              <div class="lop-phu ann" data-k="k8" data-r="lopphu">
+                <span class="lbl">.lop-phu · rgba + text-shadow</span>
+                <h1>Câu lạc bộ Tin học</h1>
+                <p class="cham-ngon">Học cùng nhau, làm cùng nhau</p>
+              </div>
+            </header>
+
+            <nav class="ann" data-k="k4" data-r="navul">
+              <span class="lbl">nav ul</span>
+              <ul>
+                <li><a class="ann inline" data-k="k5" data-r="navlink" href="#gioi-thieu"><span class="lbl">nav a:hover</span>Giới thiệu</a></li>
+                <li><a href="#lich">Lịch sinh hoạt</a></li>
+                <li><a href="#dang-ky">Đăng ký</a></li>
+              </ul>
+            </nav>
+
+            <main>
+
+              <section id="gioi-thieu">
+                <h2 class="ann" data-k="k2" data-r="h2"><span class="lbl">h2 · border-bottom</span>Giới thiệu</h2>
+
+                <div class="the ann" data-k="k2" data-r="the">
+                  <span class="lbl">.the · border + radius</span>
+                  <p>Câu lạc bộ sinh hoạt chiều thứ tư hằng tuần tại phòng 305 nhà A2.
+                     Mọi sinh viên trong khoa đều tham gia được, không cần biết trước gì.</p>
+                </div>
+
+                <div class="ann" data-k="k4" data-r="viec">
+                  <span class="lbl">.viec · list-style-type</span>
+                  <ul class="viec">
+                    <li>Lớp HTML và CSS cho sinh viên năm nhất</li>
+                    <li>Nhóm đọc tài liệu kỹ thuật</li>
+                    <li>Làm dự án nhỏ theo nhóm ba người</li>
+                  </ul>
+                </div>
+              </section>
+
+              <section id="lich">
+                <h2>Lịch sinh hoạt</h2>
+
+                <div class="ann" data-k="k3" data-r="table">
+                  <span class="lbl">table · border-collapse</span>
+                  <table>
+                    <caption>Học kỳ 2026.1</caption>
+                    <thead>
+                      <tr class="ann inline" data-k="k3" data-r="thead"><th>Buổi</th><th>Nội dung</th><th>Số người</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Làm quen HTML</td><td>32</td></tr>
+                      <tr><td>2</td><td>Bảng và danh sách</td><td>28</td></tr>
+                      <tr><td>3</td><td>Tô màu bằng CSS</td><td>30</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section id="dang-ky">
+                <h2>Đăng ký</h2>
+
+                <form method="get">
+                  <p>
+                    <label for="f-ten">Họ và tên:</label>
+                    <input class="ann inline" data-k="k6" data-r="input" type="text" id="f-ten" name="ten" placeholder="Nguyễn Phúc An">
+                  </p>
+                  <p>
+                    <label for="f-loi">Lời nhắn:</label><br>
+                    <textarea id="f-loi" name="loinhan" rows="3"></textarea>
+                  </p>
+                  <p>
+                    <button class="ann inline" data-k="k6" data-r="button" type="submit">Gửi đăng ký</button>
+                  </p>
+                </form>
+              </section>
+
+            </main>
+
+            <footer class="ann" data-k="k7" data-r="root">
+              <span class="lbl">:root và var()</span>
+              <p>© 2026 Câu lạc bộ Tin học - Khoa Công nghệ thông tin</p>
+            </footer>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcHtml" class="on">index.html</button>
+          <button id="srcCss">style.css</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải tệp đang xem</button>
+        </div>
+        <pre id="srcView"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bài tập</h2>
+        <p class="note-ex">Bài 1 làm tại lớp, Bài 2 làm ở nhà. Đề đầy đủ có trong tệp phát trên lớp.</p>
+        <div id="exList"></div>
+      </div>
+
+      <div class="foot">Tài liệu Thiết kế Web</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <p class="sec-lbl">Quy tắc CSS</p>
+    <pre id="tipCode"></pre>
+    <p class="sec-lbl">Kết quả</p>
+    <div class="t-out"><iframe id="tipOut" title="Kết quả"></iframe></div>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr','form','fieldset','legend','label'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_HTML = [
+"<!DOCTYPE html>",
+"<html lang=\"vi\">",
+"<head>",
+"  <meta charset=\"UTF-8\">",
+"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+"  <title>Demo CSS - Buổi 2</title>",
+"",
+"  <!-- ==============================================================",
+"       Tệp HTML này KHÔNG có gì mới so với chương 2. Toàn thẻ đã học:",
+"       header, nav, ul, main, section, table, form, footer.",
+"",
+"       Cái mới nằm hết ở tệp CSS. Mở hai tệp cạnh nhau khi giảng.",
+"       ============================================================== -->",
+"  <link rel=\"stylesheet\" href=\"demo-css-buoi2.css\">",
+"</head>",
+"<body>",
+"",
+"  <!-- Phần đầu trang sẽ mang ẢNH NỀN. Thẻ div bên trong là LỚP PHỦ",
+"       màu mờ, để chữ trắng đọc được trên ảnh. Hai lớp lồng nhau, không",
+"       cần kỹ thuật gì của chương 4. -->",
+"  <header>",
+"    <div class=\"lop-phu\">",
+"      <h1>Câu lạc bộ Tin học</h1>",
+"      <p class=\"cham-ngon\">Học cùng nhau, làm cùng nhau</p>",
+"    </div>",
+"  </header>",
+"",
+"  <nav>",
+"    <ul>",
+"      <li><a href=\"#gioi-thieu\">Giới thiệu</a></li>",
+"      <li><a href=\"#lich\">Lịch sinh hoạt</a></li>",
+"      <li><a href=\"#dang-ky\">Đăng ký</a></li>",
+"    </ul>",
+"  </nav>",
+"",
+"  <main>",
+"",
+"    <section id=\"gioi-thieu\">",
+"      <h2>Giới thiệu</h2>",
+"",
+"      <!-- Khối này sẽ được đóng khung: viền, bo góc, nền riêng. -->",
+"      <div class=\"the\">",
+"        <p>Câu lạc bộ sinh hoạt chiều thứ tư hằng tuần tại phòng 305 nhà A2.",
+"           Mọi sinh viên trong khoa đều tham gia được, không cần biết trước gì.</p>",
+"      </div>",
+"",
+"      <ul class=\"viec\">",
+"        <li>Lớp HTML và CSS cho sinh viên năm nhất</li>",
+"        <li>Nhóm đọc tài liệu kỹ thuật</li>",
+"        <li>Làm dự án nhỏ theo nhóm ba người</li>",
+"      </ul>",
+"    </section>",
+"",
+"    <section id=\"lich\">",
+"      <h2>Lịch sinh hoạt</h2>",
+"",
+"      <table>",
+"        <caption>Học kỳ 2026.1</caption>",
+"        <thead>",
+"          <tr><th>Buổi</th><th>Nội dung</th><th>Số người</th></tr>",
+"        </thead>",
+"        <tbody>",
+"          <tr><td>1</td><td>Làm quen HTML</td><td>32</td></tr>",
+"          <tr><td>2</td><td>Bảng và danh sách</td><td>28</td></tr>",
+"          <tr><td>3</td><td>Tô màu bằng CSS</td><td>30</td></tr>",
+"        </tbody>",
+"      </table>",
+"    </section>",
+"",
+"    <section id=\"dang-ky\">",
+"      <h2>Đăng ký</h2>",
+"",
+"      <form method=\"get\">",
+"        <p>",
+"          <label for=\"ten\">Họ và tên:</label>",
+"          <input type=\"text\" id=\"ten\" name=\"ten\" placeholder=\"Nguyễn Phúc An\">",
+"        </p>",
+"        <p>",
+"          <label for=\"mail\">Email:</label>",
+"          <input type=\"email\" id=\"mail\" name=\"email\" placeholder=\"ten@sv.neu.edu.vn\">",
+"        </p>",
+"        <p>",
+"          <label for=\"loi\">Lời nhắn:</label><br>",
+"          <textarea id=\"loi\" name=\"loinhan\" rows=\"3\"></textarea>",
+"        </p>",
+"        <p><button type=\"submit\">Gửi đăng ký</button></p>",
+"      </form>",
+"    </section>",
+"",
+"  </main>",
+"",
+"  <footer>",
+"    <p>© 2026 Câu lạc bộ Tin học - Khoa Công nghệ thông tin</p>",
+"  </footer>",
+"",
+"</body>",
+"</html>"
+].join('\n');
+
+var SRC_CSS = [
+"/* =====================================================================",
+"   DEMO CSS — BUỔI 2  ·  Chương 3, mục 3.5 đến 3.12",
+"   Nối vào demo-css-buoi2.html. Cần thêm tệp ảnh nen.svg cùng thư mục.",
+"",
+"     PHẦN A — MẶT PHẲNG VÀ MẢNG MÀU",
+"              Màu trong suốt · nền · ảnh nền · viền · bo góc · bóng chữ",
+"              Trả lời câu hỏi: cái hộp này trông ra sao.",
+"              → dạy xong cho làm Thực hành 1 ngay tại lớp",
+"",
+"     PHẦN B — CÁC THÀNH PHẦN BÊN TRONG",
+"              Danh sách · liên kết · bảng · biểu mẫu · biến CSS",
+"              Trả lời câu hỏi: những thứ nằm trong hộp thì dùng ra sao.",
+"              → dạy xong giao Thực hành 2 về nhà",
+"",
+"   Lưu ý xuyên suốt: padding và margin trong tệp này chỉ dùng ở mức tối",
+"   thiểu để nền và viền có chỗ thở. Hai thuộc tính đó học kỹ ở chương 4.",
+"   ===================================================================== */",
+"",
+"",
+"/* =====================================================================",
+"   PHẦN A  —  MẶT PHẲNG VÀ MẢNG MÀU",
+"   ===================================================================== */",
+"",
+"",
+"/* --- A1. NỀN TRANG ---------------------------------------------------",
+"   Mục 3.5. Đặt màu nền cho body là cả trang đổi theo.                 */",
+"body {",
+"  font-family: Arial, Helvetica, sans-serif;",
+"  color: #333333;",
+"  background-color: #eef2f6;",
+"  margin: 0;",
+"}",
+"",
+"",
+"/* --- A2. ẢNH NỀN -----------------------------------------------------",
+"   Mục 3.5. Bốn thuộc tính đi liền nhau, thiếu cái nào cũng hỏng:",
+"",
+"     background-image     hàm url() trỏ tới tệp ảnh, đường dẫn TƯƠNG ĐỐI",
+"     background-repeat    mặc định là repeat, ảnh lặp đầy khối",
+"     background-size      cover = phóng cho phủ kín, có thể cắt bớt mép",
+"     background-position  chọn phần nào của ảnh được giữ lại",
+"",
+"   Ba lỗi kinh điển, chiếu lần lượt cho lớp xem:",
+"     sai đường dẫn      → không báo lỗi gì, chỉ là không thấy ảnh",
+"     quên no-repeat     → ảnh lặp thành lưới ô vuông",
+"     quên cover         → ảnh bé tí nằm góc trên trái                   */",
+"header {",
+"  background-image: url(\"nen.svg\");",
+"  background-repeat: no-repeat;",
+"  background-size: cover;",
+"  background-position: center;",
+"}",
+"",
+"",
+"/* --- A3. LỚP PHỦ VÀ BÓNG CHỮ ----------------------------------------",
+"   Mục 3.4 và 3.7. Đặt ảnh nền xong là chữ lập tức khó đọc. Hai cách",
+"   chữa, dùng cả hai cùng lúc thì chắc ăn:",
+"",
+"     rgba(r, g, b, a)  màu kèm độ trong suốt, a chạy từ 0 tới 1",
+"     text-shadow       bóng đổ sau chữ: lệch ngang, lệch dọc, độ nhoè, màu",
+"",
+"   Đây là ví dụ ba mục sinh ra nhau chứ không phải ba mục rời rạc.     */",
+".lop-phu {",
+"  background-color: rgba(15, 61, 110, 0.55);",
+"  padding: 48px 24px;",
+"  color: #ffffff;",
+"  text-align: center;",
+"}",
+"",
+".lop-phu h1 {",
+"  margin: 0 0 8px;",
+"  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);",
+"}",
+"",
+".cham-ngon {",
+"  margin: 0;",
+"  font-style: italic;",
+"  color: #dbe9f7;",
+"}",
+"",
+"",
+"/* --- A4. rgba KHÁC opacity CHỖ NÀO ----------------------------------",
+"   Mục 3.4. Hai thứ nhìn giống nhau nhưng khác hẳn:",
+"",
+"     background-color: rgba(...)   chỉ NỀN mờ, chữ vẫn đậm nguyên",
+"     opacity: 0.55                 làm mờ CẢ KHỐI, chữ mờ theo luôn",
+"",
+"   Bỏ chú thích dòng dưới rồi tải lại: chữ tiêu đề mờ đi thấy rõ.",
+"   Đây là chỗ sinh viên nhầm nhiều nhất trong cả buổi.                 */",
+"/* .lop-phu { opacity: 0.55; } */",
+"",
+"",
+"/* --- A5. VIỀN VÀ BO GÓC ---------------------------------------------",
+"   Mục 3.6. Viết rút gọn ba giá trị theo thứ tự: độ rộng, kiểu, màu.",
+"",
+"   Năm kiểu viền hay dùng: solid, dashed, dotted, double, none.",
+"   Viết tách rời cũng được — border-width, border-style, border-color —",
+"   nhưng thực tế gần như luôn dùng dạng rút gọn.                       */",
+".the {",
+"  border: 2px solid #1f6feb;",
+"  border-radius: 10px;",
+"  background-color: #ffffff;",
+"  padding: 14px 16px;",
+"  margin-bottom: 16px;",
+"}",
+"",
+"",
+"/* --- A6. VIỀN TỪNG PHÍA ---------------------------------------------",
+"   Mục 3.6. Chỉ vẽ một cạnh: border-top, border-right, border-bottom,",
+"   border-left. Cách gạch chân tiêu đề gọn nhất, khỏi cần thẻ hr.      */",
+"h2 {",
+"  color: #0f3d6e;",
+"  border-bottom: 3px solid #1f6feb;",
+"  padding-bottom: 6px;",
+"}",
+"",
+"",
+"/* --- A7. VIẾT RÚT GỌN NỀN -------------------------------------------",
+"   Mục 3.5. Bốn khai báo ở A2 gộp được thành một dòng background.",
+"   Thứ tự các giá trị không bắt buộc, trình duyệt tự nhận ra loại nào.",
+"",
+"   Bỏ chú thích dòng dưới, tải lại: kết quả y hệt A2.                  */",
+"/* header { background: url(\"nen.svg\") no-repeat center / cover; } */",
+"",
+"",
+"/* --- A8. !important --------------------------------------------------",
+"   Mục 3.2. Dán vào cuối một khai báo thì nó thắng MỌI quy tắc khác,",
+"   kể cả bộ chọn id, kể cả thuộc tính style viết trên thẻ.",
+"",
+"   Nói thẳng với lớp: biết để ĐỌC ĐƯỢC mã người khác, đừng dùng.",
+"   Dùng nó là phá vỡ luật độ ưu tiên đã học buổi 1, và lần sau muốn",
+"   ghi đè lại thì phải thêm một !important nữa — không có đường lùi.",
+"",
+"   Bỏ chú thích dòng dưới để thấy nó đè cả A6.                        */",
+"/* h2 { border-bottom: 3px dotted #b0730d !important; } */",
+"",
+"",
+"/* =====================================================================",
+"   PHẦN B  —  CÁC THÀNH PHẦN BÊN TRONG",
+"   ===================================================================== */",
+"",
+"",
+"/* --- B1. DANH SÁCH ---------------------------------------------------",
+"   Mục 3.9. list-style-type đổi ký hiệu đầu dòng:",
+"     disc  circle  square  none          cho ul",
+"     decimal  upper-roman  lower-alpha   cho ol",
+"",
+"   Còn list-style-position (ký hiệu nằm trong hay ngoài lề) và",
+"   list-style-image (thay ký hiệu bằng ảnh) thì tra khi cần.           */",
+".viec {",
+"  list-style-type: square;",
+"  line-height: 1.8;",
+"}",
+"",
+"",
+"/* --- B2. MENU LÀM TỪ DANH SÁCH --------------------------------------",
+"   Mục 3.9. Menu thực chất là một ul bị bỏ hết ký hiệu đầu dòng và bỏ",
+"   thụt lề mặc định của trình duyệt.",
+"",
+"   Muốn menu NẰM NGANG thì cần thuộc tính display, mà display là mục",
+"   4.7 của chương sau. Buổi này dừng ở menu dọc.                       */",
+"nav ul {",
+"  list-style-type: none;",
+"  margin: 0;",
+"  padding: 10px 24px;",
+"  background-color: #0f3d6e;",
+"}",
+"",
+"nav li {",
+"  margin: 4px 0;",
+"}",
+"",
+"",
+"/* --- B3. TRẠNG THÁI CỦA LIÊN KẾT ------------------------------------",
+"   Mục 3.10. Một thẻ a có nhiều trạng thái, mỗi trạng thái tô riêng:",
+"",
+"     a           bình thường",
+"     a:visited   trang đã từng vào",
+"     a:hover     đang rê chuột lên",
+"     a:active    đang bấm giữ",
+"",
+"   Buổi này dùng hai cái đầu và hover là đủ. Nếu tô cả bốn thì phải",
+"   viết đúng thứ tự trên, viết sai thì hover không ăn.                 */",
+"nav a {",
+"  color: #cfe3f6;",
+"  text-decoration: none;",
+"}",
+"",
+"nav a:visited {",
+"  color: #b9cfe6;",
+"}",
+"",
+"nav a:hover {",
+"  color: #ffffff;",
+"  text-decoration: underline;",
+"}",
+"",
+"",
+"/* --- B4. BẢNG --------------------------------------------------------",
+"   Mục 3.8. border-collapse là thuộc tính quan trọng nhất của bảng.",
+"",
+"   Mặc định là separate: mỗi ô tự vẽ viền riêng nên hai ô cạnh nhau ra",
+"   HAI đường kẻ song song, nhìn như bị lỗi. Đặt collapse thì các viền",
+"   nhập làm một.",
+"",
+"   DỪNG LẠI HỎI LỚP trước khi chiếu: bỏ dòng border-collapse đi thì",
+"   bảng trông thế nào? Rồi bỏ thật cho cả lớp xem.                     */",
+"table {",
+"  border-collapse: collapse;",
+"  width: 100%;",
+"  margin-bottom: 8px;",
+"}",
+"",
+"caption {",
+"  text-align: left;",
+"  font-weight: bold;",
+"  padding-bottom: 6px;",
+"}",
+"",
+"th, td {",
+"  border: 1px solid #c8d2dd;",
+"  padding: 8px 10px;",
+"  text-align: left;",
+"}",
+"",
+"/* Tô hàng tiêu đề: thead th chỉ trúng ô tiêu đề nằm trong phần đầu",
+"   bảng, không đụng tới ô tiêu đề của hàng nếu có.                     */",
+"thead th {",
+"  background-color: #dbe9f7;",
+"  color: #0f3d6e;",
+"}",
+"",
+"/* Cột số căn phải cho dễ so sánh. Đây là bộ chọn hậu duệ đã học",
+"   buổi 1, nay dùng vào việc thật.                                     */",
+"tbody td:last-child {",
+"  text-align: right;",
+"}",
+"",
+"/* Thử chế độ separate rồi quay lại collapse, để thấy border-spacing",
+"   chỉ có nghĩa khi ở chế độ separate.                                 */",
+"/* table { border-collapse: separate; border-spacing: 4px; } */",
+"",
+"",
+"/* --- B5. BIỂU MẪU ----------------------------------------------------",
+"   Mục 3.11. Ô nhập mặc định của trình duyệt xấu và bé. Ba thuộc tính",
+"   là đủ để nó tử tế: border, padding, width.",
+"",
+"   Chọn ô nhập bằng chính tên thẻ input và textarea. Muốn tách riêng",
+"   từng loại ô thì cần bộ chọn thuộc tính, phần đó tra khi cần.        */",
+"input, textarea {",
+"  border: 1px solid #c8d2dd;",
+"  border-radius: 6px;",
+"  padding: 8px 10px;",
+"  width: 260px;",
+"  font-family: inherit;",
+"  font-size: 14px;",
+"}",
+"",
+"label {",
+"  display: inline-block;",
+"  width: 110px;",
+"}",
+"",
+"",
+"/* --- B6. NÚT ---------------------------------------------------------",
+"   Mục 3.11. Nút cũng là một hộp: nền, viền, đệm.",
+"   Thêm cursor: pointer để con trỏ đổi thành bàn tay khi rê lên —",
+"   dấu hiệu cho người dùng biết chỗ này bấm được.                      */",
+"button {",
+"  background-color: #1f6feb;",
+"  color: #ffffff;",
+"  border: none;",
+"  border-radius: 6px;",
+"  padding: 10px 18px;",
+"  font-size: 14px;",
+"  cursor: pointer;",
+"}",
+"",
+"button:hover {",
+"  background-color: #0f3d6e;",
+"}",
+"",
+"",
+"/* --- B7. KHUNG CHUNG CHO PHẦN THÂN VÀ CHÂN TRANG --------------------- */",
+"main {",
+"  padding: 20px 24px;",
+"}",
+"",
+"footer {",
+"  background-color: #0f3d6e;",
+"  color: #cfe3f6;",
+"  padding: 14px 24px;",
+"  font-size: 13px;",
+"}",
+"",
+"",
+"/* =====================================================================",
+"   B8. BIẾN CSS  —  mục 3.12",
+"   Phần chốt của cả buổi. Để tới đây mới dạy là có chủ ý.",
+"",
+"   Nhìn ngược lên toàn bộ tệp: mã màu #0f3d6e xuất hiện SÁU lần, mã",
+"   #1f6feb xuất hiện BỐN lần. Muốn đổi màu chủ đạo của trang thì phải",
+"   đi sửa mười chỗ, sót một chỗ là lệch màu.",
+"",
+"   Biến CSS gom chúng về một chỗ:",
+"     khai báo   --ten-bien: giá-trị;   đặt trong :root",
+"     sử dụng    thuộc-tính: var(--ten-bien);",
+"",
+"   :root là toàn bộ tài liệu, nên biến khai báo ở đó dùng được mọi nơi.",
+"   Tên biến bắt buộc mở đầu bằng hai dấu gạch ngang.",
+"",
+"   Bốn quy tắc dưới đây viết lại bằng biến. Chúng đặt ở CUỐI tệp nên",
+"   thắng các quy tắc cùng hạng phía trên — đúng luật thứ tự buổi 1.",
+"",
+"   Thử trên lớp: đổi một dòng --mau-chinh rồi tải lại, cả trang đổi.",
+"   ===================================================================== */",
+"",
+":root {",
+"  --mau-chinh: #0f3d6e;",
+"  --mau-phu: #1f6feb;",
+"  --bo-goc: 10px;",
+"}",
+"",
+"nav ul {",
+"  background-color: var(--mau-chinh);",
+"}",
+"",
+".the {",
+"  border: 2px solid var(--mau-phu);",
+"  border-radius: var(--bo-goc);",
+"}",
+"",
+"button {",
+"  background-color: var(--mau-phu);",
+"  border-radius: var(--bo-goc);",
+"}",
+"",
+"footer {",
+"  background-color: var(--mau-chinh);",
+"}"
+].join('\n');
+
+/* ---------- quy tắc CSS giải thích cho từng vùng ---------- */
+var RULES = {
+  body: {
+    sel:"body", kind:"Mục 3.5", lang:"css",
+    def:"Màu nền cho cả trang. Đặt ở body thì mọi chỗ chưa có nền riêng đều lấy màu này.",
+    code:"body {\n  background-color: #eef2f6;\n  margin: 0;\n}",
+    out:"<div style=\"background:#eef2f6;padding:14px;border:1px solid #dfe4ea;font-size:13px\">Cả trang lấy nền từ đây.</div>",
+    note:"margin: 0 để trang sát mép, vì trình duyệt tự chừa sẵn một khoảng 8px quanh body."
+  },
+  header: {
+    sel:"header", kind:"Mục 3.5", lang:"css",
+    def:"Ảnh nền cần bốn thuộc tính đi liền nhau. Thiếu cái nào cũng ra kết quả sai.",
+    code:"header {\n  background-image: url(\"nen.svg\");\n  background-repeat: no-repeat;\n  background-size: cover;\n  background-position: center;\n}",
+    out:"<div style=\"font-size:12.5px\"><div style=\"background:#0f3d6e;color:#fff;padding:14px;text-align:center\">có đủ bốn thuộc tính</div><div style=\"margin-top:6px;border:1px dashed #dfe4ea;padding:6px;color:#8a4b06\">quên no-repeat → ảnh lặp thành lưới<br>quên cover → ảnh bé tí nằm góc trái</div></div>",
+    note:"Sai đường dẫn trong url() thì không báo lỗi gì cả, chỉ là không thấy ảnh. Đó là lỗi khó tìm nhất của mục này."
+  },
+  lopphu: {
+    sel:".lop-phu", kind:"Mục 3.4 · 3.7", lang:"css",
+    def:"Đặt ảnh nền xong là chữ khó đọc ngay. Một lớp màu mờ phủ lên, cộng bóng đổ cho chữ, là chữa được.",
+    code:".lop-phu {\n  background-color: rgba(15, 61, 110, 0.55);\n  color: #ffffff;\n}\n\n.lop-phu h1 {\n  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);\n}",
+    out:"<div style=\"background:#0f3d6e;padding:2px\"><div style=\"background:rgba(15,61,110,.55);color:#fff;padding:12px;text-align:center\"><b style=\"text-shadow:2px 2px 6px rgba(0,0,0,.6)\">Câu lạc bộ Tin học</b></div></div>",
+    note:"rgba chỉ làm mờ NỀN, chữ vẫn đậm nguyên. opacity thì làm mờ CẢ KHỐI, chữ mờ theo luôn. Đây là chỗ nhầm nhiều nhất của buổi."
+  },
+  the: {
+    sel:".the", kind:"Mục 3.6", lang:"css",
+    def:"Viền viết rút gọn ba giá trị theo thứ tự: độ rộng, kiểu, màu. Thêm border-radius để bo góc.",
+    code:".the {\n  border: 2px solid #1f6feb;\n  border-radius: 10px;\n  background-color: #ffffff;\n  padding: 14px 16px;\n}",
+    out:"<div style=\"border:2px solid #1f6feb;border-radius:10px;background:#fff;padding:10px;font-size:13px\">Một khối có viền và bo góc.</div>",
+    note:"Năm kiểu viền hay dùng: solid, dashed, dotted, double, none. Viết tách rời bằng border-width, border-style, border-color cũng được nhưng ít ai dùng."
+  },
+  h2: {
+    sel:"h2", kind:"Mục 3.6", lang:"css",
+    def:"Viền từng phía: border-top, border-right, border-bottom, border-left. Chỉ vẽ một cạnh.",
+    code:"h2 {\n  border-bottom: 3px solid #1f6feb;\n  padding-bottom: 6px;\n}",
+    out:"<div style=\"font-size:16px;color:#0f3d6e;font-weight:bold;border-bottom:3px solid #1f6feb;padding-bottom:5px\">Giới thiệu</div>",
+    note:"Cách gạch chân tiêu đề gọn nhất, khỏi phải chèn thêm thẻ hr vào HTML. Nhớ thêm padding-bottom cho chữ không dính vào đường kẻ."
+  },
+  navul: {
+    sel:"nav ul", kind:"Mục 3.9", lang:"css",
+    def:"Menu thực chất là một danh sách bị bỏ hết ký hiệu đầu dòng và bỏ thụt lề mặc định.",
+    code:"nav ul {\n  list-style-type: none;\n  margin: 0;\n  padding: 10px 24px;\n  background-color: #0f3d6e;\n}",
+    out:"<div style=\"background:#0f3d6e;padding:8px 12px\"><ul style=\"list-style-type:none;margin:0;padding:0;color:#cfe3f6;font-size:13px\"><li>Giới thiệu</li><li>Lịch sinh hoạt</li></ul></div>",
+    note:"Muốn menu nằm ngang thì cần thuộc tính display, mà display là mục 4.7 của chương sau. Buổi này dừng ở menu dọc."
+  },
+  viec: {
+    sel:".viec", kind:"Mục 3.9", lang:"css",
+    def:"list-style-type đổi ký hiệu đầu dòng. Cho ul: disc, circle, square, none. Cho ol: decimal, upper-roman, lower-alpha.",
+    code:".viec {\n  list-style-type: square;\n  line-height: 1.8;\n}",
+    out:"<ul style=\"list-style-type:square;line-height:1.8;font-size:13px;margin:0\"><li>Lớp HTML và CSS</li><li>Nhóm đọc tài liệu</li></ul>",
+    note:"Còn list-style-position quyết định ký hiệu nằm trong hay ngoài lề, và list-style-image thay ký hiệu bằng ảnh. Hai cái đó tra khi cần."
+  },
+  navlink: {
+    sel:"nav a:hover", kind:"Mục 3.10", lang:"css",
+    def:"Một thẻ a có nhiều trạng thái: bình thường, đã vào rồi, đang rê chuột, đang bấm giữ.",
+    code:"nav a {\n  color: #cfe3f6;\n  text-decoration: none;\n}\n\nnav a:visited {\n  color: #b9cfe6;\n}\n\nnav a:hover {\n  color: #ffffff;\n  text-decoration: underline;\n}",
+    out:"<div style=\"background:#0f3d6e;padding:10px;font-size:13px\"><a href=\"#\" style=\"color:#cfe3f6;text-decoration:none\">rê chuột lên đây</a></div>",
+    note:"Tô cả bốn trạng thái thì phải viết đúng thứ tự a, a:visited, a:hover, a:active. Viết sai thứ tự thì hover không ăn mà không báo lỗi gì."
+  },
+  table: {
+    sel:"table", kind:"Mục 3.8", lang:"css",
+    def:"border-collapse là thuộc tính quan trọng nhất của bảng. Mặc định separate cho ra hai lớp viền chồng nhau.",
+    code:"table {\n  border-collapse: collapse;\n  width: 100%;\n}\n\nth, td {\n  border: 1px solid #c8d2dd;\n  padding: 8px 10px;\n}",
+    out:"<div style=\"font-size:12px\"><table style=\"border-collapse:collapse;margin-bottom:6px\"><tr><td style=\"border:1px solid #c8d2dd;padding:4px 8px\">collapse</td><td style=\"border:1px solid #c8d2dd;padding:4px 8px\">một lớp kẻ</td></tr></table><table style=\"border-collapse:separate;border-spacing:0\"><tr><td style=\"border:1px solid #c8d2dd;padding:4px 8px\">separate</td><td style=\"border:1px solid #c8d2dd;padding:4px 8px\">hai lớp kẻ</td></tr></table></div>",
+    note:"Bỏ dòng border-collapse đi thì mỗi ô tự vẽ viền riêng, hai ô cạnh nhau ra hai đường song song, nhìn như bị lỗi. border-spacing chỉ có tác dụng khi ở chế độ separate."
+  },
+  thead: {
+    sel:"thead th", kind:"Mục 3.8", lang:"css",
+    def:"Tô riêng hàng tiêu đề. Bộ chọn hậu duệ thead th chỉ trúng ô tiêu đề nằm trong phần đầu bảng.",
+    code:"thead th {\n  background-color: #dbe9f7;\n  color: #0f3d6e;\n}\n\ntbody td:last-child {\n  text-align: right;\n}",
+    out:"<table style=\"border-collapse:collapse;font-size:12px\"><thead><tr><th style=\"background:#dbe9f7;color:#0f3d6e;border:1px solid #c8d2dd;padding:4px 8px\">Buổi</th><th style=\"background:#dbe9f7;color:#0f3d6e;border:1px solid #c8d2dd;padding:4px 8px\">Số người</th></tr></thead><tbody><tr><td style=\"border:1px solid #c8d2dd;padding:4px 8px\">1</td><td style=\"border:1px solid #c8d2dd;padding:4px 8px;text-align:right\">32</td></tr></tbody></table>",
+    note:"Cột số nên căn phải cho dễ so sánh hàng nọ với hàng kia. Còn caption-side, empty-cells và vertical-align thì tra khi cần."
+  },
+  input: {
+    sel:"input, textarea", kind:"Mục 3.11", lang:"css",
+    def:"Ô nhập mặc định của trình duyệt xấu và bé. Ba thuộc tính là đủ cho nó tử tế: border, padding, width.",
+    code:"input, textarea {\n  border: 1px solid #c8d2dd;\n  border-radius: 6px;\n  padding: 8px 10px;\n  width: 260px;\n  font-family: inherit;\n}",
+    out:"<div style=\"font-size:13px\"><input style=\"border:1px solid #c8d2dd;border-radius:6px;padding:7px 9px;width:200px;font-family:inherit\" placeholder=\"Nguyễn Phúc An\"></div>",
+    note:"font-family: inherit là cần, vì ô nhập không tự thừa kế font của trang mà dùng font riêng của hệ điều hành."
+  },
+  button: {
+    sel:"button", kind:"Mục 3.11", lang:"css",
+    def:"Nút cũng chỉ là một cái hộp: nền, viền, đệm. Thêm cursor để con trỏ đổi thành bàn tay.",
+    code:"button {\n  background-color: #1f6feb;\n  color: #ffffff;\n  border: none;\n  border-radius: 6px;\n  padding: 10px 18px;\n  cursor: pointer;\n}",
+    out:"<button style=\"background:#1f6feb;color:#fff;border:none;border-radius:6px;padding:8px 14px;cursor:pointer;font-size:13px\">Gửi đăng ký</button>",
+    note:"cursor: pointer là dấu hiệu cho người dùng biết chỗ này bấm được. Thiếu nó thì nút trông như một mảng màu chết."
+  },
+  root: {
+    sel:":root và var()", kind:"Mục 3.12", lang:"css",
+    def:"Gom giá trị dùng lại nhiều lần về một chỗ. Khai báo trong :root thì cả tài liệu dùng được.",
+    code:":root {\n  --mau-chinh: #0f3d6e;\n  --mau-phu: #1f6feb;\n  --bo-goc: 10px;\n}\n\nnav ul {\n  background-color: var(--mau-chinh);\n}\n\n.the {\n  border: 2px solid var(--mau-phu);\n  border-radius: var(--bo-goc);\n}",
+    out:"<div style=\"font-size:12.5px\">Trong tệp demo, mã màu #0f3d6e xuất hiện <b>sáu</b> lần, #1f6feb xuất hiện <b>bốn</b> lần.<div style=\"margin-top:6px;padding:8px;background:#e8f1fe;border-radius:6px\">Đổi một dòng <code>--mau-chinh</code> → cả trang đổi màu.</div></div>",
+    note:"Tên biến bắt buộc mở đầu bằng hai dấu gạch ngang. Khai báo ở :root là khai báo cho toàn bộ tài liệu, nên mọi thẻ đều dùng được."
+  }
+};
+
+var EX = [
+ {
+  "no": "Bài 1",
+  "topic": "Cụm A · Mặt phẳng và mảng màu",
+  "title": "Nền, ảnh nền và viền",
+  "goal": "Làm ngay tại lớp, viết tiếp vào cặp <code>index.html</code> và <code>style.css</code> của buổi 1. Khoảng 30 phút.",
+  "reqs": [
+   "<b>Nền trang:</b> đặt <code>background-color</code> cho <code>body</code>.",
+   "<b>Ảnh nền:</b> tạo tệp <code>nen.svg</code> bốn dòng theo mẫu trong đề, đặt làm <code>background-image</code> cho <code>&lt;header&gt;</code> bằng <code>url()</code>, kèm <code>background-repeat: no-repeat</code>, <code>background-size: cover</code> và <code>background-position: center</code>.",
+   "<b>Lớp phủ:</b> thêm một <code>&lt;div&gt;</code> <b>bên trong</b> <code>&lt;header&gt;</code>, bọc lấy tiêu đề. Đặt cho nó nền <code>rgba()</code> nửa trong suốt và thêm <code>text-shadow</code> cho chữ tiêu đề.",
+   "<b>Viền:</b> một khối bất kỳ có <code>border</code> viết dạng ba giá trị và <code>border-radius</code>.",
+   "<b>Viền từng phía:</b> <code>border-bottom</code> gạch chân cho <code>h2</code>, nhớ thêm <code>padding-bottom</code>.",
+   "<b>Viết rút gọn:</b> gộp bốn khai báo <code>background-*</code> ở yêu cầu 2 thành một dòng <code>background</code>, xác nhận trang không đổi."
+  ]
+ },
+ {
+  "no": "Bài 2",
+  "topic": "Cụm B · Các thành phần bên trong",
+  "title": "Danh sách, bảng, biểu mẫu và biến CSS",
+  "goal": "Làm ở nhà, khoảng 60 phút. Đây là bài nộp chính của chương 3.",
+  "reqs": [
+   "<b>Menu:</b> danh sách trong <code>&lt;nav&gt;</code> bỏ ký hiệu đầu dòng bằng <code>list-style-type: none</code>, bỏ thụt lề mặc định, đặt nền riêng.",
+   "<b>Liên kết:</b> đặt màu và bỏ gạch chân cho <code>nav a</code>, rồi đổi màu khi <code>a:hover</code> và <code>a:visited</code>.",
+   "<b>Danh sách khác:</b> một <code>&lt;ul&gt;</code> khác trên trang đổi <code>list-style-type</code>.",
+   "<b>Bảng:</b> <code>border-collapse: collapse</code>, <code>padding</code> trong ô, tô màu hàng tiêu đề bằng <code>thead th</code>, căn phải cột số.",
+   "<b>So sánh hai chế độ bảng:</b> thử <code>border-collapse: separate</code> kèm <code>border-spacing</code>, ghi nhận xét vào chú thích rồi trả về <code>collapse</code>.",
+   "<b>Biểu mẫu:</b> nối <b>chính tệp <code>style.css</code> đó</b> vào <code>lien-he.html</code> của tuần 4, rồi đặt <code>border</code>, <code>padding</code>, <code>width</code> cho <code>input</code> và <code>textarea</code>.",
+   "<b>Nút:</b> <code>background-color</code>, <code>border</code>, <code>padding</code>, <code>border-radius</code> và <code>cursor: pointer</code> cho <code>button</code>.",
+   "<b>Biến CSS:</b> gom màu chủ đạo và bán kính bo góc vào <code>:root</code>, dùng <code>var()</code> ít nhất <b>bốn chỗ</b>. Đổi một dòng thì <b>cả hai trang</b> phải đổi theo.",
+   "<b>Kiểm tra:</b> cả hai tệp HTML qua <code>validator.w3.org</code> và tệp CSS qua <code>jigsaw.w3.org/css-validator</code>, không còn lỗi."
+  ]
+ }
+];
+
+var HINT = {
+  "Bài 1": {code:"/* viet tiep vao style.css cua buoi 1 */\n\nbody {\n  background-color: ___;\n}\n\n/* nen.svg dat cung thu muc voi style.css */\nheader {\n  background-image: url(\"___\");\n  background-repeat: ___;\n  background-size: ___;\n  background-position: ___;\n}\n\n/* khoi con nam trong header, boc lay tieu de */\n.___ {\n  background-color: rgba(___, ___, ___, ___);\n  color: ___;\n  padding: ___;\n}\n\n.___ h1 {\n  text-shadow: ___ ___ ___ rgba(0, 0, 0, ___);\n}\n\n/* vien viet rut gon: do rong - kieu - mau */\n.___ {\n  border: ___ ___ ___;\n  border-radius: ___;\n}\n\nh2 {\n  border-bottom: ___ ___ ___;\n  padding-bottom: ___;\n}", warn:"Sai đường dẫn trong <code>url()</code> thì trình duyệt <b>không báo lỗi gì cả</b>, chỉ là không thấy ảnh — kiểm tra tên tệp và chỗ đặt tệp trước khi nghĩ là mình viết sai CSS. Quên <code>no-repeat</code> thì ảnh lặp thành lưới ô vuông; quên <code>cover</code> thì ảnh bé tí nằm góc trên trái. Lớp phủ phải là một khối <b>nằm trong</b> header và bọc lấy tiêu đề, không phải khối đặt cạnh header. Đừng dùng <code>opacity</code> thay cho <code>rgba</code>: <code>opacity</code> làm mờ cả chữ bên trong."},
+  "Bài 2": {code:"/* menu lam tu danh sach */\nnav ul {\n  list-style-type: ___;\n  margin: ___;\n  padding: ___;\n  background-color: ___;\n}\n\n/* ba trang thai cua lien ket, viet dung thu tu nay */\nnav a          { color: ___; text-decoration: ___; }\nnav a:visited  { color: ___; }\nnav a:hover    { color: ___; text-decoration: ___; }\n\n/* bang: thieu border-collapse la ra hai lop ke */\ntable {\n  border-collapse: ___;\n  width: ___;\n}\n\nth, td {\n  border: ___ ___ ___;\n  padding: ___;\n}\n\nthead th {\n  background-color: ___;\n}\n\n/* o nhap: ba thuoc tinh la du */\ninput, textarea {\n  border: ___ ___ ___;\n  padding: ___;\n  width: ___;\n}\n\nbutton {\n  background-color: ___;\n  border: ___;\n  padding: ___;\n  cursor: ___;\n}\n\n/* --- BIEN: lam SAU CUNG, khi mau da rai khap noi --- */\n:root {\n  --___: ___;\n  --___: ___;\n}\n\n/* roi viet lai vai quy tac o tren bang var() */\n___ {\n  background-color: var(--___);\n}", warn:"Thiếu <code>border-collapse: collapse</code> thì mỗi ô tự vẽ viền riêng, hai ô cạnh nhau ra hai đường kẻ song song — nhìn như bị lỗi nhưng thật ra là mặc định của trình duyệt. Tô cả ba trạng thái liên kết thì phải viết đúng thứ tự <code>a</code> → <code>a:visited</code> → <code>a:hover</code>, viết sai thì hover không ăn. Ô nhập không tự thừa kế font của trang, muốn nó cùng font thì thêm <code>font-family: inherit</code>. Phần biến để <b>làm sau cùng</b>: gom màu về <code>:root</code> chỉ có ý nghĩa khi màu đã rải khắp menu, bảng, biểu mẫu và nút. Tên biến bắt buộc mở đầu bằng hai dấu gạch ngang."}
+};
+
+var CHECK = [["background-color", "Màu nền cho trang và cho khối", "Bài 1 và 2"], ["background-image url()", "Ảnh nền, đường dẫn tương đối", "Bài 1"], ["background-repeat", "no-repeat để ảnh không lặp", "Bài 1"], ["background-size", "cover để ảnh phủ kín khối", "Bài 1"], ["background-position", "Chọn phần ảnh được giữ lại", "Bài 1"], ["background (rút gọn)", "Gộp bốn khai báo thành một dòng", "Bài 1"], ["rgba()", "Màu kèm độ trong suốt cho lớp phủ", "Bài 1"], ["text-shadow", "Bóng đổ cho chữ nằm trên ảnh", "Bài 1"], ["border", "Viết rút gọn: độ rộng, kiểu, màu", "Bài 1 và 2"], ["border-bottom", "Viền một phía, gạch chân tiêu đề", "Bài 1"], ["border-radius", "Bo góc", "Bài 1 và 2"], ["list-style-type", "Đổi hoặc bỏ ký hiệu đầu dòng", "Bài 2"], ["a · a:visited · a:hover", "Ba trạng thái của liên kết", "Bài 2"], ["text-decoration", "Bỏ hoặc thêm gạch chân", "Bài 2"], ["border-collapse", "Gộp viền các ô của bảng", "Bài 2"], ["border-spacing", "Chỉ có tác dụng khi separate", "Bài 2"], ["thead th", "Tô riêng hàng tiêu đề", "Bài 2"], ["padding trong ô", "Chữ không dính vào đường kẻ", "Bài 2"], ["input · textarea", "border, padding, width", "Bài 2"], ["cursor: pointer", "Con trỏ đổi thành bàn tay trên nút", "Bài 2"], ["--ten-bien và var()", "Gom giá trị dùng lại về :root", "Bài 2"], ["<i>biết để tra</i>", "hsl() · opacity · background-attachment · border-style/width/color tách rời · caption-side · empty-cells · vertical-align · list-style-position · list-style-image · outline · text-indent · word-spacing · direction · !important · thuộc tính all · bộ chọn thuộc tính · phần tử giả", "—"]];
+
+var TIPS = [
+ "Mở trang, nhìn phần đầu: ảnh nền có hiện không, có bị lặp không, chữ tiêu đề có đọc được trên ảnh không.",
+ "Bấm thử từng mục trong menu, rê chuột lên xem màu có đổi không.",
+ "Nhìn bảng: mỗi đường kẻ chỉ được <b>một lớp</b>. Thấy hai đường song song là thiếu <code>border-collapse</code>.",
+ "Mở <code>lien-he.html</code> kiểm tra xem tệp CSS đã ăn sang trang đó chưa — nếu chưa thì xem lại thẻ <code>&lt;link&gt;</code> ở trang đó.",
+ "Đổi <b>một dòng</b> biến màu ở <code>:root</code>, tải lại <b>cả hai trang</b>. Chỗ nào không đổi theo là chỗ đó còn ghi mã màu cứng, phải sửa thành <code>var()</code>.",
+ "Vào <code>validator.w3.org</code> kiểm tra hai tệp HTML, rồi <code>jigsaw.w3.org/css-validator</code> kiểm tra tệp CSS."
+];
+
+var FILES = [{"n": "demo-css-buoi2.html", "t": "text/html;charset=utf-8", "u": "Trang mẫu, toàn thẻ đã học ở chương 2", "kb": "3,0 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+RGVtbyBDU1MgLSBCdeG7lWkgMjwvdGl0bGU+CgogIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgIFThu4dwIEhUTUwgbsOgeSBLSMOUTkcgY8OzIGfDrCBt4bubaSBzbyB24bubaSBjaMawxqFuZyAyLiBUb8OgbiB0aOG6uyDEkcOjIGjhu41jOgogICAgICAgaGVhZGVyLCBuYXYsIHVsLCBtYWluLCBzZWN0aW9uLCB0YWJsZSwgZm9ybSwgZm9vdGVyLgoKICAgICAgIEPDoWkgbeG7m2kgbuG6sW0gaOG6v3Qg4bufIHThu4dwIENTUy4gTeG7nyBoYWkgdOG7h3AgY+G6oW5oIG5oYXUga2hpIGdp4bqjbmcuCiAgICAgICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9ImRlbW8tY3NzLWJ1b2kyLmNzcyI+CjwvaGVhZD4KPGJvZHk+CgogIDwhLS0gUGjhuqduIMSR4bqndSB0cmFuZyBz4bq9IG1hbmcg4bqiTkggTuG7gE4uIFRo4bq7IGRpdiBiw6puIHRyb25nIGzDoCBM4buaUCBQSOG7pgogICAgICAgbcOgdSBt4budLCDEkeG7gyBjaOG7ryB0cuG6r25nIMSR4buNYyDEkcaw4bujYyB0csOqbiDhuqNuaC4gSGFpIGzhu5twIGzhu5NuZyBuaGF1LCBraMO0bmcKICAgICAgIGPhuqduIGvhu7kgdGh14bqtdCBnw6wgY+G7p2EgY2jGsMahbmcgNC4gLS0+CiAgPGhlYWRlcj4KICAgIDxkaXYgY2xhc3M9ImxvcC1waHUiPgogICAgICA8aDE+Q8OidSBs4bqhYyBi4buZIFRpbiBo4buNYzwvaDE+CiAgICAgIDxwIGNsYXNzPSJjaGFtLW5nb24iPkjhu41jIGPDuW5nIG5oYXUsIGzDoG0gY8O5bmcgbmhhdTwvcD4KICAgIDwvZGl2PgogIDwvaGVhZGVyPgoKICA8bmF2PgogICAgPHVsPgogICAgICA8bGk+PGEgaHJlZj0iI2dpb2ktdGhpZXUiPkdp4bubaSB0aGnhu4d1PC9hPjwvbGk+CiAgICAgIDxsaT48YSBocmVmPSIjbGljaCI+TOG7i2NoIHNpbmggaG/huqF0PC9hPjwvbGk+CiAgICAgIDxsaT48YSBocmVmPSIjZGFuZy1reSI+xJDEg25nIGvDvTwvYT48L2xpPgogICAgPC91bD4KICA8L25hdj4KCiAgPG1haW4+CgogICAgPHNlY3Rpb24gaWQ9Imdpb2ktdGhpZXUiPgogICAgICA8aDI+R2nhu5tpIHRoaeG7h3U8L2gyPgoKICAgICAgPCEtLSBLaOG7kWkgbsOgeSBz4bq9IMSRxrDhu6NjIMSRw7NuZyBraHVuZzogdmnhu4FuLCBibyBnw7NjLCBu4buBbiByacOqbmcuIC0tPgogICAgICA8ZGl2IGNsYXNzPSJ0aGUiPgogICAgICAgIDxwPkPDonUgbOG6oWMgYuG7mSBzaW5oIGhv4bqhdCBjaGnhu4F1IHRo4bupIHTGsCBo4bqxbmcgdHXhuqduIHThuqFpIHBow7JuZyAzMDUgbmjDoCBBMi4KICAgICAgICAgICBN4buNaSBzaW5oIHZpw6puIHRyb25nIGtob2EgxJHhu4F1IHRoYW0gZ2lhIMSRxrDhu6NjLCBraMO0bmcgY+G6p24gYmnhur90IHRyxrDhu5tjIGfDrC48L3A+CiAgICAgIDwvZGl2PgoKICAgICAgPHVsIGNsYXNzPSJ2aWVjIj4KICAgICAgICA8bGk+TOG7m3AgSFRNTCB2w6AgQ1NTIGNobyBzaW5oIHZpw6puIG7Eg20gbmjhuqV0PC9saT4KICAgICAgICA8bGk+TmjDs20gxJHhu41jIHTDoGkgbGnhu4d1IGvhu7kgdGh14bqtdDwvbGk+CiAgICAgICAgPGxpPkzDoG0gZOG7sSDDoW4gbmjhu48gdGhlbyBuaMOzbSBiYSBuZ8aw4budaTwvbGk+CiAgICAgIDwvdWw+CiAgICA8L3NlY3Rpb24+CgogICAgPHNlY3Rpb24gaWQ9ImxpY2giPgogICAgICA8aDI+TOG7i2NoIHNpbmggaG/huqF0PC9oMj4KCiAgICAgIDx0YWJsZT4KICAgICAgICA8Y2FwdGlvbj5I4buNYyBr4buzIDIwMjYuMTwvY2FwdGlvbj4KICAgICAgICA8dGhlYWQ+CiAgICAgICAgICA8dHI+PHRoPkJ14buVaTwvdGg+PHRoPk7hu5lpIGR1bmc8L3RoPjx0aD5T4buRIG5nxrDhu51pPC90aD48L3RyPgogICAgICAgIDwvdGhlYWQ+CiAgICAgICAgPHRib2R5PgogICAgICAgICAgPHRyPjx0ZD4xPC90ZD48dGQ+TMOgbSBxdWVuIEhUTUw8L3RkPjx0ZD4zMjwvdGQ+PC90cj4KICAgICAgICAgIDx0cj48dGQ+MjwvdGQ+PHRkPkLhuqNuZyB2w6AgZGFuaCBzw6FjaDwvdGQ+PHRkPjI4PC90ZD48L3RyPgogICAgICAgICAgPHRyPjx0ZD4zPC90ZD48dGQ+VMO0IG3DoHUgYuG6sW5nIENTUzwvdGQ+PHRkPjMwPC90ZD48L3RyPgogICAgICAgIDwvdGJvZHk+CiAgICAgIDwvdGFibGU+CiAgICA8L3NlY3Rpb24+CgogICAgPHNlY3Rpb24gaWQ9ImRhbmcta3kiPgogICAgICA8aDI+xJDEg25nIGvDvTwvaDI+CgogICAgICA8Zm9ybSBtZXRob2Q9ImdldCI+CiAgICAgICAgPHA+CiAgICAgICAgICA8bGFiZWwgZm9yPSJ0ZW4iPkjhu40gdsOgIHTDqm46PC9sYWJlbD4KICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0idGVuIiBuYW1lPSJ0ZW4iIHBsYWNlaG9sZGVyPSJOZ3V54buFbiBQaMO6YyBBbiI+CiAgICAgICAgPC9wPgogICAgICAgIDxwPgogICAgICAgICAgPGxhYmVsIGZvcj0ibWFpbCI+RW1haWw6PC9sYWJlbD4KICAgICAgICAgIDxpbnB1dCB0eXBlPSJlbWFpbCIgaWQ9Im1haWwiIG5hbWU9ImVtYWlsIiBwbGFjZWhvbGRlcj0idGVuQHN2Lm5ldS5lZHUudm4iPgogICAgICAgIDwvcD4KICAgICAgICA8cD4KICAgICAgICAgIDxsYWJlbCBmb3I9ImxvaSI+TOG7nWkgbmjhuq9uOjwvbGFiZWw+PGJyPgogICAgICAgICAgPHRleHRhcmVhIGlkPSJsb2kiIG5hbWU9ImxvaW5oYW4iIHJvd3M9IjMiPjwvdGV4dGFyZWE+CiAgICAgICAgPC9wPgogICAgICAgIDxwPjxidXR0b24gdHlwZT0ic3VibWl0Ij5H4butaSDEkcSDbmcga8O9PC9idXR0b24+PC9wPgogICAgICA8L2Zvcm0+CiAgICA8L3NlY3Rpb24+CgogIDwvbWFpbj4KCiAgPGZvb3Rlcj4KICAgIDxwPsKpIDIwMjYgQ8OidSBs4bqhYyBi4buZIFRpbiBo4buNYyAtIEtob2EgQ8O0bmcgbmdo4buHIHRow7RuZyB0aW48L3A+CiAgPC9mb290ZXI+Cgo8L2JvZHk+CjwvaHRtbD4K"}, {"n": "demo-css-buoi2.css", "t": "text/css;charset=utf-8", "u": "Tệp CSS của trang mẫu, chia hai phần A và B", "kb": "11,5 KB", "b": "LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgIERFTU8gQ1NTIOKAlCBCVeG7lEkgMiAgwrcgIENoxrDGoW5nIDMsIG3hu6VjIDMuNSDEkeG6v24gMy4xMgogICBO4buRaSB2w6BvIGRlbW8tY3NzLWJ1b2kyLmh0bWwuIEPhuqduIHRow6ptIHThu4dwIOG6o25oIG5lbi5zdmcgY8O5bmcgdGjGsCBt4bulYy4KCiAgICAgUEjhuqZOIEEg4oCUIE3hurZUIFBI4bqyTkcgVsOAIE3huqJORyBNw4BVCiAgICAgICAgICAgICAgTcOgdSB0cm9uZyBzdeG7kXQgwrcgbuG7gW4gwrcg4bqjbmggbuG7gW4gwrcgdmnhu4FuIMK3IGJvIGfDs2MgwrcgYsOzbmcgY2jhu68KICAgICAgICAgICAgICBUcuG6oyBs4budaSBjw6J1IGjhu49pOiBjw6FpIGjhu5lwIG7DoHkgdHLDtG5nIHJhIHNhby4KICAgICAgICAgICAgICDihpIgZOG6oXkgeG9uZyBjaG8gbMOgbSBUaOG7sWMgaMOgbmggMSBuZ2F5IHThuqFpIGzhu5twCgogICAgIFBI4bqmTiBCIOKAlCBDw4FDIFRIw4BOSCBQSOG6pk4gQsOKTiBUUk9ORwogICAgICAgICAgICAgIERhbmggc8OhY2ggwrcgbGnDqm4ga+G6v3QgwrcgYuG6o25nIMK3IGJp4buDdSBt4bqrdSDCtyBiaeG6v24gQ1NTCiAgICAgICAgICAgICAgVHLhuqMgbOG7nWkgY8OidSBo4buPaTogbmjhu69uZyB0aOG7qSBu4bqxbSB0cm9uZyBo4buZcCB0aMOsIGTDuW5nIHJhIHNhby4KICAgICAgICAgICAgICDihpIgZOG6oXkgeG9uZyBnaWFvIFRo4buxYyBow6BuaCAyIHbhu4EgbmjDoAoKICAgTMawdSDDvSB4dXnDqm4gc3Xhu5F0OiBwYWRkaW5nIHbDoCBtYXJnaW4gdHJvbmcgdOG7h3AgbsOgeSBjaOG7iSBkw7luZyDhu58gbeG7qWMgdOG7kWkKICAgdGhp4buDdSDEkeG7gyBu4buBbiB2w6Agdmnhu4FuIGPDsyBjaOG7lyB0aOG7ny4gSGFpIHRodeG7mWMgdMOtbmggxJHDsyBo4buNYyBr4bu5IOG7nyBjaMawxqFuZyA0LgogICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgUEjhuqZOIEEgIOKAlCAgTeG6tlQgUEjhurJORyBWw4AgTeG6ok5HIE3DgFUKICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovCgoKLyogLS0tIEExLiBO4buATiBUUkFORyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTeG7pWMgMy41LiDEkOG6t3QgbcOgdSBu4buBbiBjaG8gYm9keSBsw6AgY+G6oyB0cmFuZyDEkeG7lWkgdGhlby4gICAgICAgICAgICAgICAgICovCmJvZHkgewogIGZvbnQtZmFtaWx5OiBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmOwogIGNvbG9yOiAjMzMzMzMzOwogIGJhY2tncm91bmQtY29sb3I6ICNlZWYyZjY7CiAgbWFyZ2luOiAwOwp9CgoKLyogLS0tIEEyLiDhuqJOSCBO4buATiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjUuIELhu5FuIHRodeG7mWMgdMOtbmggxJFpIGxp4buBbiBuaGF1LCB0aGnhur91IGPDoWkgbsOgbyBjxaluZyBo4buPbmc6CgogICAgIGJhY2tncm91bmQtaW1hZ2UgICAgIGjDoG0gdXJsKCkgdHLhu48gdOG7m2kgdOG7h3Ag4bqjbmgsIMSRxrDhu51uZyBk4bqrbiBUxq/GoE5HIMSQ4buQSQogICAgIGJhY2tncm91bmQtcmVwZWF0ICAgIG3hurdjIMSR4buLbmggbMOgIHJlcGVhdCwg4bqjbmggbOG6t3AgxJHhuqd5IGto4buRaQogICAgIGJhY2tncm91bmQtc2l6ZSAgICAgIGNvdmVyID0gcGjDs25nIGNobyBwaOG7pyBrw61uLCBjw7MgdGjhu4MgY+G6r3QgYuG7m3QgbcOpcAogICAgIGJhY2tncm91bmQtcG9zaXRpb24gIGNo4buNbiBwaOG6p24gbsOgbyBj4bunYSDhuqNuaCDEkcaw4bujYyBnaeG7ryBs4bqhaQoKICAgQmEgbOG7l2kga2luaCDEkWnhu4NuLCBjaGnhur91IGzhuqduIGzGsOG7o3QgY2hvIGzhu5twIHhlbToKICAgICBzYWkgxJHGsOG7nW5nIGThuqtuICAgICAg4oaSIGtow7RuZyBiw6FvIGzhu5dpIGfDrCwgY2jhu4kgbMOgIGtow7RuZyB0aOG6pXkg4bqjbmgKICAgICBxdcOqbiBuby1yZXBlYXQgICAgIOKGkiDhuqNuaCBs4bq3cCB0aMOgbmggbMaw4bubaSDDtCB2dcO0bmcKICAgICBxdcOqbiBjb3ZlciAgICAgICAgIOKGkiDhuqNuaCBiw6kgdMOtIG7hurFtIGfDs2MgdHLDqm4gdHLDoWkgICAgICAgICAgICAgICAgICAgKi8KaGVhZGVyIHsKICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoIm5lbi5zdmciKTsKICBiYWNrZ3JvdW5kLXJlcGVhdDogbm8tcmVwZWF0OwogIGJhY2tncm91bmQtc2l6ZTogY292ZXI7CiAgYmFja2dyb3VuZC1wb3NpdGlvbjogY2VudGVyOwp9CgoKLyogLS0tIEEzLiBM4buaUCBQSOG7piBWw4AgQsOTTkcgQ0jhu64gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjQgdsOgIDMuNy4gxJDhurd0IOG6o25oIG7hu4FuIHhvbmcgbMOgIGNo4buvIGzhuq1wIHThu6ljIGtow7MgxJHhu41jLiBIYWkgY8OhY2gKICAgY2jhu69hLCBkw7luZyBj4bqjIGhhaSBjw7luZyBsw7pjIHRow6wgY2jhuq9jIMSDbjoKCiAgICAgcmdiYShyLCBnLCBiLCBhKSAgbcOgdSBrw6htIMSR4buZIHRyb25nIHN14buRdCwgYSBjaOG6oXkgdOG7qyAwIHThu5tpIDEKICAgICB0ZXh0LXNoYWRvdyAgICAgICBiw7NuZyDEkeG7lSBzYXUgY2jhu686IGzhu4djaCBuZ2FuZywgbOG7h2NoIGThu41jLCDEkeG7mSBuaG/DqCwgbcOgdQoKICAgxJDDonkgbMOgIHbDrSBk4bulIGJhIG3hu6VjIHNpbmggcmEgbmhhdSBjaOG7qSBraMO0bmcgcGjhuqNpIGJhIG3hu6VjIHLhu51pIHLhuqFjLiAgICAgKi8KLmxvcC1waHUgewogIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMTUsIDYxLCAxMTAsIDAuNTUpOwogIHBhZGRpbmc6IDQ4cHggMjRweDsKICBjb2xvcjogI2ZmZmZmZjsKICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KCi5sb3AtcGh1IGgxIHsKICBtYXJnaW46IDAgMCA4cHg7CiAgdGV4dC1zaGFkb3c6IDJweCAycHggNnB4IHJnYmEoMCwgMCwgMCwgMC42KTsKfQoKLmNoYW0tbmdvbiB7CiAgbWFyZ2luOiAwOwogIGZvbnQtc3R5bGU6IGl0YWxpYzsKICBjb2xvcjogI2RiZTlmNzsKfQoKCi8qIC0tLSBBNC4gcmdiYSBLSMOBQyBvcGFjaXR5IENI4buWIE7DgE8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjQuIEhhaSB0aOG7qSBuaMOsbiBnaeG7kW5nIG5oYXUgbmjGsG5nIGtow6FjIGjhurNuOgoKICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKC4uLikgICBjaOG7iSBO4buATiBt4budLCBjaOG7ryB24bqrbiDEkeG6rW0gbmd1ecOqbgogICAgIG9wYWNpdHk6IDAuNTUgICAgICAgICAgICAgICAgIGzDoG0gbeG7nSBD4bqiIEtI4buQSSwgY2jhu68gbeG7nSB0aGVvIGx1w7RuCgogICBC4buPIGNow7ogdGjDrWNoIGTDsm5nIGTGsOG7m2kgcuG7k2kgdOG6o2kgbOG6oWk6IGNo4buvIHRpw6p1IMSR4buBIG3hu50gxJFpIHRo4bqleSByw7UuCiAgIMSQw6J5IGzDoCBjaOG7lyBzaW5oIHZpw6puIG5o4bqnbSBuaGnhu4F1IG5o4bqldCB0cm9uZyBj4bqjIGJ14buVaS4gICAgICAgICAgICAgICAgICovCi8qIC5sb3AtcGh1IHsgb3BhY2l0eTogMC41NTsgfSAqLwoKCi8qIC0tLSBBNS4gVknhu4BOIFbDgCBCTyBHw5NDIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjYuIFZp4bq/dCByw7p0IGfhu41uIGJhIGdpw6EgdHLhu4sgdGhlbyB0aOG7qSB04buxOiDEkeG7mSBy4buZbmcsIGtp4buDdSwgbcOgdS4KCiAgIE7Eg20ga2nhu4N1IHZp4buBbiBoYXkgZMO5bmc6IHNvbGlkLCBkYXNoZWQsIGRvdHRlZCwgZG91YmxlLCBub25lLgogICBWaeG6v3QgdMOhY2ggcuG7nWkgY8WpbmcgxJHGsOG7o2Mg4oCUIGJvcmRlci13aWR0aCwgYm9yZGVyLXN0eWxlLCBib3JkZXItY29sb3Ig4oCUCiAgIG5oxrBuZyB0aOG7sWMgdOG6vyBn4bqnbiBuaMawIGx1w7RuIGTDuW5nIGThuqFuZyByw7p0IGfhu41uLiAgICAgICAgICAgICAgICAgICAgICAgKi8KLnRoZSB7CiAgYm9yZGVyOiAycHggc29saWQgIzFmNmZlYjsKICBib3JkZXItcmFkaXVzOiAxMHB4OwogIGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7CiAgcGFkZGluZzogMTRweCAxNnB4OwogIG1hcmdpbi1ib3R0b206IDE2cHg7Cn0KCgovKiAtLS0gQTYuIFZJ4buATiBU4buqTkcgUEjDjUEgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIE3hu6VjIDMuNi4gQ2jhu4kgduG6vSBt4buZdCBj4bqhbmg6IGJvcmRlci10b3AsIGJvcmRlci1yaWdodCwgYm9yZGVyLWJvdHRvbSwKICAgYm9yZGVyLWxlZnQuIEPDoWNoIGfhuqFjaCBjaMOibiB0acOqdSDEkeG7gSBn4buNbiBuaOG6pXQsIGto4buPaSBj4bqnbiB0aOG6uyBoci4gICAgICAqLwpoMiB7CiAgY29sb3I6ICMwZjNkNmU7CiAgYm9yZGVyLWJvdHRvbTogM3B4IHNvbGlkICMxZjZmZWI7CiAgcGFkZGluZy1ib3R0b206IDZweDsKfQoKCi8qIC0tLSBBNy4gVknhur5UIFLDmlQgR+G7jE4gTuG7gE4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjUuIELhu5FuIGtoYWkgYsOhbyDhu58gQTIgZ+G7mXAgxJHGsOG7o2MgdGjDoG5oIG3hu5l0IGTDsm5nIGJhY2tncm91bmQuCiAgIFRo4bupIHThu7EgY8OhYyBnacOhIHRy4buLIGtow7RuZyBi4bqvdCBideG7mWMsIHRyw6xuaCBkdXnhu4d0IHThu7Egbmjhuq1uIHJhIGxv4bqhaSBuw6BvLgoKICAgQuG7jyBjaMO6IHRow61jaCBkw7JuZyBkxrDhu5tpLCB04bqjaSBs4bqhaToga+G6v3QgcXXhuqMgeSBo4buHdCBBMi4gICAgICAgICAgICAgICAgICAqLwovKiBoZWFkZXIgeyBiYWNrZ3JvdW5kOiB1cmwoIm5lbi5zdmciKSBuby1yZXBlYXQgY2VudGVyIC8gY292ZXI7IH0gKi8KCgovKiAtLS0gQTguICFpbXBvcnRhbnQgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTeG7pWMgMy4yLiBEw6FuIHbDoG8gY3Xhu5FpIG3hu5l0IGtoYWkgYsOhbyB0aMOsIG7DsyB0aOG6r25nIE3hu4xJIHF1eSB04bqvYyBraMOhYywKICAga+G7gyBj4bqjIGLhu5kgY2jhu41uIGlkLCBr4buDIGPhuqMgdGh14buZYyB0w61uaCBzdHlsZSB2aeG6v3QgdHLDqm4gdGjhursuCgogICBOw7NpIHRo4bqzbmcgduG7m2kgbOG7m3A6IGJp4bq/dCDEkeG7gyDEkOG7jEMgxJDGr+G7okMgbcOjIG5nxrDhu51pIGtow6FjLCDEkeG7q25nIGTDuW5nLgogICBEw7luZyBuw7MgbMOgIHBow6EgduG7oSBsdeG6rXQgxJHhu5kgxrB1IHRpw6puIMSRw6MgaOG7jWMgYnXhu5VpIDEsIHbDoCBs4bqnbiBzYXUgbXXhu5FuCiAgIGdoaSDEkcOoIGzhuqFpIHRow6wgcGjhuqNpIHRow6ptIG3hu5l0ICFpbXBvcnRhbnQgbuG7r2Eg4oCUIGtow7RuZyBjw7MgxJHGsOG7nW5nIGzDuWkuCgogICBC4buPIGNow7ogdGjDrWNoIGTDsm5nIGTGsOG7m2kgxJHhu4MgdGjhuqV5IG7DsyDEkcOoIGPhuqMgQTYuICAgICAgICAgICAgICAgICAgICAgICAgKi8KLyogaDIgeyBib3JkZXItYm90dG9tOiAzcHggZG90dGVkICNiMDczMGQgIWltcG9ydGFudDsgfSAqLwoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICBQSOG6pk4gQiAg4oCUICBDw4FDIFRIw4BOSCBQSOG6pk4gQsOKTiBUUk9ORwogICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCgovKiAtLS0gQjEuIERBTkggU8OBQ0ggLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIE3hu6VjIDMuOS4gbGlzdC1zdHlsZS10eXBlIMSR4buVaSBrw70gaGnhu4d1IMSR4bqndSBkw7JuZzoKICAgICBkaXNjICBjaXJjbGUgIHNxdWFyZSAgbm9uZSAgICAgICAgICBjaG8gdWwKICAgICBkZWNpbWFsICB1cHBlci1yb21hbiAgbG93ZXItYWxwaGEgICBjaG8gb2wKCiAgIEPDsm4gbGlzdC1zdHlsZS1wb3NpdGlvbiAoa8O9IGhp4buHdSBu4bqxbSB0cm9uZyBoYXkgbmdvw6BpIGzhu4EpIHbDoAogICBsaXN0LXN0eWxlLWltYWdlICh0aGF5IGvDvSBoaeG7h3UgYuG6sW5nIOG6o25oKSB0aMOsIHRyYSBraGkgY+G6p24uICAgICAgICAgICAqLwoudmllYyB7CiAgbGlzdC1zdHlsZS10eXBlOiBzcXVhcmU7CiAgbGluZS1oZWlnaHQ6IDEuODsKfQoKCi8qIC0tLSBCMi4gTUVOVSBMw4BNIFThu6ogREFOSCBTw4FDSCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjkuIE1lbnUgdGjhu7FjIGNo4bqldCBsw6AgbeG7mXQgdWwgYuG7iyBi4buPIGjhur90IGvDvSBoaeG7h3UgxJHhuqd1IGTDsm5nIHbDoCBi4buPCiAgIHRo4buldCBs4buBIG3hurdjIMSR4buLbmggY+G7p2EgdHLDrG5oIGR1eeG7h3QuCgogICBNdeG7kW4gbWVudSBO4bqwTSBOR0FORyB0aMOsIGPhuqduIHRodeG7mWMgdMOtbmggZGlzcGxheSwgbcOgIGRpc3BsYXkgbMOgIG3hu6VjCiAgIDQuNyBj4bunYSBjaMawxqFuZyBzYXUuIEJ14buVaSBuw6B5IGThu6tuZyDhu58gbWVudSBk4buNYy4gICAgICAgICAgICAgICAgICAgICAgICovCm5hdiB1bCB7CiAgbGlzdC1zdHlsZS10eXBlOiBub25lOwogIG1hcmdpbjogMDsKICBwYWRkaW5nOiAxMHB4IDI0cHg7CiAgYmFja2dyb3VuZC1jb2xvcjogIzBmM2Q2ZTsKfQoKbmF2IGxpIHsKICBtYXJnaW46IDRweCAwOwp9CgoKLyogLS0tIEIzLiBUUuG6oE5HIFRIw4FJIEPhu6ZBIExJw4pOIEvhur5UIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjEwLiBN4buZdCB0aOG6uyBhIGPDsyBuaGnhu4F1IHRy4bqhbmcgdGjDoWksIG3hu5dpIHRy4bqhbmcgdGjDoWkgdMO0IHJpw6puZzoKCiAgICAgYSAgICAgICAgICAgYsOsbmggdGjGsOG7nW5nCiAgICAgYTp2aXNpdGVkICAgdHJhbmcgxJHDoyB04burbmcgdsOgbwogICAgIGE6aG92ZXIgICAgIMSRYW5nIHLDqiBjaHXhu5l0IGzDqm4KICAgICBhOmFjdGl2ZSAgICDEkWFuZyBi4bqlbSBnaeG7rwoKICAgQnXhu5VpIG7DoHkgZMO5bmcgaGFpIGPDoWkgxJHhuqd1IHbDoCBob3ZlciBsw6AgxJHhu6cuIE7hur91IHTDtCBj4bqjIGLhu5FuIHRow6wgcGjhuqNpCiAgIHZp4bq/dCDEkcO6bmcgdGjhu6kgdOG7sSB0csOqbiwgdmnhur90IHNhaSB0aMOsIGhvdmVyIGtow7RuZyDEg24uICAgICAgICAgICAgICAgICAqLwpuYXYgYSB7CiAgY29sb3I6ICNjZmUzZjY7CiAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwp9CgpuYXYgYTp2aXNpdGVkIHsKICBjb2xvcjogI2I5Y2ZlNjsKfQoKbmF2IGE6aG92ZXIgewogIGNvbG9yOiAjZmZmZmZmOwogIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lOwp9CgoKLyogLS0tIEI0LiBC4bqiTkcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTeG7pWMgMy44LiBib3JkZXItY29sbGFwc2UgbMOgIHRodeG7mWMgdMOtbmggcXVhbiB0cuG7jW5nIG5o4bqldCBj4bunYSBi4bqjbmcuCgogICBN4bq3YyDEkeG7i25oIGzDoCBzZXBhcmF0ZTogbeG7l2kgw7QgdOG7sSB24bq9IHZp4buBbiByacOqbmcgbsOqbiBoYWkgw7QgY+G6oW5oIG5oYXUgcmEKICAgSEFJIMSRxrDhu51uZyBr4bq7IHNvbmcgc29uZywgbmjDrG4gbmjGsCBi4buLIGzhu5dpLiDEkOG6t3QgY29sbGFwc2UgdGjDrCBjw6FjIHZp4buBbgogICBuaOG6rXAgbMOgbSBt4buZdC4KCiAgIEThu6pORyBM4bqgSSBI4buOSSBM4buaUCB0csaw4bubYyBraGkgY2hp4bq/dTogYuG7jyBkw7JuZyBib3JkZXItY29sbGFwc2UgxJFpIHRow6wKICAgYuG6o25nIHRyw7RuZyB0aOG6vyBuw6BvPyBS4buTaSBi4buPIHRo4bqtdCBjaG8gY+G6oyBs4bubcCB4ZW0uICAgICAgICAgICAgICAgICAgICAgKi8KdGFibGUgewogIGJvcmRlci1jb2xsYXBzZTogY29sbGFwc2U7CiAgd2lkdGg6IDEwMCU7CiAgbWFyZ2luLWJvdHRvbTogOHB4Owp9CgpjYXB0aW9uIHsKICB0ZXh0LWFsaWduOiBsZWZ0OwogIGZvbnQtd2VpZ2h0OiBib2xkOwogIHBhZGRpbmctYm90dG9tOiA2cHg7Cn0KCnRoLCB0ZCB7CiAgYm9yZGVyOiAxcHggc29saWQgI2M4ZDJkZDsKICBwYWRkaW5nOiA4cHggMTBweDsKICB0ZXh0LWFsaWduOiBsZWZ0Owp9CgovKiBUw7QgaMOgbmcgdGnDqnUgxJHhu4E6IHRoZWFkIHRoIGNo4buJIHRyw7puZyDDtCB0acOqdSDEkeG7gSBu4bqxbSB0cm9uZyBwaOG6p24gxJHhuqd1CiAgIGLhuqNuZywga2jDtG5nIMSR4bulbmcgdOG7m2kgw7QgdGnDqnUgxJHhu4EgY+G7p2EgaMOgbmcgbuG6v3UgY8OzLiAgICAgICAgICAgICAgICAgICAgICovCnRoZWFkIHRoIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZGJlOWY3OwogIGNvbG9yOiAjMGYzZDZlOwp9CgovKiBD4buZdCBz4buRIGPEg24gcGjhuqNpIGNobyBk4buFIHNvIHPDoW5oLiDEkMOieSBsw6AgYuG7mSBjaOG7jW4gaOG6rXUgZHXhu4cgxJHDoyBo4buNYwogICBideG7lWkgMSwgbmF5IGTDuW5nIHbDoG8gdmnhu4djIHRo4bqtdC4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KdGJvZHkgdGQ6bGFzdC1jaGlsZCB7CiAgdGV4dC1hbGlnbjogcmlnaHQ7Cn0KCi8qIFRo4butIGNo4bq/IMSR4buZIHNlcGFyYXRlIHLhu5NpIHF1YXkgbOG6oWkgY29sbGFwc2UsIMSR4buDIHRo4bqleSBib3JkZXItc3BhY2luZwogICBjaOG7iSBjw7MgbmdoxKlhIGtoaSDhu58gY2jhur8gxJHhu5kgc2VwYXJhdGUuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLyogdGFibGUgeyBib3JkZXItY29sbGFwc2U6IHNlcGFyYXRlOyBib3JkZXItc3BhY2luZzogNHB4OyB9ICovCgoKLyogLS0tIEI1LiBCSeG7glUgTeG6qlUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBN4bulYyAzLjExLiDDlCBuaOG6rXAgbeG6t2MgxJHhu4tuaCBj4bunYSB0csOsbmggZHV54buHdCB44bqldSB2w6AgYsOpLiBCYSB0aHXhu5ljIHTDrW5oCiAgIGzDoCDEkeG7pyDEkeG7gyBuw7MgdOG7rSB04bq/OiBib3JkZXIsIHBhZGRpbmcsIHdpZHRoLgoKICAgQ2jhu41uIMO0IG5o4bqtcCBi4bqxbmcgY2jDrW5oIHTDqm4gdGjhursgaW5wdXQgdsOgIHRleHRhcmVhLiBNdeG7kW4gdMOhY2ggcmnDqm5nCiAgIHThu6tuZyBsb+G6oWkgw7QgdGjDrCBj4bqnbiBi4buZIGNo4buNbiB0aHXhu5ljIHTDrW5oLCBwaOG6p24gxJHDsyB0cmEga2hpIGPhuqduLiAgICAgICAgKi8KaW5wdXQsIHRleHRhcmVhIHsKICBib3JkZXI6IDFweCBzb2xpZCAjYzhkMmRkOwogIGJvcmRlci1yYWRpdXM6IDZweDsKICBwYWRkaW5nOiA4cHggMTBweDsKICB3aWR0aDogMjYwcHg7CiAgZm9udC1mYW1pbHk6IGluaGVyaXQ7CiAgZm9udC1zaXplOiAxNHB4Owp9CgpsYWJlbCB7CiAgZGlzcGxheTogaW5saW5lLWJsb2NrOwogIHdpZHRoOiAxMTBweDsKfQoKCi8qIC0tLSBCNi4gTsOaVCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTeG7pWMgMy4xMS4gTsO6dCBjxaluZyBsw6AgbeG7mXQgaOG7mXA6IG7hu4FuLCB2aeG7gW4sIMSR4buHbS4KICAgVGjDqm0gY3Vyc29yOiBwb2ludGVyIMSR4buDIGNvbiB0cuG7jyDEkeG7lWkgdGjDoG5oIGLDoG4gdGF5IGtoaSByw6ogbMOqbiDigJQKICAgZOG6pXUgaGnhu4d1IGNobyBuZ8aw4budaSBkw7luZyBiaeG6v3QgY2jhu5cgbsOgeSBi4bqlbSDEkcaw4bujYy4gICAgICAgICAgICAgICAgICAgICAgKi8KYnV0dG9uIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjMWY2ZmViOwogIGNvbG9yOiAjZmZmZmZmOwogIGJvcmRlcjogbm9uZTsKICBib3JkZXItcmFkaXVzOiA2cHg7CiAgcGFkZGluZzogMTBweCAxOHB4OwogIGZvbnQtc2l6ZTogMTRweDsKICBjdXJzb3I6IHBvaW50ZXI7Cn0KCmJ1dHRvbjpob3ZlciB7CiAgYmFja2dyb3VuZC1jb2xvcjogIzBmM2Q2ZTsKfQoKCi8qIC0tLSBCNy4gS0hVTkcgQ0hVTkcgQ0hPIFBI4bqmTiBUSMOCTiBWw4AgQ0jDgk4gVFJBTkcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCm1haW4gewogIHBhZGRpbmc6IDIwcHggMjRweDsKfQoKZm9vdGVyIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjMGYzZDZlOwogIGNvbG9yOiAjY2ZlM2Y2OwogIHBhZGRpbmc6IDE0cHggMjRweDsKICBmb250LXNpemU6IDEzcHg7Cn0KCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgQjguIEJJ4bq+TiBDU1MgIOKAlCAgbeG7pWMgMy4xMgogICBQaOG6p24gY2jhu5F0IGPhu6dhIGPhuqMgYnXhu5VpLiDEkOG7gyB04bubaSDEkcOieSBt4bubaSBk4bqheSBsw6AgY8OzIGNo4bunIMO9LgoKICAgTmjDrG4gbmfGsOG7o2MgbMOqbiB0b8OgbiBi4buZIHThu4dwOiBtw6MgbcOgdSAjMGYzZDZlIHh14bqldCBoaeG7h24gU8OBVSBs4bqnbiwgbcOjCiAgICMxZjZmZWIgeHXhuqV0IGhp4buHbiBC4buQTiBs4bqnbi4gTXXhu5FuIMSR4buVaSBtw6B1IGNo4bunIMSR4bqhbyBj4bunYSB0cmFuZyB0aMOsIHBo4bqjaQogICDEkWkgc+G7rWEgbcaw4budaSBjaOG7lywgc8OzdCBt4buZdCBjaOG7lyBsw6AgbOG7h2NoIG3DoHUuCgogICBCaeG6v24gQ1NTIGdvbSBjaMO6bmcgduG7gSBt4buZdCBjaOG7lzoKICAgICBraGFpIGLDoW8gICAtLXRlbi1iaWVuOiBnacOhLXRy4buLOyAgIMSR4bq3dCB0cm9uZyA6cm9vdAogICAgIHPhu60gZOG7pW5nICAgIHRodeG7mWMtdMOtbmg6IHZhcigtLXRlbi1iaWVuKTsKCiAgIDpyb290IGzDoCB0b8OgbiBi4buZIHTDoGkgbGnhu4d1LCBuw6puIGJp4bq/biBraGFpIGLDoW8g4bufIMSRw7MgZMO5bmcgxJHGsOG7o2MgbeG7jWkgbsahaS4KICAgVMOqbiBiaeG6v24gYuG6r3QgYnXhu5ljIG3hu58gxJHhuqd1IGLhurFuZyBoYWkgZOG6pXUgZ+G6oWNoIG5nYW5nLgoKICAgQuG7kW4gcXV5IHThuq9jIGTGsOG7m2kgxJHDonkgdmnhur90IGzhuqFpIGLhurFuZyBiaeG6v24uIENow7puZyDEkeG6t3Qg4bufIENV4buQSSB04buHcCBuw6puCiAgIHRo4bqvbmcgY8OhYyBxdXkgdOG6r2MgY8O5bmcgaOG6oW5nIHBow61hIHRyw6puIOKAlCDEkcO6bmcgbHXhuq10IHRo4bupIHThu7EgYnXhu5VpIDEuCgogICBUaOG7rSB0csOqbiBs4bubcDogxJHhu5VpIG3hu5l0IGTDsm5nIC0tbWF1LWNoaW5oIHLhu5NpIHThuqNpIGzhuqFpLCBj4bqjIHRyYW5nIMSR4buVaS4KICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovCgo6cm9vdCB7CiAgLS1tYXUtY2hpbmg6ICMwZjNkNmU7CiAgLS1tYXUtcGh1OiAjMWY2ZmViOwogIC0tYm8tZ29jOiAxMHB4Owp9CgpuYXYgdWwgewogIGJhY2tncm91bmQtY29sb3I6IHZhcigtLW1hdS1jaGluaCk7Cn0KCi50aGUgewogIGJvcmRlcjogMnB4IHNvbGlkIHZhcigtLW1hdS1waHUpOwogIGJvcmRlci1yYWRpdXM6IHZhcigtLWJvLWdvYyk7Cn0KCmJ1dHRvbiB7CiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbWF1LXBodSk7CiAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm8tZ29jKTsKfQoKZm9vdGVyIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1tYXUtY2hpbmgpOwp9Cg=="}, {"n": "nen.svg", "t": "image/svg+xml", "u": "Ảnh nền bốn dòng, dùng cho Bài 1", "kb": "0,3 KB", "b": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMzAwIj4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzBmM2Q2ZSIvPgogIDxjaXJjbGUgY3g9IjY2MCIgY3k9IjcwIiByPSIxMzAiIGZpbGw9IiMxZjZmZWIiIG9wYWNpdHk9IjAuNTUiLz4KICA8Y2lyY2xlIGN4PSIxMTAiIGN5PSIyNjAiIHI9Ijk1IiBmaWxsPSIjN2VlNzg3IiBvcGFjaXR5PSIwLjMwIi8+Cjwvc3ZnPgo="}];
+
+/* ---------- tô màu mã CSS ---------- */
+function hlcss(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/\/\*[\s\S]*?\*\//g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/([a-zA-Z-]+)(\s*:\s*)([^;{}\n\u0001]+)/g, function(m, prop, mid, val){
+    return '<span class="a">' + prop + '</span>' + mid + '<span class="s">' + val + '</span>';
+  });
+  s = s.replace(/^([^\n{}\u0001]+?)(\s*\{)/gm, function(m, sel, br){
+    if(sel.indexOf('<span') >= 0) return m;
+    return '<span class="t">' + sel + '</span>' + br;
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- chế độ hiển thị --- */
+  var demo = document.getElementById('demo');
+  var mP = document.getElementById('mPlain'), mS = document.getElementById('mStyled');
+  function mode(styled){
+    demo.classList.toggle('styled', styled);
+    demo.classList.toggle('plain', !styled);
+    mS.classList.toggle('on', styled);
+    mP.classList.toggle('on', !styled);
+  }
+  mP.addEventListener('click', function(){ mode(false); });
+  mS.addEventListener('click', function(){ mode(true); });
+
+  /* --- mã nguồn: hai tệp --- */
+  var view = document.getElementById('srcView');
+  var bH = document.getElementById('srcHtml'), bC = document.getElementById('srcCss');
+  var cur = 'html';
+  function showSrc(which){
+    cur = which;
+    view.innerHTML = which === 'css' ? hlcss(SRC_CSS) : hl(SRC_HTML);
+    bC.classList.toggle('on', which === 'css');
+    bH.classList.toggle('on', which === 'html');
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bH.addEventListener('click', function(){ showSrc('html'); });
+  bC.addEventListener('click', function(){ showSrc('css'); });
+  showSrc('html');
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var isCss = cur === 'css';
+    var blob = new Blob([isCss ? SRC_CSS : SRC_HTML],
+                        {type: (isCss ? 'text/css' : 'text/html') + ';charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = isCss ? 'style.css' : 'index.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+  var FRAME_CSS = 'body{margin:8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#333}';
+
+  function fill(key){
+    var d = RULES[key];
+    if(!d) return false;
+    document.getElementById('tipTag').textContent = d.sel;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = d.lang === 'html' ? hl(d.code) : hlcss(d.code);
+    document.getElementById('tipNote').textContent = d.note;
+    var f = document.getElementById('tipOut');
+    f.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>' + FRAME_CSS + '</style>' + d.out;
+    f.onload = function(){
+      try{
+        var h = f.contentDocument.body.scrollHeight;
+        f.style.height = Math.min(Math.max(h + 6, 46), 220) + 'px';
+      }catch(e){}
+    };
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-r]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-r');
+    if(pinned && current === el){ hideTip(); return; }
+    current = el;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+
+(function(){
+  var list = document.getElementById('exList');
+  if(!list) return;
+
+  EX.forEach(function(ex){
+    var box = document.createElement('div');
+    box.className = 'ex';
+    var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
+    box.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-no">' + ex.no + '</span>' +
+        '<span class="ex-title">' + ex.title + '</span>' +
+        '<span class="ex-topic">' + ex.topic + '</span>' +
+      '</div>' +
+      '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
+      '<ol class="ex-req">' + reqs + '</ol>' +
+      (HINT[ex.no]
+        ? '<p class="sec-lbl">Gợi ý</p>' +
+          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần bộ chọn nào và thuộc tính nào. Chỗ có dấu <code>___</code> là phần tự điền theo trang của mình.</p>' +
+          '<pre class="ex-code">' + hlcss(HINT[ex.no].code) + '</pre>' +
+          '<div class="ex-warn"><b>Lưu ý:</b> ' + HINT[ex.no].warn + '</div>'
+        : '');
+    list.appendChild(box);
+  });
+
+  var frows = FILES.map(function(f){
+    return '<tr>' +
+      '<td class="ck-tag">' + f.n + '</td>' +
+      '<td>' + f.u + '</td>' +
+      '<td class="dl-cell">' + f.kb + '</td>' +
+      '<td class="dl-cell"><a class="dl" download="' + f.n +
+        '" href="data:' + f.t + ';base64,' + f.b + '">Tải</a></td></tr>';
+  }).join('');
+
+  var fb = document.createElement('div');
+  fb.className = 'ex';
+  fb.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Tệp demo</span>' +
+    '<span class="ex-title">Hai tệp đã chiếu trên lớp</span></div>' +
+    '<p class="ex-goal">Đây là cặp tệp dùng làm ví dụ trong buổi học, có đầy đủ chú thích giải thích từng khối. Tải về để một bên, đừng nộp lại.</p>' +
+    '<table class="ck"><thead><tr><th>Tệp</th><th>Nội dung</th><th>Cỡ</th><th></th></tr></thead>' +
+    '<tbody>' + frows + '</tbody></table>';
+  list.appendChild(fb);
+
+  var rows = CHECK.map(function(r){
+    return '<tr><td class="ck-tag">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
+  }).join('');
+
+  var ck = document.createElement('div');
+  ck.className = 'ex';
+  ck.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Bảng kiểm</span>' +
+    '<span class="ex-title">Mọi thứ phải dùng trong buổi này</span></div>' +
+    '<p class="ex-goal">Làm xong hai bài, đối chiếu lại bảng này. Thiếu dòng nào là bài chưa đủ yêu cầu.</p>' +
+    '<table class="ck"><thead><tr><th>Bộ chọn hoặc thuộc tính</th><th>Dùng để làm gì</th><th>Nằm ở bài</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+  list.appendChild(ck);
+
+  var tipBox = document.createElement('div');
+  tipBox.className = 'ex';
+  tipBox.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Trước khi nộp</span>' +
+    '<span class="ex-title">Tự kiểm tra lại bài</span></div>' +
+    '<ol class="ex-req">' + TIPS.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ol>';
+  list.appendChild(tipBox);
+})();
+</script>
+</body>
+</html>
