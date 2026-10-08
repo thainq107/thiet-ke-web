@@ -1,0 +1,122 @@
+/* Demo bố cục buổi 1: hộp, kích thước, lề, hiển thị */
+
+/* 1. Kích thước tính luôn cả padding và viền */
+* {
+  box-sizing: border-box;
+}
+
+/* 2. Bỏ lề 8px mà trình duyệt tự thêm quanh body */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #eef2f6;
+}
+
+/* 3. rem tính theo cỡ chữ của thẻ html (mặc định 16px) */
+h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* 4. Căn giữa: ngang bằng text-align, dọc bằng padding trên dưới bằng nhau */
+header {
+  background-color: #0f3d6e;
+  color: #ffffff;
+  text-align: center;
+  padding: 32px 16px;
+}
+
+header p {
+  margin: 8px 0 0;
+}
+
+/* 5. Menu ngang: li là khối, đổi sang inline-block để nằm cùng hàng */
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: #1f6feb;
+  text-align: center;
+}
+
+nav li {
+  display: inline-block;
+}
+
+nav a {
+  display: inline-block;
+  padding: 12px 20px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background-color: #0f3d6e;
+}
+
+/* 6. Khung nội dung: rộng 90%, tối đa 700px, margin auto để nằm giữa */
+.khung {
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+/* 7. Gom lề: 30px dưới h2 gặp 20px trên p, chỉ còn 30px */
+h2 {
+  color: #0f3d6e;
+  margin: 30px 0;
+}
+
+p {
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+/* 8. Ảnh trôi sang trái, chữ chảy bao quanh */
+.anh {
+  float: left;
+  width: 160px;
+  height: 110px;
+  margin: 0 16px 8px 0;
+  background-color: #dbe9f7;
+  text-align: center;
+  line-height: 110px;
+}
+
+.het-troi {
+  clear: both;
+}
+
+/* 9. Mô hình hộp: nội dung, padding, border, margin */
+.the {
+  display: inline-block;
+  vertical-align: top;
+  width: 30%;
+  padding: 16px;
+  border: 2px solid #1f6feb;
+  border-radius: 8px;
+  margin: 0 2% 12px 0;
+  background-color: #ffffff;
+}
+
+/* 10. Hộp cao cố định, nội dung dài thì hiện thanh cuộn */
+.tin {
+  height: 120px;
+  overflow: auto;
+  padding: 0 12px;
+  border: 1px solid #c8d2dd;
+  background-color: #ffffff;
+}
+
+/* 11. Ẩn hẳn, không chiếm chỗ trên trang */
+.an-di {
+  display: none;
+}
+
+footer {
+  background-color: #0f3d6e;
+  color: #cfe3f6;
+  text-align: center;
+  padding: 4px 16px;
+}
