@@ -1,0 +1,284 @@
+/* =====================================================================
+   DEMO CSS BUỔI 1 — Chương 3
+   Tệp này nối vào demo-css-buoi1.html bằng thẻ link trong head.
+
+   Chia hai phần theo hai lượt demo trên lớp:
+
+     PHẦN A — CSS HOẠT ĐỘNG RA SAO
+              Nhúng CSS, cú pháp, năm bộ chọn, màu, đơn vị,
+              rồi luật thắng thua: độ ưu tiên, thứ tự, thừa kế.
+              Dạy xong thì cho làm Thực hành 1.
+
+     PHẦN B — TRANG TRÍ CHỮ
+              Font và các thuộc tính định dạng văn bản.
+              Không có khái niệm mới, chỉ là tra thuộc tính.
+              Dạy xong thì cho làm Thực hành 2.
+
+   Mẹo trình chiếu: giữ PHẦN B trong dấu chú thích cho tới khi dạy
+   tới đó. Lúc bỏ chú thích, cả trang đổi dáng ngay trước mắt lớp.
+   ===================================================================== */
+
+
+/* =====================================================================
+   PHẦN A  —  CSS HOẠT ĐỘNG RA SAO
+   ===================================================================== */
+
+
+/* --- A1. BỘ CHỌN THEO TÊN THẺ ---------------------------------------
+   Viết thẳng tên thẻ. Mọi thẻ cùng tên trên trang đều trúng.
+
+   Chưa đặt font ở đây, để dành cho phần B. Lúc đó cả trang sẽ đổi
+   từ font mặc định của trình duyệt sang font mình chọn.              */
+body {
+  color: #333333;                   /* màu chữ */
+  background-color: #f6f8fa;        /* màu nền */
+  margin: 24px;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+p {
+  font-size: 16px;
+}
+
+
+/* --- A2. BỘ CHỌN THEO CLASS -----------------------------------------
+   Dấu chấm đứng trước tên class. Trúng mọi thẻ mang class đó, bất kể
+   là p, span hay li. Trên trang này nó trúng một span và hai thẻ p.   */
+.noi-bat {
+  background-color: #fff3cd;
+}
+
+
+/* --- A3. BỘ CHỌN THEO ID --------------------------------------------
+   Dấu thăng đứng trước tên id. Mỗi id chỉ xuất hiện một lần trong
+   trang, nên bộ chọn này trúng đúng một thẻ.                          */
+#gioi-thieu {
+  color: #a1155a;
+}
+
+
+/* --- A4. BỘ CHỌN NHÓM -----------------------------------------------
+   Ngăn cách bằng dấu phẩy. Một quy tắc áp cho nhiều bộ chọn.
+
+   Để ý: h2 có id="gioi-thieu" không đổi màu theo quy tắc này, vì
+   quy tắc ở A3 nhắm bằng id nên mạnh hơn. Chuyện này để dành cho A9. */
+h1, h2 {
+  color: #0f3d6e;
+}
+
+
+/* --- A5. BỘ CHỌN HẬU DUỆ --------------------------------------------
+   Ngăn cách bằng dấu cách, không có dấu phẩy.
+   "nav a" nghĩa là: chỉ những thẻ a nằm bên trong thẻ nav.
+
+   Sinh viên hay nhầm chỗ này. Chiếu hai dòng này cạnh nhau là xong:
+     nav, a   có dấu phẩy: mọi thẻ nav và mọi thẻ a
+     nav a    không dấu phẩy: chỉ thẻ a nằm trong nav
+   Một dấu phẩy đổi hẳn nghĩa.                                         */
+nav a {
+  color: #1f6feb;
+  margin-right: 16px;
+}
+
+
+/* --- A6. BỘ CHỌN TOÀN BỘ --------------------------------------------
+   Dấu sao trúng mọi thẻ. Ít dùng, chủ yếu để dọn thiết lập mặc định
+   của trình duyệt ở đầu tệp CSS. Bỏ chú thích để xem trang co lại.    */
+/* * { margin: 0; padding: 0; } */
+
+
+/* --- A7. BA CÁCH VIẾT MÀU -------------------------------------------
+   Ba dòng dưới đây cho ra màu giống hệt nhau, chỉ khác cách viết.
+   Trong dự án thật hầu như luôn dùng cách thứ hai.                    */
+.cham-ngon {
+  color: royalblue;                /* 1. tên màu có sẵn, dễ nhớ nhưng ít lựa chọn */
+  /* color: #4169e1; */            /* 2. mã 16, hai chữ số cho đỏ, lục, lam       */
+  /* color: rgb(65, 105, 225); */  /* 3. ba số từ 0 đến 255                       */
+}
+
+
+/* --- A8. ĐƠN VỊ ĐO --------------------------------------------------
+   px  : điểm ảnh, con số tuyệt đối. Dùng khi muốn cố định.
+   %   : so với phần tử cha.
+   em  : nhân với cỡ chữ của chính thẻ đó hoặc thẻ cha.
+   rem : nhân với cỡ chữ gốc của trang, thường là 16px, nên dễ đoán.
+
+   Chiếu nhanh: đổi font-size của body rồi tải lại. Px đứng yên,
+   còn rem và em thì nhúc nhích theo.                                      */
+li {
+  font-size: 1rem;      /* = 16px nếu cỡ chữ gốc là 16px */
+  margin-bottom: 8px;
+}
+
+ul {
+  width: 60%;           /* rộng bằng 60% chiều ngang của thẻ cha */
+}
+
+footer {
+  border-top: 1px solid #d0d7de;
+  padding-top: 12px;
+}
+
+
+/* --- A9. ĐỘ ƯU TIÊN -------------------------------------------------
+   Ba quy tắc dưới đây cùng nhắm vào đoạn văn có id="dac-biet".
+   Cả ba đều đòi đổi màu chữ, nhưng chỉ một quy tắc thắng.
+
+   Thứ hạng từ mạnh tới yếu:
+     1. thuộc tính style viết ngay trên thẻ
+     2. bộ chọn theo id       (#dac-biet)
+     3. bộ chọn theo class    (.noi-bat)
+     4. bộ chọn theo tên thẻ  (p)
+
+   Dừng lại hỏi lớp trước khi chiếu: đoạn đó sẽ màu gì?
+   Đáp án: MÀU ĐỎ, vì id mạnh nhất trong ba quy tắc này.
+
+   Kiểm chứng ngay trên lớp: đóng chú thích quanh khối #dac-biet rồi
+   tải lại, màu tụt xuống cam theo class. Chú thích nốt .noi-bat thì
+   tụt tiếp xuống xanh lá của thẻ p. Cả lớp thấy thứ hạng chạy thật.   */
+
+p {
+  color: green;             /* yếu nhất */
+}
+
+.noi-bat {
+  color: orange;            /* mạnh hơn tên thẻ */
+}
+
+#dac-biet {
+  color: red;               /* mạnh hơn cả, quy tắc này thắng */
+}
+
+
+/* --- A10. CÙNG HẠNG THÌ VIẾT SAU THẮNG ------------------------------
+   Hai quy tắc dưới đây mạnh ngang nhau, cùng là bộ chọn class.
+   Lúc này CSS xử theo thứ tự: quy tắc viết sau thắng.
+
+   Kết quả: viền màu xanh dương, vì nó đứng dưới.
+   Sinh viên hay kêu "em viết rồi mà không chạy", phần nhiều là vì
+   bên dưới còn một quy tắc khác đè lên.                     */
+.cham-ngon {
+  border-left: 4px solid gray;
+  padding-left: 10px;
+}
+
+.cham-ngon {
+  border-left: 4px solid #1f6feb;
+}
+
+
+/* --- A11. THỪA KẾ ---------------------------------------------------
+   Một số thuộc tính tự truyền từ thẻ cha xuống thẻ con:
+   color, font-family, font-size, line-height, text-align...
+
+   Một số thì không truyền: border, margin, padding, background...
+   Nếu truyền thì mỗi thẻ con lại tự vẽ một cái viền, rất vô lý.
+
+   Thẻ a cũng không nhận màu chữ thừa kế, vì trình duyệt đã có sẵn
+   một quy tắc riêng cho liên kết. Muốn đổi màu liên kết thì phải
+   nhắm thẳng vào thẻ a, như quy tắc nav a ở A5.
+
+   Thừa kế luôn yếu hơn một quy tắc nhắm thẳng.
+   Ví dụ sống ngay trên trang: thẻ footer đã được tô xám trong thẻ
+   style ở phần head, nhưng dòng email bên trong vẫn hiện màu xanh lá.
+   Lý do: nó là thẻ p nên trúng thẳng quy tắc p { color: green } ở A9,
+   mà nhắm thẳng thì luôn thắng màu thừa kế từ cha.
+
+   Hỏi lớp: làm sao cho dòng email thành xám?
+   Đáp án: nhắm thẳng vào nó. Bỏ chú thích dòng dưới rồi tải lại.      */
+/* footer p { color: #5b6672; } */
+
+
+/* =====================================================================
+   PHẦN B  —  TRANG TRÍ CHỮ
+   Dạy sau khi sinh viên làm xong Thực hành 1.
+   Toàn bộ phần này chỉ là tra thuộc tính, không có khái niệm mới.
+   Nhưng đây là lúc trang đổi dáng thấy rõ, nên chiếu chậm một chút.
+   ===================================================================== */
+
+
+/* --- B1. FONT CHỮ ---------------------------------------------------
+   font-family nhận một DANH SÁCH font, ngăn nhau bằng dấu phẩy.
+   Trình duyệt lấy cái đầu tiên máy có, không có thì lùi sang cái sau.
+   Tên font có khoảng trắng phải đặt trong nháy kép.
+
+   Tên cuối cùng luôn là một họ chung: sans-serif, serif hoặc
+   monospace, để máy nào cũng còn thứ để dùng.
+
+   Đặt trên body thì cả trang thừa kế theo, khỏi viết lại từng thẻ.    */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2 {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+
+/* --- B2. CỠ CHỮ, ĐỘ ĐẬM, NGHIÊNG ------------------------------------
+   Từ giờ muốn chữ đậm hay nghiêng thì dùng CSS, đừng dùng thẻ b và i.
+   Lý do đã học từ chương 2: thẻ lo nghĩa, CSS lo hình thức.
+   Thẻ strong vẫn dùng khi nội dung thật sự quan trọng, còn muốn đậm
+   cho đẹp thì đó là việc của font-weight.                             */
+.cham-ngon {
+  font-size: 1.125rem;    /* = 18px */
+  font-style: italic;
+}
+
+.noi-bat {
+  font-weight: bold;      /* hoặc một số từ 100 đến 900 */
+}
+
+
+/* --- B3. GIÃN DÒNG --------------------------------------------------
+   line-height không có đơn vị thì được hiểu là NHÂN với cỡ chữ.
+   1.6 nghĩa là mỗi dòng cao gấp 1,6 lần cỡ chữ.
+
+   Một dòng thôi mà cả trang dễ đọc hẳn lên. Thử đổi qua lại 1 và 1.6 cho lớp xem.              */
+p {
+  line-height: 1.6;
+}
+
+
+/* --- B4. CĂN LỀ -----------------------------------------------------
+   left là mặc định, nên chỉ viết khi muốn khác đi.
+   justify căn đều hai bên như sách in, nhưng tiếng Việt hay bị giãn
+   chữ xấu, nên cân nhắc.
+
+   Thử đổi h1 thành header xem khác gì: lúc đó cả khối header căn
+   giữa theo, vì text-align là thuộc tính có thừa kế.                  */
+h1 {
+  text-align: center;
+}
+
+
+/* --- B5. GẠCH CHÂN VÀ GẠCH NGANG ------------------------------------
+   text-decoration: none để bỏ gạch chân mặc định của liên kết,
+   thường dùng khi biến danh sách liên kết thành thanh menu.
+   Các giá trị khác: underline, line-through, overline.                */
+nav a {
+  text-decoration: none;
+}
+
+
+/* --- B6. HOA THƯỜNG VÀ GIÃN CHỮ -------------------------------------
+   text-transform đổi hoa thường mà không sửa chữ trong tệp HTML.
+   Nội dung giữ nguyên, chỉ cách hiển thị thay đổi. Đúng tinh thần
+   tách nghĩa khỏi hình thức.
+     uppercase  IN HOA TẤT CẢ
+     lowercase  in thường tất cả
+     capitalize Viết Hoa Đầu Mỗi Từ
+
+   letter-spacing giãn khoảng cách giữa các chữ cái. Dùng rất ít,
+   chủ yếu cho tiêu đề lớn và chữ in hoa.                              */
+nav {
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+h1 {
+  letter-spacing: 1px;
+}

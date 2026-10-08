@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo CSS - Buổi 1</title>
+
+  <!-- ==============================================================
+       BA CÁCH ĐƯA CSS VÀO TRANG
+       Trang này cố tình dùng cả ba để cả lớp so sánh.
+
+       Cách 3: tệp CSS riêng. Dự án thật đều dùng cách này.
+       Một tệp CSS dùng chung cho nhiều trang HTML, sửa một chỗ là
+       cả website đổi theo.
+       ============================================================== -->
+  <link rel="stylesheet" href="demo-css-buoi1.css">
+
+  <!-- Cách 2: thẻ style đặt trong head.
+       CSS nằm chung tệp với HTML. Chỉ nên dùng khi thử nhanh một trang.
+       Lưu ý thứ tự: thẻ style này viết sau thẻ link ở trên, nên nếu hai
+       bên cùng nhắm vào một chỗ với cùng độ mạnh thì bên này thắng. -->
+  <style>
+    /* Cú pháp một quy tắc CSS:
+
+       bộ-chọn {
+         thuộc-tính: giá-trị;
+       }
+
+       - bộ chọn   : chọn thẻ nào trên trang
+       - thuộc tính: muốn đổi cái gì
+       - giá trị   : đổi thành cái gì
+       - mỗi dòng khai báo kết thúc bằng dấu chấm phẩy
+       - chú thích mở bằng dấu sao gạch chéo và đóng ngược lại,
+         trình duyệt bỏ qua phần bên trong
+    */
+    footer {
+      color: #5b6672;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Câu lạc bộ Tin học</h1>
+    <p class="cham-ngon">Học cùng nhau, làm cùng nhau</p>
+  </header>
+
+  <nav>
+    <a href="#gioi-thieu">Giới thiệu</a>
+    <a href="#hoat-dong">Hoạt động</a>
+    <a href="#lien-he">Liên hệ</a>
+  </nav>
+
+  <main>
+
+    <h2 id="gioi-thieu">Giới thiệu</h2>
+
+    <p>Câu lạc bộ sinh hoạt vào <span class="noi-bat">chiều thứ tư</span> hằng tuần.</p>
+
+    <p class="noi-bat">Đoạn này mang class noi-bat.</p>
+
+    <!-- Đoạn dưới mang cả id lẫn class, dùng để thử độ ưu tiên ở mục A9. -->
+    <p id="dac-biet" class="noi-bat">Đoạn này có cả id và class.</p>
+
+    <h2 id="hoat-dong">Hoạt động</h2>
+
+    <ul>
+      <li>Lớp HTML và CSS</li>
+      <li>Nhóm đọc tài liệu</li>
+      <li>Làm dự án nhỏ</li>
+    </ul>
+
+    <!-- Cách 1: thuộc tính style ngay trên thẻ.
+         Chỉ ăn đúng một thẻ này, không dùng lại được ở đâu khác.
+         Nó thắng các quy tắc trong tệp CSS nên khó ghi đè.
+         Chỉ dùng khi cần sửa tạm. -->
+    <p style="color: purple;">Đoạn này tô màu bằng thuộc tính style ngay trên thẻ.</p>
+
+  </main>
+
+  <footer id="lien-he">
+    <p>Email: clb@sv.neu.edu.vn</p>
+  </footer>
+
+</body>
+</html>
