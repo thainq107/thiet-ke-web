@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo CSS - Buổi 2</title>
+  <!-- HTML toàn thẻ đã học ở chương 2. Phần mới nằm ở tệp CSS. -->
+  <link rel="stylesheet" href="demo-css-buoi2.css">
+</head>
+<body>
+
+  <header>
+    <div class="lop-phu">
+      <h1>Câu lạc bộ Tin học</h1>
+      <p>Học cùng nhau, làm cùng nhau</p>
+    </div>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#gioi-thieu">Giới thiệu</a></li>
+      <li><a href="#lich">Lịch sinh hoạt</a></li>
+      <li><a href="#dang-ky">Đăng ký</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2 id="gioi-thieu">Giới thiệu</h2>
+    <div class="the">
+      <p>Sinh hoạt chiều thứ tư hằng tuần tại phòng 305 nhà A2.</p>
+    </div>
+
+    <h2 id="lich">Lịch sinh hoạt</h2>
+    <table>
+      <thead>
+        <tr><th>Buổi</th><th>Nội dung</th><th>Số người</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Làm quen HTML</td><td>32</td></tr>
+        <tr><td>2</td><td>Bảng và danh sách</td><td>28</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="dang-ky">Đăng ký</h2>
+    <form>
+      <p><label for="ten">Họ và tên</label><br>
+         <input type="text" id="ten" name="ten"></p>
+      <p><label for="loi">Lời nhắn</label><br>
+         <textarea id="loi" name="loi"></textarea></p>
+      <p><button type="submit">Gửi</button></p>
+    </form>
+  </main>
+
+</body>
+</html>
