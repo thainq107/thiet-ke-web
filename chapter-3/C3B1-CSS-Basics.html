@@ -452,15 +452,15 @@ var SRC_HTML = [
 "       BA CÁCH ĐƯA CSS VÀO TRANG",
 "       Trang này cố tình dùng cả ba để cả lớp so sánh.",
 "",
-"       CÁCH 3 — TỆP RIÊNG. Đây là cách dùng thật trong mọi dự án.",
+"       Cách 3: tệp CSS riêng. Dự án thật đều dùng cách này.",
 "       Một tệp CSS dùng chung cho nhiều trang HTML, sửa một chỗ là",
 "       cả website đổi theo.",
 "       ============================================================== -->",
 "  <link rel=\"stylesheet\" href=\"demo-css-buoi1.css\">",
 "",
-"  <!-- CÁCH 2 — THẺ style ĐẶT TRONG head.",
+"  <!-- Cách 2: thẻ style đặt trong head.",
 "       CSS nằm chung tệp với HTML. Chỉ nên dùng khi thử nhanh một trang.",
-"       Lưu ý thứ tự: thẻ style này viết SAU thẻ link ở trên, nên nếu hai",
+"       Lưu ý thứ tự: thẻ style này viết sau thẻ link ở trên, nên nếu hai",
 "       bên cùng nhắm vào một chỗ với cùng độ mạnh thì bên này thắng. -->",
 "  <style>",
 "    /* Cú pháp một quy tắc CSS:",
@@ -502,7 +502,7 @@ var SRC_HTML = [
 "",
 "    <p class=\"noi-bat\">Đoạn này mang class noi-bat.</p>",
 "",
-"    <!-- Đoạn dưới mang CẢ id lẫn class. Dùng để thử độ ưu tiên ở phần B. -->",
+"    <!-- Đoạn dưới mang cả id lẫn class, dùng để thử độ ưu tiên ở mục A9. -->",
 "    <p id=\"dac-biet\" class=\"noi-bat\">Đoạn này có cả id và class.</p>",
 "",
 "    <h2 id=\"hoat-dong\">Hoạt động</h2>",
@@ -513,10 +513,10 @@ var SRC_HTML = [
 "      <li>Làm dự án nhỏ</li>",
 "    </ul>",
 "",
-"    <!-- CÁCH 1 — THUỘC TÍNH style NGAY TRÊN THẺ.",
+"    <!-- Cách 1: thuộc tính style ngay trên thẻ.",
 "         Chỉ ăn đúng một thẻ này, không dùng lại được ở đâu khác.",
-"         Nó mạnh hơn mọi quy tắc trong tệp CSS, nên rất khó ghi đè.",
-"         Thực tế chỉ dùng khi chữa cháy. -->",
+"         Nó thắng các quy tắc trong tệp CSS nên khó ghi đè.",
+"         Chỉ dùng khi cần sửa tạm. -->",
 "    <p style=\"color: purple;\">Đoạn này tô màu bằng thuộc tính style ngay trên thẻ.</p>",
 "",
 "  </main>",
@@ -531,7 +531,7 @@ var SRC_HTML = [
 
 var SRC_CSS = [
 "/* =====================================================================",
-"   DEMO CSS — BUỔI 1  ·  Chương 3",
+"   DEMO CSS BUỔI 1 — Chương 3",
 "   Tệp này nối vào demo-css-buoi1.html bằng thẻ link trong head.",
 "",
 "   Chia hai phần theo hai lượt demo trên lớp:",
@@ -539,12 +539,12 @@ var SRC_CSS = [
 "     PHẦN A — CSS HOẠT ĐỘNG RA SAO",
 "              Nhúng CSS, cú pháp, năm bộ chọn, màu, đơn vị,",
 "              rồi luật thắng thua: độ ưu tiên, thứ tự, thừa kế.",
-"              → dạy xong cho làm Thực hành 1",
+"              Dạy xong thì cho làm Thực hành 1.",
 "",
 "     PHẦN B — TRANG TRÍ CHỮ",
 "              Font và các thuộc tính định dạng văn bản.",
 "              Không có khái niệm mới, chỉ là tra thuộc tính.",
-"              → dạy xong cho làm Thực hành 2",
+"              Dạy xong thì cho làm Thực hành 2.",
 "",
 "   Mẹo trình chiếu: giữ PHẦN B trong dấu chú thích cho tới khi dạy",
 "   tới đó. Lúc bỏ chú thích, cả trang đổi dáng ngay trước mắt lớp.",
@@ -559,7 +559,7 @@ var SRC_CSS = [
 "/* --- A1. BỘ CHỌN THEO TÊN THẺ ---------------------------------------",
 "   Viết thẳng tên thẻ. Mọi thẻ cùng tên trên trang đều trúng.",
 "",
-"   Chưa đặt font ở đây — để dành cho phần B, lúc đó cả trang sẽ đổi",
+"   Chưa đặt font ở đây, để dành cho phần B. Lúc đó cả trang sẽ đổi",
 "   từ font mặc định của trình duyệt sang font mình chọn.              */",
 "body {",
 "  color: #333333;                   /* màu chữ */",
@@ -577,7 +577,7 @@ var SRC_CSS = [
 "",
 "",
 "/* --- A2. BỘ CHỌN THEO CLASS -----------------------------------------",
-"   Dấu chấm đứng trước tên class. Trúng MỌI thẻ mang class đó, bất kể",
+"   Dấu chấm đứng trước tên class. Trúng mọi thẻ mang class đó, bất kể",
 "   là p, span hay li. Trên trang này nó trúng một span và hai thẻ p.   */",
 ".noi-bat {",
 "  background-color: #fff3cd;",
@@ -593,22 +593,22 @@ var SRC_CSS = [
 "",
 "",
 "/* --- A4. BỘ CHỌN NHÓM -----------------------------------------------",
-"   Ngăn cách bằng DẤU PHẨY. Một quy tắc áp cho nhiều bộ chọn.",
+"   Ngăn cách bằng dấu phẩy. Một quy tắc áp cho nhiều bộ chọn.",
 "",
 "   Để ý: h2 có id=\"gioi-thieu\" không đổi màu theo quy tắc này, vì",
-"   quy tắc ở A3 nhắm bằng id nên mạnh hơn. Đó chính là chuyện của A9. */",
+"   quy tắc ở A3 nhắm bằng id nên mạnh hơn. Chuyện này để dành cho A9. */",
 "h1, h2 {",
 "  color: #0f3d6e;",
 "}",
 "",
 "",
 "/* --- A5. BỘ CHỌN HẬU DUỆ --------------------------------------------",
-"   Ngăn cách bằng DẤU CÁCH, không có dấu phẩy.",
-"   \"nav a\" nghĩa là: chỉ những thẻ a nằm BÊN TRONG thẻ nav.",
+"   Ngăn cách bằng dấu cách, không có dấu phẩy.",
+"   \"nav a\" nghĩa là: chỉ những thẻ a nằm bên trong thẻ nav.",
 "",
-"   Chỗ nhầm kinh điển, chiếu hai dòng này cạnh nhau là xong:",
-"     nav, a   →  mọi thẻ nav VÀ mọi thẻ a",
-"     nav a    →  chỉ thẻ a nằm trong nav",
+"   Sinh viên hay nhầm chỗ này. Chiếu hai dòng này cạnh nhau là xong:",
+"     nav, a   có dấu phẩy: mọi thẻ nav và mọi thẻ a",
+"     nav a    không dấu phẩy: chỉ thẻ a nằm trong nav",
 "   Một dấu phẩy đổi hẳn nghĩa.                                         */",
 "nav a {",
 "  color: #1f6feb;",
@@ -636,10 +636,10 @@ var SRC_CSS = [
 "   px  : điểm ảnh, con số tuyệt đối. Dùng khi muốn cố định.",
 "   %   : so với phần tử cha.",
 "   em  : nhân với cỡ chữ của chính thẻ đó hoặc thẻ cha.",
-"   rem : nhân với cỡ chữ gốc của trang, thường là 16px. Dễ đoán nhất.",
+"   rem : nhân với cỡ chữ gốc của trang, thường là 16px, nên dễ đoán.",
 "",
-"   Chiếu nhanh: đổi font-size của body rồi tải lại — px đứng yên,",
-"   rem và em thì nhúc nhích theo.                                      */",
+"   Chiếu nhanh: đổi font-size của body rồi tải lại. Px đứng yên,",
+"   còn rem và em thì nhúc nhích theo.                                      */",
 "li {",
 "  font-size: 1rem;      /* = 16px nếu cỡ chữ gốc là 16px */",
 "  margin-bottom: 8px;",
@@ -656,7 +656,7 @@ var SRC_CSS = [
 "",
 "",
 "/* --- A9. ĐỘ ƯU TIÊN -------------------------------------------------",
-"   Ba quy tắc dưới đây CÙNG nhắm vào đoạn văn có id=\"dac-biet\".",
+"   Ba quy tắc dưới đây cùng nhắm vào đoạn văn có id=\"dac-biet\".",
 "   Cả ba đều đòi đổi màu chữ, nhưng chỉ một quy tắc thắng.",
 "",
 "   Thứ hạng từ mạnh tới yếu:",
@@ -665,7 +665,7 @@ var SRC_CSS = [
 "     3. bộ chọn theo class    (.noi-bat)",
 "     4. bộ chọn theo tên thẻ  (p)",
 "",
-"   DỪNG LẠI HỎI LỚP trước khi chiếu: đoạn đó sẽ màu gì?",
+"   Dừng lại hỏi lớp trước khi chiếu: đoạn đó sẽ màu gì?",
 "   Đáp án: MÀU ĐỎ, vì id mạnh nhất trong ba quy tắc này.",
 "",
 "   Kiểm chứng ngay trên lớp: đóng chú thích quanh khối #dac-biet rồi",
@@ -681,7 +681,7 @@ var SRC_CSS = [
 "}",
 "",
 "#dac-biet {",
-"  color: red;               /* mạnh nhất trong ba cái — cái này thắng */",
+"  color: red;               /* mạnh hơn cả, quy tắc này thắng */",
 "}",
 "",
 "",
@@ -690,8 +690,8 @@ var SRC_CSS = [
 "   Lúc này CSS xử theo thứ tự: quy tắc viết sau thắng.",
 "",
 "   Kết quả: viền màu xanh dương, vì nó đứng dưới.",
-"   Đây là lý do phổ biến nhất của câu \"em viết rồi mà không chạy\" —",
-"   thường là bên dưới còn một quy tắc khác đè lên.                     */",
+"   Sinh viên hay kêu \"em viết rồi mà không chạy\", phần nhiều là vì",
+"   bên dưới còn một quy tắc khác đè lên.                     */",
 ".cham-ngon {",
 "  border-left: 4px solid gray;",
 "  padding-left: 10px;",
@@ -706,17 +706,17 @@ var SRC_CSS = [
 "   Một số thuộc tính tự truyền từ thẻ cha xuống thẻ con:",
 "   color, font-family, font-size, line-height, text-align...",
 "",
-"   Một số thì KHÔNG truyền: border, margin, padding, background...",
+"   Một số thì không truyền: border, margin, padding, background...",
 "   Nếu truyền thì mỗi thẻ con lại tự vẽ một cái viền, rất vô lý.",
 "",
 "   Thẻ a cũng không nhận màu chữ thừa kế, vì trình duyệt đã có sẵn",
 "   một quy tắc riêng cho liên kết. Muốn đổi màu liên kết thì phải",
 "   nhắm thẳng vào thẻ a, như quy tắc nav a ở A5.",
 "",
-"   THỪA KẾ LUÔN YẾU HƠN MỘT QUY TẮC NHẮM THẲNG.",
+"   Thừa kế luôn yếu hơn một quy tắc nhắm thẳng.",
 "   Ví dụ sống ngay trên trang: thẻ footer đã được tô xám trong thẻ",
-"   style ở phần head, nhưng dòng email bên trong vẫn hiện MÀU XANH LÁ.",
-"   Lý do: nó là thẻ p, trúng thẳng quy tắc p { color: green } ở A9 —",
+"   style ở phần head, nhưng dòng email bên trong vẫn hiện màu xanh lá.",
+"   Lý do: nó là thẻ p nên trúng thẳng quy tắc p { color: green } ở A9,",
 "   mà nhắm thẳng thì luôn thắng màu thừa kế từ cha.",
 "",
 "   Hỏi lớp: làm sao cho dòng email thành xám?",
@@ -728,7 +728,7 @@ var SRC_CSS = [
 "   PHẦN B  —  TRANG TRÍ CHỮ",
 "   Dạy sau khi sinh viên làm xong Thực hành 1.",
 "   Toàn bộ phần này chỉ là tra thuộc tính, không có khái niệm mới.",
-"   Nhưng đây là lúc trang đổi dáng rõ nhất — chiếu chậm một chút.",
+"   Nhưng đây là lúc trang đổi dáng thấy rõ, nên chiếu chậm một chút.",
 "   ===================================================================== */",
 "",
 "",
@@ -737,8 +737,8 @@ var SRC_CSS = [
 "   Trình duyệt lấy cái đầu tiên máy có, không có thì lùi sang cái sau.",
 "   Tên font có khoảng trắng phải đặt trong nháy kép.",
 "",
-"   Tên cuối cùng luôn là một họ chung — sans-serif, serif hoặc",
-"   monospace — để máy nào cũng còn thứ để dùng.",
+"   Tên cuối cùng luôn là một họ chung: sans-serif, serif hoặc",
+"   monospace, để máy nào cũng còn thứ để dùng.",
 "",
 "   Đặt trên body thì cả trang thừa kế theo, khỏi viết lại từng thẻ.    */",
 "body {",
@@ -769,8 +769,7 @@ var SRC_CSS = [
 "   line-height không có đơn vị thì được hiểu là NHÂN với cỡ chữ.",
 "   1.6 nghĩa là mỗi dòng cao gấp 1,6 lần cỡ chữ.",
 "",
-"   Thuộc tính rẻ tiền nhất mà ăn tiền nhất: chỉ một dòng, cả trang",
-"   dễ đọc hẳn lên. Thử đổi qua lại 1 và 1.6 cho lớp xem.              */",
+"   Một dòng thôi mà cả trang dễ đọc hẳn lên. Thử đổi qua lại 1 và 1.6 cho lớp xem.              */",
 "p {",
 "  line-height: 1.6;",
 "}",
@@ -798,8 +797,8 @@ var SRC_CSS = [
 "",
 "",
 "/* --- B6. HOA THƯỜNG VÀ GIÃN CHỮ -------------------------------------",
-"   text-transform đổi hoa thường mà KHÔNG sửa chữ trong tệp HTML —",
-"   nội dung giữ nguyên, chỉ cách hiển thị thay đổi. Đúng tinh thần",
+"   text-transform đổi hoa thường mà không sửa chữ trong tệp HTML.",
+"   Nội dung giữ nguyên, chỉ cách hiển thị thay đổi. Đúng tinh thần",
 "   tách nghĩa khỏi hình thức.",
 "     uppercase  IN HOA TẤT CẢ",
 "     lowercase  in thường tất cả",
@@ -837,7 +836,7 @@ var RULES = {
     sel:".cham-ngon", kind:"Giá trị", lang:"css",
     def:"Ba cách viết cùng một màu. Cả ba cho kết quả giống hệt nhau, chỉ khác cách gõ.",
     code:".cham-ngon {\n  color: royalblue;              /* 1. ten mau */\n  /* color: #4169e1; */           /* 2. ma 16 */\n  /* color: rgb(65, 105, 225); */ /* 3. ba so 0-255 */\n  font-size: 1.125rem;\n  font-style: italic;\n}",
-    out:"<div style=\"font-size:13px\"><span style=\"color:royalblue\">royalblue</span> · <span style=\"color:#4169e1\">#4169e1</span> · <span style=\"color:rgb(65,105,225)\">rgb(65,105,225)</span><br>Ba ô trên cùng một màu.</div>",
+    out:"<div style=\"font-size:13px\"><span style=\"color:royalblue\">royalblue</span>, <span style=\"color:#4169e1\">#4169e1</span>, <span style=\"color:rgb(65,105,225)\">rgb(65,105,225)</span><br>Ba ô trên cùng một màu.</div>",
     note:"Quy tắc này còn bị một quy tắc .cham-ngon khác viết bên dưới đè lên phần viền trái. Hai quy tắc cùng hạng thì cái viết sau thắng."
   },
   nav: {
@@ -915,7 +914,7 @@ var RULES = {
 var EX = [
  {
   "no": "Bài 1",
-  "topic": "Bộ chọn · Giá trị · Luật",
+  "topic": "Bộ chọn, giá trị, luật thắng thua",
   "title": "Tệp CSS đầu tiên và luật thắng thua",
   "goal": "Tạo cặp tệp <code>index.html</code> và <code>style.css</code>, dùng đủ năm loại bộ chọn rồi tự làm ba thí nghiệm về luật thắng thua.",
   "reqs": [
@@ -955,10 +954,10 @@ var EX = [
 
 var HINT = {
   "Bài 1": {code:"/* style.css */\n\n/* bo chon theo ten the */\nbody {\n  color: ___;\n  background-color: ___;\n}\n\n/* bo chon theo class: dau cham dung truoc ten */\n.___ {\n  background-color: ___;\n}\n\n/* bo chon theo id: dau thang dung truoc ten */\n#___ {\n  color: ___;\n}\n\n/* bo chon nhom: ngan nhau bang DAU PHAY */\n___, ___ {\n  color: ___;\n}\n\n/* bo chon hau due: ngan nhau bang DAU CACH */\n___ ___ {\n  color: ___;\n}\n\n/* --- Thi nghiem 1: do uu tien ---\n   Du doan cua em: ____________\n   Ket qua that  : ____________\n   Vi sao        : ____________ */\np     { color: ___; }\n.___  { color: ___; }\n#___  { color: ___; }", warn:"Ba chỗ hay sai nhất. Một: <code>nav, a</code> có dấu phẩy nghĩa là mọi thẻ nav và mọi thẻ a, còn <code>nav a</code> không dấu phẩy mới là thẻ a bên trong nav. Hai: bộ chọn class viết dấu chấm trước tên, bộ chọn id viết dấu thăng, không có dấu nào là bộ chọn theo tên thẻ. Ba: mỗi <code>id</code> chỉ được xuất hiện một lần trong trang. Ba thí nghiệm bắt buộc ghi dự đoán <b>trước</b> khi mở trình duyệt, chỉ ghi kết quả thì tính nửa điểm."},
-  "Bài 2": {code:"/* viet tiep vao style.css */\n\nbody {\n  font-family: ___, ___, ___;   /* ten cuoi la mot ho chung */\n}\n\n___, ___ {\n  font-family: ___, ___;\n}\n\nh1 {\n  font-size: ___;\n  text-align: ___;\n  letter-spacing: ___;\n}\n\np {\n  font-size: ___rem;\n  line-height: ___;      /* so khong kem don vi */\n}\n\n.___ {\n  font-weight: ___;\n  font-style: ___;\n}\n\nnav {\n  text-transform: ___;\n}\n\nnav a {\n  text-decoration: ___;\n}", warn:"Giá trị <code>line-height</code> viết dạng số trần như <code>1.6</code>, không kèm <code>px</code>. Tên font có khoảng trắng phải đặt trong nháy kép, ví dụ <code>\"Times New Roman\"</code>. Danh sách font phải kết thúc bằng một họ chung — <code>sans-serif</code>, <code>serif</code> hoặc <code>monospace</code> — để máy nào không có font đầu vẫn còn thứ để dùng. Muốn chữ đậm hay nghiêng thì dùng CSS, đừng quay lại dùng thẻ <code>&lt;b&gt;</code> và <code>&lt;i&gt;</code>: thẻ lo nghĩa, CSS lo hình thức."}
+  "Bài 2": {code:"/* viet tiep vao style.css */\n\nbody {\n  font-family: ___, ___, ___;   /* ten cuoi la mot ho chung */\n}\n\n___, ___ {\n  font-family: ___, ___;\n}\n\nh1 {\n  font-size: ___;\n  text-align: ___;\n  letter-spacing: ___;\n}\n\np {\n  font-size: ___rem;\n  line-height: ___;      /* so khong kem don vi */\n}\n\n.___ {\n  font-weight: ___;\n  font-style: ___;\n}\n\nnav {\n  text-transform: ___;\n}\n\nnav a {\n  text-decoration: ___;\n}", warn:"Giá trị <code>line-height</code> viết dạng số trần như <code>1.6</code>, không kèm <code>px</code>. Tên font có khoảng trắng phải đặt trong nháy kép, ví dụ <code>\"Times New Roman\"</code>. Danh sách font phải kết thúc bằng một họ chung: <code>sans-serif</code>, <code>serif</code> hoặc <code>monospace</code>, để máy nào không có font đầu vẫn còn thứ để dùng. Muốn chữ đậm hay nghiêng thì dùng CSS, đừng quay lại dùng thẻ <code>&lt;b&gt;</code> và <code>&lt;i&gt;</code>: thẻ lo nghĩa, CSS lo hình thức."}
 };
 
-var CHECK = [["&lt;link rel=\"stylesheet\"&gt;", "Nối tệp CSS vào trang", "Bài 1"], ["bộ chọn theo tên thẻ", "body, h1, p...", "Bài 1"], [".class", "Dấu chấm, trúng nhiều thẻ khác loại", "Bài 1"], ["#id", "Dấu thăng, trúng đúng một thẻ", "Bài 1"], ["h1, h2", "Bộ chọn nhóm, ngăn bằng dấu phẩy", "Bài 1"], ["nav a", "Bộ chọn hậu duệ, ngăn bằng dấu cách", "Bài 1"], ["tên màu · #rrggbb · rgb()", "Ba cách viết màu", "Bài 1"], ["px · % · em · rem", "Hai đơn vị đo khác nhau", "Bài 1"], ["độ ưu tiên", "id &gt; class &gt; tên thẻ", "Bài 1"], ["thứ tự", "Cùng hạng thì viết sau thắng", "Bài 1"], ["thừa kế", "Thẻ con nhận gì từ thẻ cha", "Bài 1"], ["font-family", "Danh sách font, tên cuối là họ chung", "Bài 2"], ["font-size", "Có ít nhất một chỗ dùng rem", "Bài 2"], ["font-weight · font-style", "Đậm và nghiêng bằng CSS", "Bài 2"], ["line-height", "Số trần, không kèm đơn vị", "Bài 2"], ["text-align", "Căn giữa tiêu đề", "Bài 2"], ["text-decoration", "Bỏ gạch chân liên kết", "Bài 2"], ["text-transform", "In hoa mà không sửa HTML", "Bài 2"], ["letter-spacing", "Giãn chữ cho tiêu đề", "Bài 2"], ["chú thích CSS", "Ghi dự đoán và kết quả thí nghiệm", "Bài 1 và 2"]];
+var CHECK = [["&lt;link rel=\"stylesheet\"&gt;", "Nối tệp CSS vào trang", "Bài 1"], ["bộ chọn theo tên thẻ", "body, h1, p...", "Bài 1"], [".class", "Dấu chấm, trúng nhiều thẻ khác loại", "Bài 1"], ["#id", "Dấu thăng, trúng đúng một thẻ", "Bài 1"], ["h1, h2", "Bộ chọn nhóm, ngăn bằng dấu phẩy", "Bài 1"], ["nav a", "Bộ chọn hậu duệ, ngăn bằng dấu cách", "Bài 1"], ["tên màu, #rrggbb, rgb()", "Ba cách viết màu", "Bài 1"], ["px, %, em, rem", "Hai đơn vị đo khác nhau", "Bài 1"], ["độ ưu tiên", "id &gt; class &gt; tên thẻ", "Bài 1"], ["thứ tự", "Cùng hạng thì viết sau thắng", "Bài 1"], ["thừa kế", "Thẻ con nhận gì từ thẻ cha", "Bài 1"], ["font-family", "Danh sách font, tên cuối là họ chung", "Bài 2"], ["font-size", "Có ít nhất một chỗ dùng rem", "Bài 2"], ["font-weight và font-style", "Đậm và nghiêng bằng CSS", "Bài 2"], ["line-height", "Số trần, không kèm đơn vị", "Bài 2"], ["text-align", "Căn giữa tiêu đề", "Bài 2"], ["text-decoration", "Bỏ gạch chân liên kết", "Bài 2"], ["text-transform", "In hoa mà không sửa HTML", "Bài 2"], ["letter-spacing", "Giãn chữ cho tiêu đề", "Bài 2"], ["chú thích CSS", "Ghi dự đoán và kết quả thí nghiệm", "Bài 1 và 2"]];
 
 var TIPS = [
  "Mở trang bằng trình duyệt, xem tệp CSS đã ăn chưa. Trang không đổi gì thì kiểm tra lại đường dẫn trong thẻ <code>&lt;link&gt;</code> và tên tệp có viết đúng không.",
@@ -968,7 +967,7 @@ var TIPS = [
  "Vào <code>validator.w3.org</code> kiểm tra tệp HTML, rồi vào <code>jigsaw.w3.org/css-validator</code> kiểm tra tệp CSS. Cả hai phải sạch lỗi."
 ];
 
-var FILES = [{"n": "demo-css-buoi1.html", "t": "text/html;charset=utf-8", "u": "Trang mẫu, có bình luận về ba cách nhúng CSS", "kb": "2,8 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+RGVtbyBDU1MgLSBCdeG7lWkgMTwvdGl0bGU+CgogIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgIEJBIEPDgUNIIMSQxq9BIENTUyBWw4BPIFRSQU5HCiAgICAgICBUcmFuZyBuw6B5IGPhu5EgdMOsbmggZMO5bmcgY+G6oyBiYSDEkeG7gyBj4bqjIGzhu5twIHNvIHPDoW5oLgoKICAgICAgIEPDgUNIIDMg4oCUIFThu4ZQIFJJw4pORy4gxJDDonkgbMOgIGPDoWNoIGTDuW5nIHRo4bqtdCB0cm9uZyBt4buNaSBk4buxIMOhbi4KICAgICAgIE3hu5l0IHThu4dwIENTUyBkw7luZyBjaHVuZyBjaG8gbmhp4buBdSB0cmFuZyBIVE1MLCBz4butYSBt4buZdCBjaOG7lyBsw6AKICAgICAgIGPhuqMgd2Vic2l0ZSDEkeG7lWkgdGhlby4KICAgICAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iZGVtby1jc3MtYnVvaTEuY3NzIj4KCiAgPCEtLSBDw4FDSCAyIOKAlCBUSOG6uiBzdHlsZSDEkOG6tlQgVFJPTkcgaGVhZC4KICAgICAgIENTUyBu4bqxbSBjaHVuZyB04buHcCB24bubaSBIVE1MLiBDaOG7iSBuw6puIGTDuW5nIGtoaSB0aOG7rSBuaGFuaCBt4buZdCB0cmFuZy4KICAgICAgIEzGsHUgw70gdGjhu6kgdOG7sTogdGjhursgc3R5bGUgbsOgeSB2aeG6v3QgU0FVIHRo4bq7IGxpbmsg4bufIHRyw6puLCBuw6puIG7hur91IGhhaQogICAgICAgYsOqbiBjw7luZyBuaOG6r20gdsOgbyBt4buZdCBjaOG7lyB24bubaSBjw7luZyDEkeG7mSBt4bqhbmggdGjDrCBiw6puIG7DoHkgdGjhuq9uZy4gLS0+CiAgPHN0eWxlPgogICAgLyogQ8O6IHBow6FwIG3hu5l0IHF1eSB04bqvYyBDU1M6CgogICAgICAgYuG7mS1jaOG7jW4gewogICAgICAgICB0aHXhu5ljLXTDrW5oOiBnacOhLXRy4buLOwogICAgICAgfQoKICAgICAgIC0gYuG7mSBjaOG7jW4gICA6IGNo4buNbiB0aOG6uyBuw6BvIHRyw6puIHRyYW5nCiAgICAgICAtIHRodeG7mWMgdMOtbmg6IG114buRbiDEkeG7lWkgY8OhaSBnw6wKICAgICAgIC0gZ2nDoSB0cuG7iyAgIDogxJHhu5VpIHRow6BuaCBjw6FpIGfDrAogICAgICAgLSBt4buXaSBkw7JuZyBraGFpIGLDoW8ga+G6v3QgdGjDumMgYuG6sW5nIGThuqV1IGNo4bqlbSBwaOG6qXkKICAgICAgIC0gY2jDuiB0aMOtY2ggbeG7nyBi4bqxbmcgZOG6pXUgc2FvIGfhuqFjaCBjaMOpbyB2w6AgxJHDs25nIG5nxrDhu6NjIGzhuqFpLAogICAgICAgICB0csOsbmggZHV54buHdCBi4buPIHF1YSBwaOG6p24gYsOqbiB0cm9uZwogICAgKi8KICAgIGZvb3RlciB7CiAgICAgIGNvbG9yOiAjNWI2NjcyOwogICAgfQogIDwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CgogIDxoZWFkZXI+CiAgICA8aDE+Q8OidSBs4bqhYyBi4buZIFRpbiBo4buNYzwvaDE+CiAgICA8cCBjbGFzcz0iY2hhbS1uZ29uIj5I4buNYyBjw7luZyBuaGF1LCBsw6BtIGPDuW5nIG5oYXU8L3A+CiAgPC9oZWFkZXI+CgogIDxuYXY+CiAgICA8YSBocmVmPSIjZ2lvaS10aGlldSI+R2nhu5tpIHRoaeG7h3U8L2E+CiAgICA8YSBocmVmPSIjaG9hdC1kb25nIj5Ib+G6oXQgxJHhu5luZzwvYT4KICAgIDxhIGhyZWY9IiNsaWVuLWhlIj5MacOqbiBo4buHPC9hPgogIDwvbmF2PgoKICA8bWFpbj4KCiAgICA8aDIgaWQ9Imdpb2ktdGhpZXUiPkdp4bubaSB0aGnhu4d1PC9oMj4KCiAgICA8cD5Dw6J1IGzhuqFjIGLhu5kgc2luaCBob+G6oXQgdsOgbyA8c3BhbiBjbGFzcz0ibm9pLWJhdCI+Y2hp4buBdSB0aOG7qSB0xrA8L3NwYW4+IGjhurFuZyB0deG6p24uPC9wPgoKICAgIDxwIGNsYXNzPSJub2ktYmF0Ij7EkG/huqFuIG7DoHkgbWFuZyBjbGFzcyBub2ktYmF0LjwvcD4KCiAgICA8IS0tIMSQb+G6oW4gZMaw4bubaSBtYW5nIEPhuqIgaWQgbOG6q24gY2xhc3MuIETDuW5nIMSR4buDIHRo4butIMSR4buZIMawdSB0acOqbiDhu58gcGjhuqduIEIuIC0tPgogICAgPHAgaWQ9ImRhYy1iaWV0IiBjbGFzcz0ibm9pLWJhdCI+xJBv4bqhbiBuw6B5IGPDsyBj4bqjIGlkIHbDoCBjbGFzcy48L3A+CgogICAgPGgyIGlkPSJob2F0LWRvbmciPkhv4bqhdCDEkeG7mW5nPC9oMj4KCiAgICA8dWw+CiAgICAgIDxsaT5M4bubcCBIVE1MIHbDoCBDU1M8L2xpPgogICAgICA8bGk+TmjDs20gxJHhu41jIHTDoGkgbGnhu4d1PC9saT4KICAgICAgPGxpPkzDoG0gZOG7sSDDoW4gbmjhu488L2xpPgogICAgPC91bD4KCiAgICA8IS0tIEPDgUNIIDEg4oCUIFRIVeG7mEMgVMONTkggc3R5bGUgTkdBWSBUUsOKTiBUSOG6ui4KICAgICAgICAgQ2jhu4kgxINuIMSRw7puZyBt4buZdCB0aOG6uyBuw6B5LCBraMO0bmcgZMO5bmcgbOG6oWkgxJHGsOG7o2Mg4bufIMSRw6J1IGtow6FjLgogICAgICAgICBOw7MgbeG6oW5oIGjGoW4gbeG7jWkgcXV5IHThuq9jIHRyb25nIHThu4dwIENTUywgbsOqbiBy4bqldCBraMOzIGdoaSDEkcOoLgogICAgICAgICBUaOG7sWMgdOG6vyBjaOG7iSBkw7luZyBraGkgY2jhu69hIGNow6F5LiAtLT4KICAgIDxwIHN0eWxlPSJjb2xvcjogcHVycGxlOyI+xJBv4bqhbiBuw6B5IHTDtCBtw6B1IGLhurFuZyB0aHXhu5ljIHTDrW5oIHN0eWxlIG5nYXkgdHLDqm4gdGjhursuPC9wPgoKICA8L21haW4+CgogIDxmb290ZXIgaWQ9ImxpZW4taGUiPgogICAgPHA+RW1haWw6IGNsYkBzdi5uZXUuZWR1LnZuPC9wPgogIDwvZm9vdGVyPgoKPC9ib2R5Pgo8L2h0bWw+Cg=="}, {"n": "demo-css-buoi1.css", "t": "text/css;charset=utf-8", "u": "Tệp CSS của trang mẫu, chia hai phần A và B", "kb": "11,0 KB", "b": "LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgIERFTU8gQ1NTIOKAlCBCVeG7lEkgMSAgwrcgIENoxrDGoW5nIDMKICAgVOG7h3AgbsOgeSBu4buRaSB2w6BvIGRlbW8tY3NzLWJ1b2kxLmh0bWwgYuG6sW5nIHRo4bq7IGxpbmsgdHJvbmcgaGVhZC4KCiAgIENoaWEgaGFpIHBo4bqnbiB0aGVvIGhhaSBsxrDhu6N0IGRlbW8gdHLDqm4gbOG7m3A6CgogICAgIFBI4bqmTiBBIOKAlCBDU1MgSE/huqBUIMSQ4buYTkcgUkEgU0FPCiAgICAgICAgICAgICAgTmjDum5nIENTUywgY8O6IHBow6FwLCBuxINtIGLhu5kgY2jhu41uLCBtw6B1LCDEkcahbiB24buLLAogICAgICAgICAgICAgIHLhu5NpIGx14bqtdCB0aOG6r25nIHRodWE6IMSR4buZIMawdSB0acOqbiwgdGjhu6kgdOG7sSwgdGjhu6thIGvhur8uCiAgICAgICAgICAgICAg4oaSIGThuqF5IHhvbmcgY2hvIGzDoG0gVGjhu7FjIGjDoG5oIDEKCiAgICAgUEjhuqZOIEIg4oCUIFRSQU5HIFRSw40gQ0jhu64KICAgICAgICAgICAgICBGb250IHbDoCBjw6FjIHRodeG7mWMgdMOtbmggxJHhu4tuaCBk4bqhbmcgdsSDbiBi4bqjbi4KICAgICAgICAgICAgICBLaMO0bmcgY8OzIGtow6FpIG5p4buHbSBt4bubaSwgY2jhu4kgbMOgIHRyYSB0aHXhu5ljIHTDrW5oLgogICAgICAgICAgICAgIOKGkiBk4bqheSB4b25nIGNobyBsw6BtIFRo4buxYyBow6BuaCAyCgogICBN4bq5byB0csOsbmggY2hp4bq/dTogZ2nhu68gUEjhuqZOIEIgdHJvbmcgZOG6pXUgY2jDuiB0aMOtY2ggY2hvIHThu5tpIGtoaSBk4bqheQogICB04bubaSDEkcOzLiBMw7pjIGLhu48gY2jDuiB0aMOtY2gsIGPhuqMgdHJhbmcgxJHhu5VpIGTDoW5nIG5nYXkgdHLGsOG7m2MgbeG6r3QgbOG7m3AuCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICBQSOG6pk4gQSAg4oCUICBDU1MgSE/huqBUIMSQ4buYTkcgUkEgU0FPCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKCi8qIC0tLSBBMS4gQuG7mCBDSOG7jE4gVEhFTyBUw4pOIFRI4bq6IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBWaeG6v3QgdGjhurNuZyB0w6puIHRo4bq7LiBN4buNaSB0aOG6uyBjw7luZyB0w6puIHRyw6puIHRyYW5nIMSR4buBdSB0csO6bmcuCgogICBDaMawYSDEkeG6t3QgZm9udCDhu58gxJHDonkg4oCUIMSR4buDIGTDoG5oIGNobyBwaOG6p24gQiwgbMO6YyDEkcOzIGPhuqMgdHJhbmcgc+G6vSDEkeG7lWkKICAgdOG7qyBmb250IG3hurdjIMSR4buLbmggY+G7p2EgdHLDrG5oIGR1eeG7h3Qgc2FuZyBmb250IG3DrG5oIGNo4buNbi4gICAgICAgICAgICAgICovCmJvZHkgewogIGNvbG9yOiAjMzMzMzMzOyAgICAgICAgICAgICAgICAgICAvKiBtw6B1IGNo4buvICovCiAgYmFja2dyb3VuZC1jb2xvcjogI2Y2ZjhmYTsgICAgICAgIC8qIG3DoHUgbuG7gW4gKi8KICBtYXJnaW46IDI0cHg7Cn0KCmgxIHsKICBmb250LXNpemU6IDMycHg7Cn0KCnAgewogIGZvbnQtc2l6ZTogMTZweDsKfQoKCi8qIC0tLSBBMi4gQuG7mCBDSOG7jE4gVEhFTyBDTEFTUyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBE4bqldSBjaOG6pW0gxJHhu6luZyB0csaw4bubYyB0w6puIGNsYXNzLiBUcsO6bmcgTeG7jEkgdGjhursgbWFuZyBjbGFzcyDEkcOzLCBi4bqldCBr4buDCiAgIGzDoCBwLCBzcGFuIGhheSBsaS4gVHLDqm4gdHJhbmcgbsOgeSBuw7MgdHLDum5nIG3hu5l0IHNwYW4gdsOgIGhhaSB0aOG6uyBwLiAgICovCi5ub2ktYmF0IHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmM2NkOwp9CgoKLyogLS0tIEEzLiBC4buYIENI4buMTiBUSEVPIElEIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIEThuqV1IHRoxINuZyDEkeG7qW5nIHRyxrDhu5tjIHTDqm4gaWQuIE3hu5dpIGlkIGNo4buJIHh14bqldCBoaeG7h24gbeG7mXQgbOG6p24gdHJvbmcKICAgdHJhbmcsIG7Dqm4gYuG7mSBjaOG7jW4gbsOgeSB0csO6bmcgxJHDum5nIG3hu5l0IHRo4bq7LiAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KI2dpb2ktdGhpZXUgewogIGNvbG9yOiAjYTExNTVhOwp9CgoKLyogLS0tIEE0LiBC4buYIENI4buMTiBOSMOTTSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBOZ8SDbiBjw6FjaCBi4bqxbmcgROG6pFUgUEjhuqhZLiBN4buZdCBxdXkgdOG6r2Mgw6FwIGNobyBuaGnhu4F1IGLhu5kgY2jhu41uLgoKICAgxJDhu4Mgw706IGgyIGPDsyBpZD0iZ2lvaS10aGlldSIga2jDtG5nIMSR4buVaSBtw6B1IHRoZW8gcXV5IHThuq9jIG7DoHksIHbDrAogICBxdXkgdOG6r2Mg4bufIEEzIG5o4bqvbSBi4bqxbmcgaWQgbsOqbiBt4bqhbmggaMahbi4gxJDDsyBjaMOtbmggbMOgIGNodXnhu4duIGPhu6dhIEE5LiAqLwpoMSwgaDIgewogIGNvbG9yOiAjMGYzZDZlOwp9CgoKLyogLS0tIEE1LiBC4buYIENI4buMTiBI4bqsVSBEVeG7hiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBOZ8SDbiBjw6FjaCBi4bqxbmcgROG6pFUgQ8OBQ0gsIGtow7RuZyBjw7MgZOG6pXUgcGjhuql5LgogICAibmF2IGEiIG5naMSpYSBsw6A6IGNo4buJIG5o4buvbmcgdGjhursgYSBu4bqxbSBCw4pOIFRST05HIHRo4bq7IG5hdi4KCiAgIENo4buXIG5o4bqnbSBraW5oIMSRaeG7g24sIGNoaeG6v3UgaGFpIGTDsm5nIG7DoHkgY+G6oW5oIG5oYXUgbMOgIHhvbmc6CiAgICAgbmF2LCBhICAg4oaSICBt4buNaSB0aOG6uyBuYXYgVsOAIG3hu41pIHRo4bq7IGEKICAgICBuYXYgYSAgICDihpIgIGNo4buJIHRo4bq7IGEgbuG6sW0gdHJvbmcgbmF2CiAgIE3hu5l0IGThuqV1IHBo4bqpeSDEkeG7lWkgaOG6s24gbmdoxKlhLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KbmF2IGEgewogIGNvbG9yOiAjMWY2ZmViOwogIG1hcmdpbi1yaWdodDogMTZweDsKfQoKCi8qIC0tLSBBNi4gQuG7mCBDSOG7jE4gVE/DgE4gQuG7mCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBE4bqldSBzYW8gdHLDum5nIG3hu41pIHRo4bq7LiDDjXQgZMO5bmcsIGNo4bunIHnhur91IMSR4buDIGThu41uIHRoaeG6v3QgbOG6rXAgbeG6t2MgxJHhu4tuaAogICBj4bunYSB0csOsbmggZHV54buHdCDhu58gxJHhuqd1IHThu4dwIENTUy4gQuG7jyBjaMO6IHRow61jaCDEkeG7gyB4ZW0gdHJhbmcgY28gbOG6oWkuICAgICovCi8qICogeyBtYXJnaW46IDA7IHBhZGRpbmc6IDA7IH0gKi8KCgovKiAtLS0gQTcuIEJBIEPDgUNIIFZJ4bq+VCBNw4BVIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgQmEgZMOybmcgZMaw4bubaSDEkcOieSBjaG8gcmEgbcOgdSBnaeG7kW5nIGjhu4d0IG5oYXUsIGNo4buJIGtow6FjIGPDoWNoIHZp4bq/dC4KICAgVHJvbmcgZOG7sSDDoW4gdGjhuq10IGjhuqd1IG5oxrAgbHXDtG4gZMO5bmcgY8OhY2ggdGjhu6kgaGFpLiAgICAgICAgICAgICAgICAgICAgKi8KLmNoYW0tbmdvbiB7CiAgY29sb3I6IHJveWFsYmx1ZTsgICAgICAgICAgICAgICAgLyogMS4gdMOqbiBtw6B1IGPDsyBz4bq1biwgZOG7hSBuaOG7myBuaMawbmcgw610IGzhu7FhIGNo4buNbiAqLwogIC8qIGNvbG9yOiAjNDE2OWUxOyAqLyAgICAgICAgICAgIC8qIDIuIG3DoyAxNiwgaGFpIGNo4buvIHPhu5EgY2hvIMSR4buPLCBs4bulYywgbGFtICAgICAgICovCiAgLyogY29sb3I6IHJnYig2NSwgMTA1LCAyMjUpOyAqLyAgLyogMy4gYmEgc+G7kSB04burIDAgxJHhur9uIDI1NSAgICAgICAgICAgICAgICAgICAgICAgKi8KfQoKCi8qIC0tLSBBOC4gxJDGoE4gVuG7iiDEkE8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgcHggIDogxJFp4buDbSDhuqNuaCwgY29uIHPhu5EgdHV54buHdCDEkeG7kWkuIETDuW5nIGtoaSBtdeG7kW4gY+G7kSDEkeG7i25oLgogICAlICAgOiBzbyB24bubaSBwaOG6p24gdOG7rSBjaGEuCiAgIGVtICA6IG5ow6JuIHbhu5tpIGPhu6EgY2jhu68gY+G7p2EgY2jDrW5oIHRo4bq7IMSRw7MgaG/hurdjIHRo4bq7IGNoYS4KICAgcmVtIDogbmjDom4gduG7m2kgY+G7oSBjaOG7ryBn4buRYyBj4bunYSB0cmFuZywgdGjGsOG7nW5nIGzDoCAxNnB4LiBE4buFIMSRb8OhbiBuaOG6pXQuCgogICBDaGnhur91IG5oYW5oOiDEkeG7lWkgZm9udC1zaXplIGPhu6dhIGJvZHkgcuG7k2kgdOG6o2kgbOG6oWkg4oCUIHB4IMSR4bupbmcgecOqbiwKICAgcmVtIHbDoCBlbSB0aMOsIG5ow7pjIG5ow61jaCB0aGVvLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KbGkgewogIGZvbnQtc2l6ZTogMXJlbTsgICAgICAvKiA9IDE2cHggbuG6v3UgY+G7oSBjaOG7ryBn4buRYyBsw6AgMTZweCAqLwogIG1hcmdpbi1ib3R0b206IDhweDsKfQoKdWwgewogIHdpZHRoOiA2MCU7ICAgICAgICAgICAvKiBy4buZbmcgYuG6sW5nIDYwJSBjaGnhu4F1IG5nYW5nIGPhu6dhIHRo4bq7IGNoYSAqLwp9Cgpmb290ZXIgewogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjZDBkN2RlOwogIHBhZGRpbmctdG9wOiAxMnB4Owp9CgoKLyogLS0tIEE5LiDEkOG7mCDGr1UgVEnDik4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBCYSBxdXkgdOG6r2MgZMaw4bubaSDEkcOieSBDw5lORyBuaOG6r20gdsOgbyDEkW/huqFuIHbEg24gY8OzIGlkPSJkYWMtYmlldCIuCiAgIEPhuqMgYmEgxJHhu4F1IMSRw7JpIMSR4buVaSBtw6B1IGNo4buvLCBuaMawbmcgY2jhu4kgbeG7mXQgcXV5IHThuq9jIHRo4bqvbmcuCgogICBUaOG7qSBo4bqhbmcgdOG7qyBt4bqhbmggdOG7m2kgeeG6v3U6CiAgICAgMS4gdGh14buZYyB0w61uaCBzdHlsZSB2aeG6v3QgbmdheSB0csOqbiB0aOG6uwogICAgIDIuIGLhu5kgY2jhu41uIHRoZW8gaWQgICAgICAgKCNkYWMtYmlldCkKICAgICAzLiBi4buZIGNo4buNbiB0aGVvIGNsYXNzICAgICgubm9pLWJhdCkKICAgICA0LiBi4buZIGNo4buNbiB0aGVvIHTDqm4gdGjhursgIChwKQoKICAgROG7qk5HIEzhuqBJIEjhu45JIEzhu5pQIHRyxrDhu5tjIGtoaSBjaGnhur91OiDEkW/huqFuIMSRw7Mgc+G6vSBtw6B1IGfDrD8KICAgxJDDoXAgw6FuOiBNw4BVIMSQ4buOLCB2w6wgaWQgbeG6oW5oIG5o4bqldCB0cm9uZyBiYSBxdXkgdOG6r2MgbsOgeS4KCiAgIEtp4buDbSBjaOG7qW5nIG5nYXkgdHLDqm4gbOG7m3A6IMSRw7NuZyBjaMO6IHRow61jaCBxdWFuaCBraOG7kWkgI2RhYy1iaWV0IHLhu5NpCiAgIHThuqNpIGzhuqFpLCBtw6B1IHThu6V0IHh14buRbmcgY2FtIHRoZW8gY2xhc3MuIENow7ogdGjDrWNoIG7hu5F0IC5ub2ktYmF0IHRow6wKICAgdOG7pXQgdGnhur9wIHh14buRbmcgeGFuaCBsw6EgY+G7p2EgdGjhursgcC4gQ+G6oyBs4bubcCB0aOG6pXkgdGjhu6kgaOG6oW5nIGNo4bqheSB0aOG6rXQuICAgKi8KCnAgewogIGNvbG9yOiBncmVlbjsgICAgICAgICAgICAgLyogeeG6v3UgbmjhuqV0ICovCn0KCi5ub2ktYmF0IHsKICBjb2xvcjogb3JhbmdlOyAgICAgICAgICAgIC8qIG3huqFuaCBoxqFuIHTDqm4gdGjhursgKi8KfQoKI2RhYy1iaWV0IHsKICBjb2xvcjogcmVkOyAgICAgICAgICAgICAgIC8qIG3huqFuaCBuaOG6pXQgdHJvbmcgYmEgY8OhaSDigJQgY8OhaSBuw6B5IHRo4bqvbmcgKi8KfQoKCi8qIC0tLSBBMTAuIEPDmU5HIEjhuqBORyBUSMOMIFZJ4bq+VCBTQVUgVEjhuq5ORyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgSGFpIHF1eSB04bqvYyBkxrDhu5tpIMSRw6J5IG3huqFuaCBuZ2FuZyBuaGF1LCBjw7luZyBsw6AgYuG7mSBjaOG7jW4gY2xhc3MuCiAgIEzDumMgbsOgeSBDU1MgeOG7rSB0aGVvIHRo4bupIHThu7E6IHF1eSB04bqvYyB2aeG6v3Qgc2F1IHRo4bqvbmcuCgogICBL4bq/dCBxdeG6ozogdmnhu4FuIG3DoHUgeGFuaCBkxrDGoW5nLCB2w6wgbsOzIMSR4bupbmcgZMaw4bubaS4KICAgxJDDonkgbMOgIGzDvSBkbyBwaOG7lSBiaeG6v24gbmjhuqV0IGPhu6dhIGPDonUgImVtIHZp4bq/dCBy4buTaSBtw6Aga2jDtG5nIGNo4bqheSIg4oCUCiAgIHRoxrDhu51uZyBsw6AgYsOqbiBkxrDhu5tpIGPDsm4gbeG7mXQgcXV5IHThuq9jIGtow6FjIMSRw6ggbMOqbi4gICAgICAgICAgICAgICAgICAgICAqLwouY2hhbS1uZ29uIHsKICBib3JkZXItbGVmdDogNHB4IHNvbGlkIGdyYXk7CiAgcGFkZGluZy1sZWZ0OiAxMHB4Owp9CgouY2hhbS1uZ29uIHsKICBib3JkZXItbGVmdDogNHB4IHNvbGlkICMxZjZmZWI7Cn0KCgovKiAtLS0gQTExLiBUSOG7qkEgS+G6viAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTeG7mXQgc+G7kSB0aHXhu5ljIHTDrW5oIHThu7EgdHJ1eeG7gW4gdOG7qyB0aOG6uyBjaGEgeHXhu5FuZyB0aOG6uyBjb246CiAgIGNvbG9yLCBmb250LWZhbWlseSwgZm9udC1zaXplLCBsaW5lLWhlaWdodCwgdGV4dC1hbGlnbi4uLgoKICAgTeG7mXQgc+G7kSB0aMOsIEtIw5RORyB0cnV54buBbjogYm9yZGVyLCBtYXJnaW4sIHBhZGRpbmcsIGJhY2tncm91bmQuLi4KICAgTuG6v3UgdHJ1eeG7gW4gdGjDrCBt4buXaSB0aOG6uyBjb24gbOG6oWkgdOG7sSB24bq9IG3hu5l0IGPDoWkgdmnhu4FuLCBy4bqldCB2w7QgbMO9LgoKICAgVGjhursgYSBjxaluZyBraMO0bmcgbmjhuq1uIG3DoHUgY2jhu68gdGjhu6thIGvhur8sIHbDrCB0csOsbmggZHV54buHdCDEkcOjIGPDsyBz4bq1bgogICBt4buZdCBxdXkgdOG6r2MgcmnDqm5nIGNobyBsacOqbiBr4bq/dC4gTXXhu5FuIMSR4buVaSBtw6B1IGxpw6puIGvhur90IHRow6wgcGjhuqNpCiAgIG5o4bqvbSB0aOG6s25nIHbDoG8gdGjhursgYSwgbmjGsCBxdXkgdOG6r2MgbmF2IGEg4bufIEE1LgoKICAgVEjhu6pBIEvhur4gTFXDlE4gWeG6vlUgSMagTiBN4buYVCBRVVkgVOG6rkMgTkjhuq5NIFRI4bqyTkcuCiAgIFbDrSBk4bulIHPhu5FuZyBuZ2F5IHRyw6puIHRyYW5nOiB0aOG6uyBmb290ZXIgxJHDoyDEkcaw4bujYyB0w7QgeMOhbSB0cm9uZyB0aOG6uwogICBzdHlsZSDhu58gcGjhuqduIGhlYWQsIG5oxrBuZyBkw7JuZyBlbWFpbCBiw6puIHRyb25nIHbhuqtuIGhp4buHbiBNw4BVIFhBTkggTMOBLgogICBMw70gZG86IG7DsyBsw6AgdGjhursgcCwgdHLDum5nIHRo4bqzbmcgcXV5IHThuq9jIHAgeyBjb2xvcjogZ3JlZW4gfSDhu58gQTkg4oCUCiAgIG3DoCBuaOG6r20gdGjhurNuZyB0aMOsIGx1w7RuIHRo4bqvbmcgbcOgdSB0aOG7q2Ega+G6vyB04burIGNoYS4KCiAgIEjhu49pIGzhu5twOiBsw6BtIHNhbyBjaG8gZMOybmcgZW1haWwgdGjDoG5oIHjDoW0/CiAgIMSQw6FwIMOhbjogbmjhuq9tIHRo4bqzbmcgdsOgbyBuw7MuIELhu48gY2jDuiB0aMOtY2ggZMOybmcgZMaw4bubaSBy4buTaSB04bqjaSBs4bqhaS4gICAgICAqLwovKiBmb290ZXIgcCB7IGNvbG9yOiAjNWI2NjcyOyB9ICovCgoKLyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgIFBI4bqmTiBCICDigJQgIFRSQU5HIFRSw40gQ0jhu64KICAgROG6oXkgc2F1IGtoaSBzaW5oIHZpw6puIGzDoG0geG9uZyBUaOG7sWMgaMOgbmggMS4KICAgVG/DoG4gYuG7mSBwaOG6p24gbsOgeSBjaOG7iSBsw6AgdHJhIHRodeG7mWMgdMOtbmgsIGtow7RuZyBjw7Mga2jDoWkgbmnhu4dtIG3hu5tpLgogICBOaMawbmcgxJHDonkgbMOgIGzDumMgdHJhbmcgxJHhu5VpIGTDoW5nIHLDtSBuaOG6pXQg4oCUIGNoaeG6v3UgY2jhuq1tIG3hu5l0IGNow7p0LgogICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCgovKiAtLS0gQjEuIEZPTlQgQ0jhu64gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIGZvbnQtZmFtaWx5IG5o4bqtbiBt4buZdCBEQU5IIFPDgUNIIGZvbnQsIG5nxINuIG5oYXUgYuG6sW5nIGThuqV1IHBo4bqpeS4KICAgVHLDrG5oIGR1eeG7h3QgbOG6pXkgY8OhaSDEkeG6p3UgdGnDqm4gbcOheSBjw7MsIGtow7RuZyBjw7MgdGjDrCBsw7lpIHNhbmcgY8OhaSBzYXUuCiAgIFTDqm4gZm9udCBjw7Mga2hv4bqjbmcgdHLhuq9uZyBwaOG6o2kgxJHhurd0IHRyb25nIG5ow6F5IGvDqXAuCgogICBUw6puIGN14buRaSBjw7luZyBsdcO0biBsw6AgbeG7mXQgaOG7jSBjaHVuZyDigJQgc2Fucy1zZXJpZiwgc2VyaWYgaG/hurdjCiAgIG1vbm9zcGFjZSDigJQgxJHhu4MgbcOheSBuw6BvIGPFqW5nIGPDsm4gdGjhu6kgxJHhu4MgZMO5bmcuCgogICDEkOG6t3QgdHLDqm4gYm9keSB0aMOsIGPhuqMgdHJhbmcgdGjhu6thIGvhur8gdGhlbywga2jhu49pIHZp4bq/dCBs4bqhaSB04burbmcgdGjhursuICAgICovCmJvZHkgewogIGZvbnQtZmFtaWx5OiBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmOwp9CgpoMSwgaDIgewogIGZvbnQtZmFtaWx5OiBHZW9yZ2lhLCAiVGltZXMgTmV3IFJvbWFuIiwgc2VyaWY7Cn0KCgovKiAtLS0gQjIuIEPhu6AgQ0jhu64sIMSQ4buYIMSQ4bqsTSwgTkdIScOKTkcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIFThu6sgZ2nhu50gbXXhu5FuIGNo4buvIMSR4bqtbSBoYXkgbmdoacOqbmcgdGjDrCBkw7luZyBDU1MsIMSR4burbmcgZMO5bmcgdGjhursgYiB2w6AgaS4KICAgTMO9IGRvIMSRw6MgaOG7jWMgdOG7qyBjaMawxqFuZyAyOiB0aOG6uyBsbyBuZ2jEqWEsIENTUyBsbyBow6xuaCB0aOG7qWMuCiAgIFRo4bq7IHN0cm9uZyB24bqrbiBkw7luZyBraGkgbuG7mWkgZHVuZyB0aOG6rXQgc+G7sSBxdWFuIHRy4buNbmcsIGPDsm4gbXXhu5FuIMSR4bqtbQogICBjaG8gxJHhurlwIHRow6wgxJHDsyBsw6Agdmnhu4djIGPhu6dhIGZvbnQtd2VpZ2h0LiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLmNoYW0tbmdvbiB7CiAgZm9udC1zaXplOiAxLjEyNXJlbTsgICAgLyogPSAxOHB4ICovCiAgZm9udC1zdHlsZTogaXRhbGljOwp9Cgoubm9pLWJhdCB7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7ICAgICAgLyogaG/hurdjIG3hu5l0IHPhu5EgdOG7qyAxMDAgxJHhur9uIDkwMCAqLwp9CgoKLyogLS0tIEIzLiBHScODTiBEw5JORyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBsaW5lLWhlaWdodCBraMO0bmcgY8OzIMSRxqFuIHbhu4sgdGjDrCDEkcaw4bujYyBoaeG7g3UgbMOgIE5Iw4JOIHbhu5tpIGPhu6EgY2jhu68uCiAgIDEuNiBuZ2jEqWEgbMOgIG3hu5dpIGTDsm5nIGNhbyBn4bqlcCAxLDYgbOG6p24gY+G7oSBjaOG7ry4KCiAgIFRodeG7mWMgdMOtbmggcuG6uyB0aeG7gW4gbmjhuqV0IG3DoCDEg24gdGnhu4FuIG5o4bqldDogY2jhu4kgbeG7mXQgZMOybmcsIGPhuqMgdHJhbmcKICAgZOG7hSDEkeG7jWMgaOG6s24gbMOqbi4gVGjhu60gxJHhu5VpIHF1YSBs4bqhaSAxIHbDoCAxLjYgY2hvIGzhu5twIHhlbS4gICAgICAgICAgICAgICovCnAgewogIGxpbmUtaGVpZ2h0OiAxLjY7Cn0KCgovKiAtLS0gQjQuIEPEgk4gTOG7gCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBsZWZ0IGzDoCBt4bq3YyDEkeG7i25oLCBuw6puIGNo4buJIHZp4bq/dCBraGkgbXXhu5FuIGtow6FjIMSRaS4KICAganVzdGlmeSBjxINuIMSR4buBdSBoYWkgYsOqbiBuaMawIHPDoWNoIGluLCBuaMawbmcgdGnhur9uZyBWaeG7h3QgaGF5IGLhu4sgZ2nDo24KICAgY2jhu68geOG6pXUsIG7Dqm4gY8OibiBuaOG6r2MuCgogICBUaOG7rSDEkeG7lWkgaDEgdGjDoG5oIGhlYWRlciB4ZW0ga2jDoWMgZ8OsOiBsw7pjIMSRw7MgY+G6oyBraOG7kWkgaGVhZGVyIGPEg24KICAgZ2nhu69hIHRoZW8sIHbDrCB0ZXh0LWFsaWduIGzDoCB0aHXhu5ljIHTDrW5oIGPDsyB0aOG7q2Ega+G6vy4gICAgICAgICAgICAgICAgICAqLwpoMSB7CiAgdGV4dC1hbGlnbjogY2VudGVyOwp9CgoKLyogLS0tIEI1LiBH4bqgQ0ggQ0jDgk4gVsOAIEfhuqBDSCBOR0FORyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgdGV4dC1kZWNvcmF0aW9uOiBub25lIMSR4buDIGLhu48gZ+G6oWNoIGNow6JuIG3hurdjIMSR4buLbmggY+G7p2EgbGnDqm4ga+G6v3QsCiAgIHRoxrDhu51uZyBkw7luZyBraGkgYmnhur9uIGRhbmggc8OhY2ggbGnDqm4ga+G6v3QgdGjDoG5oIHRoYW5oIG1lbnUuCiAgIEPDoWMgZ2nDoSB0cuG7iyBraMOhYzogdW5kZXJsaW5lLCBsaW5lLXRocm91Z2gsIG92ZXJsaW5lLiAgICAgICAgICAgICAgICAqLwpuYXYgYSB7CiAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwp9CgoKLyogLS0tIEI2LiBIT0EgVEjGr+G7nE5HIFbDgCBHScODTiBDSOG7riAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIHRleHQtdHJhbnNmb3JtIMSR4buVaSBob2EgdGjGsOG7nW5nIG3DoCBLSMOUTkcgc+G7rWEgY2jhu68gdHJvbmcgdOG7h3AgSFRNTCDigJQKICAgbuG7mWkgZHVuZyBnaeG7ryBuZ3V5w6puLCBjaOG7iSBjw6FjaCBoaeG7g24gdGjhu4sgdGhheSDEkeG7lWkuIMSQw7puZyB0aW5oIHRo4bqnbgogICB0w6FjaCBuZ2jEqWEga2jhu49pIGjDrG5oIHRo4bupYy4KICAgICB1cHBlcmNhc2UgIElOIEhPQSBU4bqkVCBD4bqiCiAgICAgbG93ZXJjYXNlICBpbiB0aMaw4budbmcgdOG6pXQgY+G6owogICAgIGNhcGl0YWxpemUgVmnhur90IEhvYSDEkOG6p3UgTeG7l2kgVOG7qwoKICAgbGV0dGVyLXNwYWNpbmcgZ2nDo24ga2hv4bqjbmcgY8OhY2ggZ2nhu69hIGPDoWMgY2jhu68gY8OhaS4gRMO5bmcgcuG6pXQgw610LAogICBjaOG7pyB54bq/dSBjaG8gdGnDqnUgxJHhu4EgbOG7m24gdsOgIGNo4buvIGluIGhvYS4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwpuYXYgewogIHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7CiAgZm9udC1zaXplOiAxNHB4Owp9CgpoMSB7CiAgbGV0dGVyLXNwYWNpbmc6IDFweDsKfQo="}];
+var FILES = [{"n": "demo-css-buoi1.html", "t": "text/html;charset=utf-8", "u": "Trang mẫu, có bình luận về ba cách nhúng CSS", "kb": "2,8 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+RGVtbyBDU1MgLSBCdeG7lWkgMTwvdGl0bGU+CgogIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgIEJBIEPDgUNIIMSQxq9BIENTUyBWw4BPIFRSQU5HCiAgICAgICBUcmFuZyBuw6B5IGPhu5EgdMOsbmggZMO5bmcgY+G6oyBiYSDEkeG7gyBj4bqjIGzhu5twIHNvIHPDoW5oLgoKICAgICAgIEPDoWNoIDM6IHThu4dwIENTUyByacOqbmcuIEThu7Egw6FuIHRo4bqtdCDEkeG7gXUgZMO5bmcgY8OhY2ggbsOgeS4KICAgICAgIE3hu5l0IHThu4dwIENTUyBkw7luZyBjaHVuZyBjaG8gbmhp4buBdSB0cmFuZyBIVE1MLCBz4butYSBt4buZdCBjaOG7lyBsw6AKICAgICAgIGPhuqMgd2Vic2l0ZSDEkeG7lWkgdGhlby4KICAgICAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iZGVtby1jc3MtYnVvaTEuY3NzIj4KCiAgPCEtLSBDw6FjaCAyOiB0aOG6uyBzdHlsZSDEkeG6t3QgdHJvbmcgaGVhZC4KICAgICAgIENTUyBu4bqxbSBjaHVuZyB04buHcCB24bubaSBIVE1MLiBDaOG7iSBuw6puIGTDuW5nIGtoaSB0aOG7rSBuaGFuaCBt4buZdCB0cmFuZy4KICAgICAgIEzGsHUgw70gdGjhu6kgdOG7sTogdGjhursgc3R5bGUgbsOgeSB2aeG6v3Qgc2F1IHRo4bq7IGxpbmsg4bufIHRyw6puLCBuw6puIG7hur91IGhhaQogICAgICAgYsOqbiBjw7luZyBuaOG6r20gdsOgbyBt4buZdCBjaOG7lyB24bubaSBjw7luZyDEkeG7mSBt4bqhbmggdGjDrCBiw6puIG7DoHkgdGjhuq9uZy4gLS0+CiAgPHN0eWxlPgogICAgLyogQ8O6IHBow6FwIG3hu5l0IHF1eSB04bqvYyBDU1M6CgogICAgICAgYuG7mS1jaOG7jW4gewogICAgICAgICB0aHXhu5ljLXTDrW5oOiBnacOhLXRy4buLOwogICAgICAgfQoKICAgICAgIC0gYuG7mSBjaOG7jW4gICA6IGNo4buNbiB0aOG6uyBuw6BvIHRyw6puIHRyYW5nCiAgICAgICAtIHRodeG7mWMgdMOtbmg6IG114buRbiDEkeG7lWkgY8OhaSBnw6wKICAgICAgIC0gZ2nDoSB0cuG7iyAgIDogxJHhu5VpIHRow6BuaCBjw6FpIGfDrAogICAgICAgLSBt4buXaSBkw7JuZyBraGFpIGLDoW8ga+G6v3QgdGjDumMgYuG6sW5nIGThuqV1IGNo4bqlbSBwaOG6qXkKICAgICAgIC0gY2jDuiB0aMOtY2ggbeG7nyBi4bqxbmcgZOG6pXUgc2FvIGfhuqFjaCBjaMOpbyB2w6AgxJHDs25nIG5nxrDhu6NjIGzhuqFpLAogICAgICAgICB0csOsbmggZHV54buHdCBi4buPIHF1YSBwaOG6p24gYsOqbiB0cm9uZwogICAgKi8KICAgIGZvb3RlciB7CiAgICAgIGNvbG9yOiAjNWI2NjcyOwogICAgfQogIDwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CgogIDxoZWFkZXI+CiAgICA8aDE+Q8OidSBs4bqhYyBi4buZIFRpbiBo4buNYzwvaDE+CiAgICA8cCBjbGFzcz0iY2hhbS1uZ29uIj5I4buNYyBjw7luZyBuaGF1LCBsw6BtIGPDuW5nIG5oYXU8L3A+CiAgPC9oZWFkZXI+CgogIDxuYXY+CiAgICA8YSBocmVmPSIjZ2lvaS10aGlldSI+R2nhu5tpIHRoaeG7h3U8L2E+CiAgICA8YSBocmVmPSIjaG9hdC1kb25nIj5Ib+G6oXQgxJHhu5luZzwvYT4KICAgIDxhIGhyZWY9IiNsaWVuLWhlIj5MacOqbiBo4buHPC9hPgogIDwvbmF2PgoKICA8bWFpbj4KCiAgICA8aDIgaWQ9Imdpb2ktdGhpZXUiPkdp4bubaSB0aGnhu4d1PC9oMj4KCiAgICA8cD5Dw6J1IGzhuqFjIGLhu5kgc2luaCBob+G6oXQgdsOgbyA8c3BhbiBjbGFzcz0ibm9pLWJhdCI+Y2hp4buBdSB0aOG7qSB0xrA8L3NwYW4+IGjhurFuZyB0deG6p24uPC9wPgoKICAgIDxwIGNsYXNzPSJub2ktYmF0Ij7EkG/huqFuIG7DoHkgbWFuZyBjbGFzcyBub2ktYmF0LjwvcD4KCiAgICA8IS0tIMSQb+G6oW4gZMaw4bubaSBtYW5nIGPhuqMgaWQgbOG6q24gY2xhc3MsIGTDuW5nIMSR4buDIHRo4butIMSR4buZIMawdSB0acOqbiDhu58gbeG7pWMgQTkuIC0tPgogICAgPHAgaWQ9ImRhYy1iaWV0IiBjbGFzcz0ibm9pLWJhdCI+xJBv4bqhbiBuw6B5IGPDsyBj4bqjIGlkIHbDoCBjbGFzcy48L3A+CgogICAgPGgyIGlkPSJob2F0LWRvbmciPkhv4bqhdCDEkeG7mW5nPC9oMj4KCiAgICA8dWw+CiAgICAgIDxsaT5M4bubcCBIVE1MIHbDoCBDU1M8L2xpPgogICAgICA8bGk+TmjDs20gxJHhu41jIHTDoGkgbGnhu4d1PC9saT4KICAgICAgPGxpPkzDoG0gZOG7sSDDoW4gbmjhu488L2xpPgogICAgPC91bD4KCiAgICA8IS0tIEPDoWNoIDE6IHRodeG7mWMgdMOtbmggc3R5bGUgbmdheSB0csOqbiB0aOG6uy4KICAgICAgICAgQ2jhu4kgxINuIMSRw7puZyBt4buZdCB0aOG6uyBuw6B5LCBraMO0bmcgZMO5bmcgbOG6oWkgxJHGsOG7o2Mg4bufIMSRw6J1IGtow6FjLgogICAgICAgICBOw7MgdGjhuq9uZyBjw6FjIHF1eSB04bqvYyB0cm9uZyB04buHcCBDU1MgbsOqbiBraMOzIGdoaSDEkcOoLgogICAgICAgICBDaOG7iSBkw7luZyBraGkgY+G6p24gc+G7rWEgdOG6oW0uIC0tPgogICAgPHAgc3R5bGU9ImNvbG9yOiBwdXJwbGU7Ij7EkG/huqFuIG7DoHkgdMO0IG3DoHUgYuG6sW5nIHRodeG7mWMgdMOtbmggc3R5bGUgbmdheSB0csOqbiB0aOG6uy48L3A+CgogIDwvbWFpbj4KCiAgPGZvb3RlciBpZD0ibGllbi1oZSI+CiAgICA8cD5FbWFpbDogY2xiQHN2Lm5ldS5lZHUudm48L3A+CiAgPC9mb290ZXI+Cgo8L2JvZHk+CjwvaHRtbD4K"}, {"n": "demo-css-buoi1.css", "t": "text/css;charset=utf-8", "u": "Tệp CSS của trang mẫu, chia hai phần A và B", "kb": "10,9 KB", "b": "LyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgIERFTU8gQ1NTIEJV4buUSSAxIOKAlCBDaMawxqFuZyAzCiAgIFThu4dwIG7DoHkgbuG7kWkgdsOgbyBkZW1vLWNzcy1idW9pMS5odG1sIGLhurFuZyB0aOG6uyBsaW5rIHRyb25nIGhlYWQuCgogICBDaGlhIGhhaSBwaOG6p24gdGhlbyBoYWkgbMaw4bujdCBkZW1vIHRyw6puIGzhu5twOgoKICAgICBQSOG6pk4gQSDigJQgQ1NTIEhP4bqgVCDEkOG7mE5HIFJBIFNBTwogICAgICAgICAgICAgIE5ow7puZyBDU1MsIGPDuiBwaMOhcCwgbsSDbSBi4buZIGNo4buNbiwgbcOgdSwgxJHGoW4gduG7iywKICAgICAgICAgICAgICBy4buTaSBsdeG6rXQgdGjhuq9uZyB0aHVhOiDEkeG7mSDGsHUgdGnDqm4sIHRo4bupIHThu7EsIHRo4burYSBr4bq/LgogICAgICAgICAgICAgIEThuqF5IHhvbmcgdGjDrCBjaG8gbMOgbSBUaOG7sWMgaMOgbmggMS4KCiAgICAgUEjhuqZOIEIg4oCUIFRSQU5HIFRSw40gQ0jhu64KICAgICAgICAgICAgICBGb250IHbDoCBjw6FjIHRodeG7mWMgdMOtbmggxJHhu4tuaCBk4bqhbmcgdsSDbiBi4bqjbi4KICAgICAgICAgICAgICBLaMO0bmcgY8OzIGtow6FpIG5p4buHbSBt4bubaSwgY2jhu4kgbMOgIHRyYSB0aHXhu5ljIHTDrW5oLgogICAgICAgICAgICAgIEThuqF5IHhvbmcgdGjDrCBjaG8gbMOgbSBUaOG7sWMgaMOgbmggMi4KCiAgIE3hurlvIHRyw6xuaCBjaGnhur91OiBnaeG7ryBQSOG6pk4gQiB0cm9uZyBk4bqldSBjaMO6IHRow61jaCBjaG8gdOG7m2kga2hpIGThuqF5CiAgIHThu5tpIMSRw7MuIEzDumMgYuG7jyBjaMO6IHRow61jaCwgY+G6oyB0cmFuZyDEkeG7lWkgZMOhbmcgbmdheSB0csaw4bubYyBt4bqvdCBs4bubcC4KICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovCgoKLyogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgIFBI4bqmTiBBICDigJQgIENTUyBIT+G6oFQgxJDhu5hORyBSQSBTQU8KICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICovCgoKLyogLS0tIEExLiBC4buYIENI4buMTiBUSEVPIFTDik4gVEjhurogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIFZp4bq/dCB0aOG6s25nIHTDqm4gdGjhursuIE3hu41pIHRo4bq7IGPDuW5nIHTDqm4gdHLDqm4gdHJhbmcgxJHhu4F1IHRyw7puZy4KCiAgIENoxrBhIMSR4bq3dCBmb250IOG7nyDEkcOieSwgxJHhu4MgZMOgbmggY2hvIHBo4bqnbiBCLiBMw7pjIMSRw7MgY+G6oyB0cmFuZyBz4bq9IMSR4buVaQogICB04burIGZvbnQgbeG6t2MgxJHhu4tuaCBj4bunYSB0csOsbmggZHV54buHdCBzYW5nIGZvbnQgbcOsbmggY2jhu41uLiAgICAgICAgICAgICAgKi8KYm9keSB7CiAgY29sb3I6ICMzMzMzMzM7ICAgICAgICAgICAgICAgICAgIC8qIG3DoHUgY2jhu68gKi8KICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjZmOGZhOyAgICAgICAgLyogbcOgdSBu4buBbiAqLwogIG1hcmdpbjogMjRweDsKfQoKaDEgewogIGZvbnQtc2l6ZTogMzJweDsKfQoKcCB7CiAgZm9udC1zaXplOiAxNnB4Owp9CgoKLyogLS0tIEEyLiBC4buYIENI4buMTiBUSEVPIENMQVNTIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIEThuqV1IGNo4bqlbSDEkeG7qW5nIHRyxrDhu5tjIHTDqm4gY2xhc3MuIFRyw7puZyBt4buNaSB0aOG6uyBtYW5nIGNsYXNzIMSRw7MsIGLhuqV0IGvhu4MKICAgbMOgIHAsIHNwYW4gaGF5IGxpLiBUcsOqbiB0cmFuZyBuw6B5IG7DsyB0csO6bmcgbeG7mXQgc3BhbiB2w6AgaGFpIHRo4bq7IHAuICAgKi8KLm5vaS1iYXQgewogIGJhY2tncm91bmQtY29sb3I6ICNmZmYzY2Q7Cn0KCgovKiAtLS0gQTMuIELhu5ggQ0jhu4xOIFRIRU8gSUQgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgROG6pXUgdGjEg25nIMSR4bupbmcgdHLGsOG7m2MgdMOqbiBpZC4gTeG7l2kgaWQgY2jhu4kgeHXhuqV0IGhp4buHbiBt4buZdCBs4bqnbiB0cm9uZwogICB0cmFuZywgbsOqbiBi4buZIGNo4buNbiBuw6B5IHRyw7puZyDEkcO6bmcgbeG7mXQgdGjhursuICAgICAgICAgICAgICAgICAgICAgICAgICAqLwojZ2lvaS10aGlldSB7CiAgY29sb3I6ICNhMTE1NWE7Cn0KCgovKiAtLS0gQTQuIELhu5ggQ0jhu4xOIE5Iw5NNIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIE5nxINuIGPDoWNoIGLhurFuZyBk4bqldSBwaOG6qXkuIE3hu5l0IHF1eSB04bqvYyDDoXAgY2hvIG5oaeG7gXUgYuG7mSBjaOG7jW4uCgogICDEkOG7gyDDvTogaDIgY8OzIGlkPSJnaW9pLXRoaWV1IiBraMO0bmcgxJHhu5VpIG3DoHUgdGhlbyBxdXkgdOG6r2MgbsOgeSwgdsOsCiAgIHF1eSB04bqvYyDhu58gQTMgbmjhuq9tIGLhurFuZyBpZCBuw6puIG3huqFuaCBoxqFuLiBDaHV54buHbiBuw6B5IMSR4buDIGTDoG5oIGNobyBBOS4gKi8KaDEsIGgyIHsKICBjb2xvcjogIzBmM2Q2ZTsKfQoKCi8qIC0tLSBBNS4gQuG7mCBDSOG7jE4gSOG6rFUgRFXhu4YgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTmfEg24gY8OhY2ggYuG6sW5nIGThuqV1IGPDoWNoLCBraMO0bmcgY8OzIGThuqV1IHBo4bqpeS4KICAgIm5hdiBhIiBuZ2jEqWEgbMOgOiBjaOG7iSBuaOG7r25nIHRo4bq7IGEgbuG6sW0gYsOqbiB0cm9uZyB0aOG6uyBuYXYuCgogICBTaW5oIHZpw6puIGhheSBuaOG6p20gY2jhu5cgbsOgeS4gQ2hp4bq/dSBoYWkgZMOybmcgbsOgeSBj4bqhbmggbmhhdSBsw6AgeG9uZzoKICAgICBuYXYsIGEgICBjw7MgZOG6pXUgcGjhuql5OiBt4buNaSB0aOG6uyBuYXYgdsOgIG3hu41pIHRo4bq7IGEKICAgICBuYXYgYSAgICBraMO0bmcgZOG6pXUgcGjhuql5OiBjaOG7iSB0aOG6uyBhIG7hurFtIHRyb25nIG5hdgogICBN4buZdCBk4bqldSBwaOG6qXkgxJHhu5VpIGjhurNuIG5naMSpYS4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCm5hdiBhIHsKICBjb2xvcjogIzFmNmZlYjsKICBtYXJnaW4tcmlnaHQ6IDE2cHg7Cn0KCgovKiAtLS0gQTYuIELhu5ggQ0jhu4xOIFRPw4BOIELhu5ggLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgROG6pXUgc2FvIHRyw7puZyBt4buNaSB0aOG6uy4gw410IGTDuW5nLCBjaOG7pyB54bq/dSDEkeG7gyBk4buNbiB0aGnhur90IGzhuq1wIG3hurdjIMSR4buLbmgKICAgY+G7p2EgdHLDrG5oIGR1eeG7h3Qg4bufIMSR4bqndSB04buHcCBDU1MuIELhu48gY2jDuiB0aMOtY2ggxJHhu4MgeGVtIHRyYW5nIGNvIGzhuqFpLiAgICAqLwovKiAqIHsgbWFyZ2luOiAwOyBwYWRkaW5nOiAwOyB9ICovCgoKLyogLS0tIEE3LiBCQSBDw4FDSCBWSeG6vlQgTcOAVSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIEJhIGTDsm5nIGTGsOG7m2kgxJHDonkgY2hvIHJhIG3DoHUgZ2nhu5FuZyBo4buHdCBuaGF1LCBjaOG7iSBraMOhYyBjw6FjaCB2aeG6v3QuCiAgIFRyb25nIGThu7Egw6FuIHRo4bqtdCBo4bqndSBuaMawIGx1w7RuIGTDuW5nIGPDoWNoIHRo4bupIGhhaS4gICAgICAgICAgICAgICAgICAgICovCi5jaGFtLW5nb24gewogIGNvbG9yOiByb3lhbGJsdWU7ICAgICAgICAgICAgICAgIC8qIDEuIHTDqm4gbcOgdSBjw7Mgc+G6tW4sIGThu4Ugbmjhu5sgbmjGsG5nIMOtdCBs4buxYSBjaOG7jW4gKi8KICAvKiBjb2xvcjogIzQxNjllMTsgKi8gICAgICAgICAgICAvKiAyLiBtw6MgMTYsIGhhaSBjaOG7ryBz4buRIGNobyDEkeG7jywgbOG7pWMsIGxhbSAgICAgICAqLwogIC8qIGNvbG9yOiByZ2IoNjUsIDEwNSwgMjI1KTsgKi8gIC8qIDMuIGJhIHPhu5EgdOG7qyAwIMSR4bq/biAyNTUgICAgICAgICAgICAgICAgICAgICAgICovCn0KCgovKiAtLS0gQTguIMSQxqBOIFbhu4ogxJBPIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIHB4ICA6IMSRaeG7g20g4bqjbmgsIGNvbiBz4buRIHR1eeG7h3QgxJHhu5FpLiBEw7luZyBraGkgbXXhu5FuIGPhu5EgxJHhu4tuaC4KICAgJSAgIDogc28gduG7m2kgcGjhuqduIHThu60gY2hhLgogICBlbSAgOiBuaMOibiB24bubaSBj4buhIGNo4buvIGPhu6dhIGNow61uaCB0aOG6uyDEkcOzIGhv4bq3YyB0aOG6uyBjaGEuCiAgIHJlbSA6IG5ow6JuIHbhu5tpIGPhu6EgY2jhu68gZ+G7kWMgY+G7p2EgdHJhbmcsIHRoxrDhu51uZyBsw6AgMTZweCwgbsOqbiBk4buFIMSRb8Ohbi4KCiAgIENoaeG6v3Ugbmhhbmg6IMSR4buVaSBmb250LXNpemUgY+G7p2EgYm9keSBy4buTaSB04bqjaSBs4bqhaS4gUHggxJHhu6luZyB5w6puLAogICBjw7JuIHJlbSB2w6AgZW0gdGjDrCBuaMO6YyBuaMOtY2ggdGhlby4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCmxpIHsKICBmb250LXNpemU6IDFyZW07ICAgICAgLyogPSAxNnB4IG7hur91IGPhu6EgY2jhu68gZ+G7kWMgbMOgIDE2cHggKi8KICBtYXJnaW4tYm90dG9tOiA4cHg7Cn0KCnVsIHsKICB3aWR0aDogNjAlOyAgICAgICAgICAgLyogcuG7mW5nIGLhurFuZyA2MCUgY2hp4buBdSBuZ2FuZyBj4bunYSB0aOG6uyBjaGEgKi8KfQoKZm9vdGVyIHsKICBib3JkZXItdG9wOiAxcHggc29saWQgI2QwZDdkZTsKICBwYWRkaW5nLXRvcDogMTJweDsKfQoKCi8qIC0tLSBBOS4gxJDhu5ggxq9VIFRJw4pOIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgQmEgcXV5IHThuq9jIGTGsOG7m2kgxJHDonkgY8O5bmcgbmjhuq9tIHbDoG8gxJFv4bqhbiB2xINuIGPDsyBpZD0iZGFjLWJpZXQiLgogICBD4bqjIGJhIMSR4buBdSDEkcOyaSDEkeG7lWkgbcOgdSBjaOG7rywgbmjGsG5nIGNo4buJIG3hu5l0IHF1eSB04bqvYyB0aOG6r25nLgoKICAgVGjhu6kgaOG6oW5nIHThu6sgbeG6oW5oIHThu5tpIHnhur91OgogICAgIDEuIHRodeG7mWMgdMOtbmggc3R5bGUgdmnhur90IG5nYXkgdHLDqm4gdGjhursKICAgICAyLiBi4buZIGNo4buNbiB0aGVvIGlkICAgICAgICgjZGFjLWJpZXQpCiAgICAgMy4gYuG7mSBjaOG7jW4gdGhlbyBjbGFzcyAgICAoLm5vaS1iYXQpCiAgICAgNC4gYuG7mSBjaOG7jW4gdGhlbyB0w6puIHRo4bq7ICAocCkKCiAgIEThu6tuZyBs4bqhaSBo4buPaSBs4bubcCB0csaw4bubYyBraGkgY2hp4bq/dTogxJFv4bqhbiDEkcOzIHPhur0gbcOgdSBnw6w/CiAgIMSQw6FwIMOhbjogTcOAVSDEkOG7jiwgdsOsIGlkIG3huqFuaCBuaOG6pXQgdHJvbmcgYmEgcXV5IHThuq9jIG7DoHkuCgogICBLaeG7g20gY2jhu6luZyBuZ2F5IHRyw6puIGzhu5twOiDEkcOzbmcgY2jDuiB0aMOtY2ggcXVhbmgga2jhu5FpICNkYWMtYmlldCBy4buTaQogICB04bqjaSBs4bqhaSwgbcOgdSB04buldCB4deG7kW5nIGNhbSB0aGVvIGNsYXNzLiBDaMO6IHRow61jaCBu4buRdCAubm9pLWJhdCB0aMOsCiAgIHThu6V0IHRp4bq/cCB4deG7kW5nIHhhbmggbMOhIGPhu6dhIHRo4bq7IHAuIEPhuqMgbOG7m3AgdGjhuqV5IHRo4bupIGjhuqFuZyBjaOG6oXkgdGjhuq10LiAgICovCgpwIHsKICBjb2xvcjogZ3JlZW47ICAgICAgICAgICAgIC8qIHnhur91IG5o4bqldCAqLwp9Cgoubm9pLWJhdCB7CiAgY29sb3I6IG9yYW5nZTsgICAgICAgICAgICAvKiBt4bqhbmggaMahbiB0w6puIHRo4bq7ICovCn0KCiNkYWMtYmlldCB7CiAgY29sb3I6IHJlZDsgICAgICAgICAgICAgICAvKiBt4bqhbmggaMahbiBj4bqjLCBxdXkgdOG6r2MgbsOgeSB0aOG6r25nICovCn0KCgovKiAtLS0gQTEwLiBDw5lORyBI4bqgTkcgVEjDjCBWSeG6vlQgU0FVIFRI4bquTkcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIEhhaSBxdXkgdOG6r2MgZMaw4bubaSDEkcOieSBt4bqhbmggbmdhbmcgbmhhdSwgY8O5bmcgbMOgIGLhu5kgY2jhu41uIGNsYXNzLgogICBMw7pjIG7DoHkgQ1NTIHjhu60gdGhlbyB0aOG7qSB04buxOiBxdXkgdOG6r2Mgdmnhur90IHNhdSB0aOG6r25nLgoKICAgS+G6v3QgcXXhuqM6IHZp4buBbiBtw6B1IHhhbmggZMawxqFuZywgdsOsIG7DsyDEkeG7qW5nIGTGsOG7m2kuCiAgIFNpbmggdmnDqm4gaGF5IGvDqnUgImVtIHZp4bq/dCBy4buTaSBtw6Aga2jDtG5nIGNo4bqheSIsIHBo4bqnbiBuaGnhu4F1IGzDoCB2w6wKICAgYsOqbiBkxrDhu5tpIGPDsm4gbeG7mXQgcXV5IHThuq9jIGtow6FjIMSRw6ggbMOqbi4gICAgICAgICAgICAgICAgICAgICAqLwouY2hhbS1uZ29uIHsKICBib3JkZXItbGVmdDogNHB4IHNvbGlkIGdyYXk7CiAgcGFkZGluZy1sZWZ0OiAxMHB4Owp9CgouY2hhbS1uZ29uIHsKICBib3JkZXItbGVmdDogNHB4IHNvbGlkICMxZjZmZWI7Cn0KCgovKiAtLS0gQTExLiBUSOG7qkEgS+G6viAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgTeG7mXQgc+G7kSB0aHXhu5ljIHTDrW5oIHThu7EgdHJ1eeG7gW4gdOG7qyB0aOG6uyBjaGEgeHXhu5FuZyB0aOG6uyBjb246CiAgIGNvbG9yLCBmb250LWZhbWlseSwgZm9udC1zaXplLCBsaW5lLWhlaWdodCwgdGV4dC1hbGlnbi4uLgoKICAgTeG7mXQgc+G7kSB0aMOsIGtow7RuZyB0cnV54buBbjogYm9yZGVyLCBtYXJnaW4sIHBhZGRpbmcsIGJhY2tncm91bmQuLi4KICAgTuG6v3UgdHJ1eeG7gW4gdGjDrCBt4buXaSB0aOG6uyBjb24gbOG6oWkgdOG7sSB24bq9IG3hu5l0IGPDoWkgdmnhu4FuLCBy4bqldCB2w7QgbMO9LgoKICAgVGjhursgYSBjxaluZyBraMO0bmcgbmjhuq1uIG3DoHUgY2jhu68gdGjhu6thIGvhur8sIHbDrCB0csOsbmggZHV54buHdCDEkcOjIGPDsyBz4bq1bgogICBt4buZdCBxdXkgdOG6r2MgcmnDqm5nIGNobyBsacOqbiBr4bq/dC4gTXXhu5FuIMSR4buVaSBtw6B1IGxpw6puIGvhur90IHRow6wgcGjhuqNpCiAgIG5o4bqvbSB0aOG6s25nIHbDoG8gdGjhursgYSwgbmjGsCBxdXkgdOG6r2MgbmF2IGEg4bufIEE1LgoKICAgVGjhu6thIGvhur8gbHXDtG4geeG6v3UgaMahbiBt4buZdCBxdXkgdOG6r2Mgbmjhuq9tIHRo4bqzbmcuCiAgIFbDrSBk4bulIHPhu5FuZyBuZ2F5IHRyw6puIHRyYW5nOiB0aOG6uyBmb290ZXIgxJHDoyDEkcaw4bujYyB0w7QgeMOhbSB0cm9uZyB0aOG6uwogICBzdHlsZSDhu58gcGjhuqduIGhlYWQsIG5oxrBuZyBkw7JuZyBlbWFpbCBiw6puIHRyb25nIHbhuqtuIGhp4buHbiBtw6B1IHhhbmggbMOhLgogICBMw70gZG86IG7DsyBsw6AgdGjhursgcCBuw6puIHRyw7puZyB0aOG6s25nIHF1eSB04bqvYyBwIHsgY29sb3I6IGdyZWVuIH0g4bufIEE5LAogICBtw6Agbmjhuq9tIHRo4bqzbmcgdGjDrCBsdcO0biB0aOG6r25nIG3DoHUgdGjhu6thIGvhur8gdOG7qyBjaGEuCgogICBI4buPaSBs4bubcDogbMOgbSBzYW8gY2hvIGTDsm5nIGVtYWlsIHRow6BuaCB4w6FtPwogICDEkMOhcCDDoW46IG5o4bqvbSB0aOG6s25nIHbDoG8gbsOzLiBC4buPIGNow7ogdGjDrWNoIGTDsm5nIGTGsOG7m2kgcuG7k2kgdOG6o2kgbOG6oWkuICAgICAgKi8KLyogZm9vdGVyIHAgeyBjb2xvcjogIzViNjY3MjsgfSAqLwoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICBQSOG6pk4gQiAg4oCUICBUUkFORyBUUsONIENI4buuCiAgIEThuqF5IHNhdSBraGkgc2luaCB2acOqbiBsw6BtIHhvbmcgVGjhu7FjIGjDoG5oIDEuCiAgIFRvw6BuIGLhu5kgcGjhuqduIG7DoHkgY2jhu4kgbMOgIHRyYSB0aHXhu5ljIHTDrW5oLCBraMO0bmcgY8OzIGtow6FpIG5p4buHbSBt4bubaS4KICAgTmjGsG5nIMSRw6J5IGzDoCBsw7pjIHRyYW5nIMSR4buVaSBkw6FuZyB0aOG6pXkgcsO1LCBuw6puIGNoaeG6v3UgY2jhuq1tIG3hu5l0IGNow7p0LgogICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCgovKiAtLS0gQjEuIEZPTlQgQ0jhu64gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIGZvbnQtZmFtaWx5IG5o4bqtbiBt4buZdCBEQU5IIFPDgUNIIGZvbnQsIG5nxINuIG5oYXUgYuG6sW5nIGThuqV1IHBo4bqpeS4KICAgVHLDrG5oIGR1eeG7h3QgbOG6pXkgY8OhaSDEkeG6p3UgdGnDqm4gbcOheSBjw7MsIGtow7RuZyBjw7MgdGjDrCBsw7lpIHNhbmcgY8OhaSBzYXUuCiAgIFTDqm4gZm9udCBjw7Mga2hv4bqjbmcgdHLhuq9uZyBwaOG6o2kgxJHhurd0IHRyb25nIG5ow6F5IGvDqXAuCgogICBUw6puIGN14buRaSBjw7luZyBsdcO0biBsw6AgbeG7mXQgaOG7jSBjaHVuZzogc2Fucy1zZXJpZiwgc2VyaWYgaG/hurdjCiAgIG1vbm9zcGFjZSwgxJHhu4MgbcOheSBuw6BvIGPFqW5nIGPDsm4gdGjhu6kgxJHhu4MgZMO5bmcuCgogICDEkOG6t3QgdHLDqm4gYm9keSB0aMOsIGPhuqMgdHJhbmcgdGjhu6thIGvhur8gdGhlbywga2jhu49pIHZp4bq/dCBs4bqhaSB04burbmcgdGjhursuICAgICovCmJvZHkgewogIGZvbnQtZmFtaWx5OiBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmOwp9CgpoMSwgaDIgewogIGZvbnQtZmFtaWx5OiBHZW9yZ2lhLCAiVGltZXMgTmV3IFJvbWFuIiwgc2VyaWY7Cn0KCgovKiAtLS0gQjIuIEPhu6AgQ0jhu64sIMSQ4buYIMSQ4bqsTSwgTkdIScOKTkcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIFThu6sgZ2nhu50gbXXhu5FuIGNo4buvIMSR4bqtbSBoYXkgbmdoacOqbmcgdGjDrCBkw7luZyBDU1MsIMSR4burbmcgZMO5bmcgdGjhursgYiB2w6AgaS4KICAgTMO9IGRvIMSRw6MgaOG7jWMgdOG7qyBjaMawxqFuZyAyOiB0aOG6uyBsbyBuZ2jEqWEsIENTUyBsbyBow6xuaCB0aOG7qWMuCiAgIFRo4bq7IHN0cm9uZyB24bqrbiBkw7luZyBraGkgbuG7mWkgZHVuZyB0aOG6rXQgc+G7sSBxdWFuIHRy4buNbmcsIGPDsm4gbXXhu5FuIMSR4bqtbQogICBjaG8gxJHhurlwIHRow6wgxJHDsyBsw6Agdmnhu4djIGPhu6dhIGZvbnQtd2VpZ2h0LiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KLmNoYW0tbmdvbiB7CiAgZm9udC1zaXplOiAxLjEyNXJlbTsgICAgLyogPSAxOHB4ICovCiAgZm9udC1zdHlsZTogaXRhbGljOwp9Cgoubm9pLWJhdCB7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7ICAgICAgLyogaG/hurdjIG3hu5l0IHPhu5EgdOG7qyAxMDAgxJHhur9uIDkwMCAqLwp9CgoKLyogLS0tIEIzLiBHScODTiBEw5JORyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICBsaW5lLWhlaWdodCBraMO0bmcgY8OzIMSRxqFuIHbhu4sgdGjDrCDEkcaw4bujYyBoaeG7g3UgbMOgIE5Iw4JOIHbhu5tpIGPhu6EgY2jhu68uCiAgIDEuNiBuZ2jEqWEgbMOgIG3hu5dpIGTDsm5nIGNhbyBn4bqlcCAxLDYgbOG6p24gY+G7oSBjaOG7ry4KCiAgIE3hu5l0IGTDsm5nIHRow7RpIG3DoCBj4bqjIHRyYW5nIGThu4UgxJHhu41jIGjhurNuIGzDqm4uIFRo4butIMSR4buVaSBxdWEgbOG6oWkgMSB2w6AgMS42IGNobyBs4bubcCB4ZW0uICAgICAgICAgICAgICAqLwpwIHsKICBsaW5lLWhlaWdodDogMS42Owp9CgoKLyogLS0tIEI0LiBDxIJOIEzhu4AgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgbGVmdCBsw6AgbeG6t2MgxJHhu4tuaCwgbsOqbiBjaOG7iSB2aeG6v3Qga2hpIG114buRbiBraMOhYyDEkWkuCiAgIGp1c3RpZnkgY8SDbiDEkeG7gXUgaGFpIGLDqm4gbmjGsCBzw6FjaCBpbiwgbmjGsG5nIHRp4bq/bmcgVmnhu4d0IGhheSBi4buLIGdpw6NuCiAgIGNo4buvIHjhuqV1LCBuw6puIGPDom4gbmjhuq9jLgoKICAgVGjhu60gxJHhu5VpIGgxIHRow6BuaCBoZWFkZXIgeGVtIGtow6FjIGfDrDogbMO6YyDEkcOzIGPhuqMga2jhu5FpIGhlYWRlciBjxINuCiAgIGdp4buvYSB0aGVvLCB2w6wgdGV4dC1hbGlnbiBsw6AgdGh14buZYyB0w61uaCBjw7MgdGjhu6thIGvhur8uICAgICAgICAgICAgICAgICAgKi8KaDEgewogIHRleHQtYWxpZ246IGNlbnRlcjsKfQoKCi8qIC0tLSBCNS4gR+G6oENIIENIw4JOIFbDgCBH4bqgQ0ggTkdBTkcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIHRleHQtZGVjb3JhdGlvbjogbm9uZSDEkeG7gyBi4buPIGfhuqFjaCBjaMOibiBt4bq3YyDEkeG7i25oIGPhu6dhIGxpw6puIGvhur90LAogICB0aMaw4budbmcgZMO5bmcga2hpIGJp4bq/biBkYW5oIHPDoWNoIGxpw6puIGvhur90IHRow6BuaCB0aGFuaCBtZW51LgogICBDw6FjIGdpw6EgdHLhu4sga2jDoWM6IHVuZGVybGluZSwgbGluZS10aHJvdWdoLCBvdmVybGluZS4gICAgICAgICAgICAgICAgKi8KbmF2IGEgewogIHRleHQtZGVjb3JhdGlvbjogbm9uZTsKfQoKCi8qIC0tLSBCNi4gSE9BIFRIxq/hu5xORyBWw4AgR0nDg04gQ0jhu64gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICB0ZXh0LXRyYW5zZm9ybSDEkeG7lWkgaG9hIHRoxrDhu51uZyBtw6Aga2jDtG5nIHPhu61hIGNo4buvIHRyb25nIHThu4dwIEhUTUwuCiAgIE7hu5lpIGR1bmcgZ2nhu68gbmd1ecOqbiwgY2jhu4kgY8OhY2ggaGnhu4NuIHRo4buLIHRoYXkgxJHhu5VpLiDEkMO6bmcgdGluaCB0aOG6p24KICAgdMOhY2ggbmdoxKlhIGto4buPaSBow6xuaCB0aOG7qWMuCiAgICAgdXBwZXJjYXNlICBJTiBIT0EgVOG6pFQgQ+G6ogogICAgIGxvd2VyY2FzZSAgaW4gdGjGsOG7nW5nIHThuqV0IGPhuqMKICAgICBjYXBpdGFsaXplIFZp4bq/dCBIb2EgxJDhuqd1IE3hu5dpIFThu6sKCiAgIGxldHRlci1zcGFjaW5nIGdpw6NuIGtob+G6o25nIGPDoWNoIGdp4buvYSBjw6FjIGNo4buvIGPDoWkuIETDuW5nIHLhuqV0IMOtdCwKICAgY2jhu6cgeeG6v3UgY2hvIHRpw6p1IMSR4buBIGzhu5tuIHbDoCBjaOG7ryBpbiBob2EuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KbmF2IHsKICB0ZXh0LXRyYW5zZm9ybTogdXBwZXJjYXNlOwogIGZvbnQtc2l6ZTogMTRweDsKfQoKaDEgewogIGxldHRlci1zcGFjaW5nOiAxcHg7Cn0K"}];
 
 /* ---------- tô màu mã CSS ---------- */
 function hlcss(src){
@@ -1080,11 +1079,12 @@ function hlcss(src){
     document.getElementById('tipCode').innerHTML = d.lang === 'html' ? hl(d.code) : hlcss(d.code);
     document.getElementById('tipNote').textContent = d.note;
     var f = document.getElementById('tipOut');
+    f.style.height = '40px';
     f.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>' + FRAME_CSS + '</style>' + d.out;
     f.onload = function(){
       try{
-        var h = f.contentDocument.body.scrollHeight;
-        f.style.height = Math.min(Math.max(h + 6, 46), 220) + 'px';
+        var h = f.contentDocument.documentElement.scrollHeight;
+        f.style.height = Math.min(Math.max(h + 2, 46), 240) + 'px';
       }catch(e){}
     };
     return true;
@@ -1156,7 +1156,11 @@ function hlcss(src){
       '<ol class="ex-req">' + reqs + '</ol>' +
       (HINT[ex.no]
         ? '<p class="sec-lbl">Gợi ý</p>' +
-          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần bộ chọn nào và thuộc tính nào. Chỗ có dấu <code>___</code> là phần tự điền theo trang của mình.</p>' +
+          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần thẻ nào, bộ chọn nào và thuộc tính nào. Chỗ có dấu <code>___</code> là phần tự điền theo trang của mình.</p>' +
+          (HINT[ex.no].html
+            ? '<p class="note-src"><b>Khung HTML</b></p><pre class="ex-code">' + hl(HINT[ex.no].html) + '</pre>' +
+              '<p class="note-src"><b>Khung CSS</b></p>'
+            : '') +
           '<pre class="ex-code">' + hlcss(HINT[ex.no].code) + '</pre>' +
           '<div class="ex-warn"><b>Lưu ý:</b> ' + HINT[ex.no].warn + '</div>'
         : '');
@@ -1176,8 +1180,8 @@ function hlcss(src){
   fb.className = 'ex';
   fb.innerHTML =
     '<div class="ex-head"><span class="ex-no">Tệp demo</span>' +
-    '<span class="ex-title">Hai tệp đã chiếu trên lớp</span></div>' +
-    '<p class="ex-goal">Đây là cặp tệp dùng làm ví dụ trong buổi học, có đầy đủ chú thích giải thích từng khối. Tải về để một bên, đừng nộp lại.</p>' +
+    '<span class="ex-title">Tệp đã chiếu trên lớp</span></div>' +
+    '<p class="ex-goal">Đây là các tệp dùng làm ví dụ trong buổi học, có đầy đủ chú thích giải thích từng khối. Tải về để một bên, đừng nộp lại.</p>' +
     '<table class="ck"><thead><tr><th>Tệp</th><th>Nội dung</th><th>Cỡ</th><th></th></tr></thead>' +
     '<tbody>' + frows + '</tbody></table>';
   list.appendChild(fb);
