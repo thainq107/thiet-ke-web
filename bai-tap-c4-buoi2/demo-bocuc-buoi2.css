@@ -1,0 +1,142 @@
+/* Demo bố cục buổi 2: Flex, Grid, vị trí, thiết kế đáp ứng */
+
+* {
+  box-sizing: border-box;
+}
+
+/* 1. Bố cục cả trang bằng Grid: hai cột, bốn vùng đặt tên */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #eef2f6;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  grid-template-areas:
+    "dau   dau"
+    "chinh phu"
+    "chan  chan";
+}
+
+header { grid-area: dau; }
+main   { grid-area: chinh; padding: 0 24px 24px; }
+aside  { grid-area: phu; padding: 0 24px; }
+footer { grid-area: chan; }
+
+/* 2. Thanh đầu trang: Flex đẩy logo sang trái, menu sang phải */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #0f3d6e;
+  color: #ffffff;
+}
+
+/* 3. Menu ngang bằng Flex */
+nav ul {
+  display: flex;
+  gap: 20px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* 4. Căn giữa cả hai chiều bằng Flex */
+.noi-bat {
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 24px;
+  background-color: #1f6feb;
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+/* 5. Thẻ tự xuống hàng khi hết chỗ */
+.danh-sach {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.the {
+  flex-grow: 1;
+  flex-basis: 200px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #c8d2dd;
+  border-radius: 8px;
+}
+
+/* 6. Nhãn góc: cha relative, con absolute */
+.the {
+  position: relative;
+}
+
+.nhan {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 8px;
+  background-color: #d4380d;
+  color: #ffffff;
+  border-radius: 4px;
+}
+
+/* 7. Lưới ba cột, một ô chiếm hai cột */
+.luoi {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.o {
+  padding: 24px;
+  background-color: #dbe9f7;
+  text-align: center;
+}
+
+.rong {
+  grid-column: span 2;
+}
+
+/* 8. Cột phụ dính lại khi cuộn trang */
+aside {
+  position: sticky;
+  top: 0;
+  align-self: start;
+}
+
+footer {
+  padding: 4px 24px;
+  background-color: #0f3d6e;
+  color: #cfe3f6;
+}
+
+/* 9. Màn hình từ 700px trở xuống: một cột, lưới còn hai cột */
+@media (max-width: 700px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "dau"
+      "chinh"
+      "phu"
+      "chan";
+  }
+
+  header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .luoi {
+    grid-template-columns: 1fr 1fr;
+  }
+}
