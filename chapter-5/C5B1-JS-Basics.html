@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Học liệu chương 5: nhúng JavaScript, biến, kiểu dữ liệu, toán tử, câu điều kiện, vòng lặp, hàm, mảng và đối tượng">
+<title>Chương 5: JavaScript căn bản</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+
+  /* bảng và danh sách ở chế độ có CSS */
+  .styled table{border-collapse:collapse; width:100%; font-size:13.5px; margin-bottom:12px}
+  .styled caption{text-align:left; font-weight:600; padding-bottom:6px}
+  .styled th, .styled td{border:1px solid var(--line); padding:6px 9px; text-align:left}
+  .styled thead th{background:#eef3f8}
+  .styled tfoot td{background:#f6f8fa; font-weight:600}
+  .styled ul, .styled ol, .styled dl{margin:0 0 12px; padding-left:22px}
+  .styled dl{padding-left:0}
+  .styled dt{font-weight:600; margin-top:6px}
+  .styled dd{margin:0 0 0 18px}
+  .styled pre{background:#f6f8fa; color:var(--ink); padding:10px 12px; font-size:12.5px}
+  .demo.plain pre{background:transparent; color:#000; padding:0; font-size:14px; overflow:visible}
+
+  /* biểu mẫu */
+  .demo.plain fieldset{margin-bottom:10px}
+  .demo .d-form p{margin:9px 0}
+  .demo .ann[data-tag="radio"], .demo .ann[data-tag="checkbox"],
+  .demo .ann[data-tag="button"]{padding:5px 0 5px 7px}
+  /* chú thích của fieldset dời sang phải để không che mất legend */
+  .demo .ann[data-tag="fieldset"] > .lbl{left:auto; right:0}
+  .styled .d-form{background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:16px}
+  .styled .d-form label{display:inline-block; min-width:132px; font-weight:600; font-size:13.5px}
+  .styled .d-form input[type="text"], .styled .d-form input[type="email"],
+  .styled .d-form input[type="tel"], .styled .d-form input[type="password"],
+  .styled .d-form input[type="url"], .styled .d-form input[type="number"],
+  .styled .d-form input[type="date"], .styled .d-form textarea, .styled .d-form select{
+    border:1px solid #c8d2dd; border-radius:6px; padding:6px 9px; font-size:13.5px;
+    font-family:inherit; background:#fff}
+  .styled .d-form textarea{vertical-align:top; width:100%; max-width:380px}
+  .styled .d-form fieldset{border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:0 0 14px}
+  .styled .d-form legend{font-weight:600; font-size:13.5px; color:var(--blue-deep, #0f3d6e); padding:0 6px}
+  .styled .d-form button{background:var(--blue); color:#fff; border:0; border-radius:7px;
+    padding:8px 16px; font-size:13.5px; font-weight:600; cursor:pointer; margin-right:8px}
+  .styled .d-form button[type="reset"]{background:#e6ecf3; color:var(--ink)}
+
+  /* bài tập */
+  .note-ex{font-size:13.5px; color:var(--muted); margin:0 0 14px}
+  .ex{border:1px solid var(--line); border-radius:9px; padding:14px 16px; margin-bottom:12px}
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:9px; margin-bottom:6px}
+  .ex-no{font-weight:700; color:var(--blue); font-size:14px}
+  .ex-title{font-weight:600; font-size:15px}
+  .ex-topic{font-size:12px; color:var(--muted); border:1px solid var(--line);
+            border-radius:20px; padding:1px 9px}
+  .ex-goal{font-size:14px; margin:0 0 8px}
+  .ex-req{font-size:13.5px; margin:0 0 12px; padding-left:20px}
+  .ex-req li{margin-bottom:4px}
+  .ex-req code, .ex-goal code{background:#f1f4f7; padding:1px 5px; border-radius:4px;
+            font-size:12.5px; color:#a1155a; font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ex .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+         color:var(--muted); margin:12px 0 6px; font-weight:700}
+  .ex-code{max-height:420px}
+  .ex-warn{background:var(--amber-soft); border-left:3px solid var(--amber);
+           border-radius:0 5px 5px 0; padding:9px 11px; font-size:13px;
+           color:#6b4a08; margin:10px 0 0}
+  .ex-warn code{background:#fff; color:#8a4b06; padding:1px 5px; border-radius:4px;
+           font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12px}
+  pre.tree{background:#f7f9fb; color:var(--ink); border:1px solid var(--line);
+           padding:11px 13px; font-size:12.5px; line-height:1.55; max-height:none}
+  td.dl-cell{white-space:nowrap; text-align:right}
+  a.dl{display:inline-block; text-decoration:none; background:var(--blue-soft);
+       border:1px solid #bcd6fb; color:var(--blue); font-size:12px; font-weight:600;
+       padding:3px 11px; border-radius:20px}
+  a.dl:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+  .dl-all{margin:10px 0 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .dl-all .note{font-size:12.5px; color:var(--muted)}
+  .ex-out{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff}
+  table.ck{width:100%; border-collapse:collapse; font-size:13px; margin-top:4px}
+  table.ck th{background:#f7f9fb; text-align:left; padding:7px 9px; border-bottom:1px solid var(--line);
+              font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted)}
+  table.ck td{padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.ck td.ck-tag{font-family:"SF Mono",Menlo,Consolas,monospace; color:#a1155a; white-space:nowrap}
+  table.ck tr:last-child td{border-bottom:0}
+  .ex-out iframe{width:100%; border:0; display:block; height:200px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+
+/* ---------- trình soạn mã: mỗi đoạn một hàng, bên phải là Console ---------- */
+.editor .chrome{gap:8px}
+.editor .con-pill{margin-left:auto; background:#16202b; color:#cfe3f6; border-color:#16202b}
+.rows{background:var(--ink); padding:10px 0}
+.row{display:grid; grid-template-columns:minmax(0,1fr) 300px; border-top:1px solid #2a323c}
+.row:first-child{border-top:0}
+.row pre{margin:0; border-radius:0; background:transparent; padding:10px 16px; font-size:12.5px}
+.row pre.out{background:#10161d; color:#e6edf3; border-left:1px solid #2a323c; white-space:pre-wrap}
+.row pre.out:empty::before{content:"(không in gì)"; color:#5b6672}
+@media(max-width:760px){.row{grid-template-columns:1fr} .row pre.out{border-left:0; border-top:1px dashed #2a323c}}
+
+/* chú thích trên nền tối */
+body.show-ann .row.ann{margin-top:0; outline-offset:-3px}
+.row .lbl{top:6px; right:8px; left:auto; transform:none; z-index:6}
+body.show-ann .row.ann:not(.inline) > .lbl{display:block}
+body.show-ann .row:hover{background:#1b232c}
+body.dim .row.ann:not(.hl){opacity:.35}
+
+/* Console trong thẻ giải thích */
+#tip pre.con{background:#10161d; color:#e6edf3; white-space:pre-wrap}
+pre .t{color:#d2a8ff}
+#tip .t-tag{white-space:normal; word-break:break-word}
+/* nhãn đặt ở mép phải cột mã, không che cột Console */
+.row .lbl{right:308px}
+@media(max-width:760px){.row .lbl{right:8px}}
+/* phông chữ mã có đủ dấu tiếng Việt dựng sẵn trên cả Mac, Windows và Linux */
+pre, code, .lbl, #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,"Liberation Mono","Courier New",monospace}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 5: JavaScript căn bản</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Bấm vào một đoạn mã bất kỳ để xem giải thích, cú pháp và kết quả chạy thật. Cột bên phải là những gì đoạn mã đó in ra Console.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức chương 5</h2>
+
+      <div class="k-item" data-k="k1">
+        <div class="num">MỤC 5.1</div>
+        <div class="name">Nhúng JavaScript vào trang</div>
+        <div class="tags">thẻ script · console.log · chú thích</div>
+      </div>
+
+      <div class="k-item" data-k="k2">
+        <div class="num">MỤC 5.2</div>
+        <div class="name">Sử dụng biến</div>
+        <div class="tags">let · const · quy tắc đặt tên</div>
+      </div>
+
+      <div class="k-item" data-k="k3">
+        <div class="num">MỤC 5.3</div>
+        <div class="name">Kiểu dữ liệu</div>
+        <div class="tags">số · chuỗi · đúng sai · typeof</div>
+      </div>
+
+      <div class="k-item" data-k="k4">
+        <div class="num">MỤC 5.4</div>
+        <div class="name">Toán tử</div>
+        <div class="tags">+ - * / % · ghép chuỗi · === · && · ||</div>
+      </div>
+
+      <div class="k-item" data-k="k5">
+        <div class="num">MỤC 5.7</div>
+        <div class="name">Câu điều kiện</div>
+        <div class="tags">if · else if · else</div>
+      </div>
+
+      <div class="k-item" data-k="k6">
+        <div class="num">MỤC 5.8</div>
+        <div class="name">Vòng lặp</div>
+        <div class="tags">for · i++</div>
+      </div>
+
+      <div class="k-item" data-k="k7">
+        <div class="num">MỤC 5.5</div>
+        <div class="name">Hàm</div>
+        <div class="tags">function · tham số · return</div>
+      </div>
+
+      <div class="k-item" data-k="k8">
+        <div class="num">MỤC 5.6</div>
+        <div class="name">Mảng</div>
+        <div class="tags">[ ] · chỉ số · length · push · duyệt bằng for</div>
+      </div>
+
+      <div class="k-item" data-k="k9">
+        <div class="num">MỤC 5.10 VÀ 5.9</div>
+        <div class="name">Đối tượng và bắt lỗi</div>
+        <div class="tags">{ } · dấu chấm · try · catch</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="browser editor">
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="tabpill">script.js</div>
+          <div class="tabpill con-pill">Console</div>
+        </div>
+        <div class="rows" id="rows">
+          <div class="row ann" data-k="k1" data-r="s1"><span class="lbl">console.log()</span><pre class="js">// 1. In ra Console. Dòng bắt đầu bằng // là chú thích, máy bỏ qua
+console.log(&quot;Xin chào JavaScript&quot;);</pre><pre class="out">Xin chào JavaScript</pre></div>
+          <div class="row ann" data-k="k2" data-r="s2"><span class="lbl">let và const</span><pre class="js">// 2. Biến: let gán lại được, const thì không
+const tenCuaHang = &quot;Hiệu sách Trang Giấy&quot;;
+let soLuong = 3;
+soLuong = soLuong + 1;
+console.log(tenCuaHang, &quot;- số lượng:&quot;, soLuong);</pre><pre class="out">Hiệu sách Trang Giấy - số lượng: 4</pre></div>
+          <div class="row ann" data-k="k3" data-r="s3"><span class="lbl">typeof</span><pre class="js">// 3. Kiểu dữ liệu: số, chuỗi, đúng sai. typeof cho biết kiểu
+const gia = 85000;
+const tenSach = &quot;Lập trình Web&quot;;
+const conHang = true;
+console.log(typeof gia, typeof tenSach, typeof conHang);</pre><pre class="out">number string boolean</pre></div>
+          <div class="row ann" data-k="k4" data-r="s4"><span class="lbl">+ - * / %</span><pre class="js">// 4. Toán tử toán học. Dấu + giữa chuỗi và số là ghép chuỗi
+const thanhTien = gia * soLuong;
+console.log(&quot;Thành tiền: &quot; + thanhTien + &quot; đồng&quot;);
+console.log(10 % 3);
+console.log(&quot;2&quot; + 3);
+console.log(&quot;2&quot; * 3);</pre><pre class="out">Thành tiền: 340000 đồng
+1
+23
+6</pre></div>
+          <div class="row ann" data-k="k4" data-r="s5"><span class="lbl">=== và ==</span><pre class="js">// 5. So sánh: dùng === để so cả giá trị lẫn kiểu
+console.log(5 == &quot;5&quot;);
+console.log(5 === &quot;5&quot;);</pre><pre class="out">true
+false</pre></div>
+          <div class="row ann" data-k="k4" data-r="s6"><span class="lbl">&amp;&amp; và ||</span><pre class="js">// 6. Logic: &amp;&amp; là &quot;và&quot;, || là &quot;hoặc&quot;, ! là &quot;không&quot;
+const laThanhVien = true;
+console.log(thanhTien &gt;= 300000 &amp;&amp; laThanhVien);
+console.log(thanhTien &gt;= 500000 || laThanhVien);</pre><pre class="out">true
+true</pre></div>
+          <div class="row ann" data-k="k5" data-r="s7"><span class="lbl">if ... else</span><pre class="js">// 7. Câu điều kiện: xét từ trên xuống, gặp điều kiện đúng thì dừng
+let giamGia;
+if (thanhTien &gt;= 500000) {
+  giamGia = 10;
+} else if (thanhTien &gt;= 300000) {
+  giamGia = 5;
+} else {
+  giamGia = 0;
+}
+console.log(&quot;Giảm giá: &quot; + giamGia + &quot;%&quot;);</pre><pre class="out">Giảm giá: 5%</pre></div>
+          <div class="row ann" data-k="k6" data-r="s8"><span class="lbl">for</span><pre class="js">// 8. Vòng lặp for: khởi tạo; điều kiện; bước tăng
+for (let i = 1; i &lt;= 3; i++) {
+  console.log(&quot;Lần lặp thứ &quot; + i);
+}</pre><pre class="out">Lần lặp thứ 1
+Lần lặp thứ 2
+Lần lặp thứ 3</pre></div>
+          <div class="row ann" data-k="k7" data-r="s9"><span class="lbl">function</span><pre class="js">// 9. Hàm: đặt tên cho một việc, gọi lại bao nhiêu lần cũng được
+function tinhThanhTien(donGia, sl) {
+  return donGia * sl;
+}
+console.log(tinhThanhTien(50000, 2));
+console.log(tinhThanhTien(120000, 1));</pre><pre class="out">100000
+120000</pre></div>
+          <div class="row ann" data-k="k8" data-r="s10"><span class="lbl">mảng [ ]</span><pre class="js">// 10. Mảng: nhiều giá trị trong một biến, vị trí đánh số từ 0
+const gioHang = [85000, 120000, 45000];
+gioHang.push(60000);
+let tong = 0;
+for (let i = 0; i &lt; gioHang.length; i++) {
+  tong = tong + gioHang[i];
+}
+console.log(&quot;Món đầu tiên: &quot; + gioHang[0]);
+console.log(&quot;Số món: &quot; + gioHang.length + &quot;, tổng: &quot; + tong);</pre><pre class="out">Món đầu tiên: 85000
+Số món: 4, tổng: 310000</pre></div>
+          <div class="row ann" data-k="k9" data-r="s11"><span class="lbl">đối tượng { }</span><pre class="js">// 11. Đối tượng: gom thông tin của một thứ vào một biến
+const sach = {
+  ten: &quot;Lập trình Web&quot;,
+  gia: 85000,
+  tacGia: &quot;Nhóm FIT&quot;
+};
+console.log(sach.ten + &quot; giá &quot; + sach.gia);</pre><pre class="out">Lập trình Web giá 85000</pre></div>
+          <div class="row ann" data-k="k9" data-r="s12"><span class="lbl">try ... catch</span><pre class="js">// 12. Bắt lỗi: lỗi trong try không làm dừng chương trình
+try {
+  console.log(bienChuaKhaiBao);
+} catch (loi) {
+  console.log(&quot;Có lỗi: &quot; + loi.message);
+}
+console.log(&quot;Chương trình vẫn chạy tiếp&quot;);</pre><pre class="out">Có lỗi: bienChuaKhaiBao is not defined
+Chương trình vẫn chạy tiếp</pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcHtml">index.html</button>
+          <button id="srcJs" class="on">script.js</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải tệp đang xem</button>
+        </div>
+        <pre id="srcView"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bài tập</h2>
+        <p class="note-ex">Bài 1 làm tại lớp, Bài 2 làm ở nhà. Đề đầy đủ có trong tệp phát trên lớp.</p>
+        <div id="exList"></div>
+      </div>
+
+      <div class="foot">Tài liệu Thiết kế Web</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <p class="sec-lbl">Cú pháp và ví dụ</p>
+    <pre id="tipCode"></pre>
+    <p class="sec-lbl">Kết quả trong Console</p>
+    <pre class="con" id="tipOut"></pre>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr','form','fieldset','legend','label'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_HTML = [
+"<!DOCTYPE html>",
+"<html lang=\"vi\">",
+"<head>",
+"  <meta charset=\"UTF-8\">",
+"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+"  <title>Demo JavaScript cơ bản</title>",
+"</head>",
+"<body>",
+"",
+"  <h1>Demo JavaScript cơ bản</h1>",
+"  <p>Trang này không hiện gì thêm. Mọi kết quả nằm trong Console:",
+"     bấm chuột phải, chọn Inspect (Kiểm tra), rồi chọn tab Console.</p>",
+"",
+"  <!-- Đặt thẻ script ngay trước </body> để trang hiện ra trước, mã chạy sau -->",
+"  <script src=\"demo-js.js\"><\/script>",
+"",
+"</body>",
+"</html>"
+].join('\n');
+
+var SRC_JS = [
+"// Demo JavaScript cơ bản. Mở DevTools, chọn tab Console để xem kết quả.",
+"",
+"// 1. In ra Console. Dòng bắt đầu bằng // là chú thích, máy bỏ qua",
+"console.log(\"Xin chào JavaScript\");",
+"",
+"// 2. Biến: let gán lại được, const thì không",
+"const tenCuaHang = \"Hiệu sách Trang Giấy\";",
+"let soLuong = 3;",
+"soLuong = soLuong + 1;",
+"console.log(tenCuaHang, \"- số lượng:\", soLuong);",
+"",
+"// 3. Kiểu dữ liệu: số, chuỗi, đúng sai. typeof cho biết kiểu",
+"const gia = 85000;",
+"const tenSach = \"Lập trình Web\";",
+"const conHang = true;",
+"console.log(typeof gia, typeof tenSach, typeof conHang);",
+"",
+"// 4. Toán tử toán học. Dấu + giữa chuỗi và số là ghép chuỗi",
+"const thanhTien = gia * soLuong;",
+"console.log(\"Thành tiền: \" + thanhTien + \" đồng\");",
+"console.log(10 % 3);",
+"console.log(\"2\" + 3);",
+"console.log(\"2\" * 3);",
+"",
+"// 5. So sánh: dùng === để so cả giá trị lẫn kiểu",
+"console.log(5 == \"5\");",
+"console.log(5 === \"5\");",
+"",
+"// 6. Logic: && là \"và\", || là \"hoặc\", ! là \"không\"",
+"const laThanhVien = true;",
+"console.log(thanhTien >= 300000 && laThanhVien);",
+"console.log(thanhTien >= 500000 || laThanhVien);",
+"",
+"// 7. Câu điều kiện: xét từ trên xuống, gặp điều kiện đúng thì dừng",
+"let giamGia;",
+"if (thanhTien >= 500000) {",
+"  giamGia = 10;",
+"} else if (thanhTien >= 300000) {",
+"  giamGia = 5;",
+"} else {",
+"  giamGia = 0;",
+"}",
+"console.log(\"Giảm giá: \" + giamGia + \"%\");",
+"",
+"// 8. Vòng lặp for: khởi tạo; điều kiện; bước tăng",
+"for (let i = 1; i <= 3; i++) {",
+"  console.log(\"Lần lặp thứ \" + i);",
+"}",
+"",
+"// 9. Hàm: đặt tên cho một việc, gọi lại bao nhiêu lần cũng được",
+"function tinhThanhTien(donGia, sl) {",
+"  return donGia * sl;",
+"}",
+"console.log(tinhThanhTien(50000, 2));",
+"console.log(tinhThanhTien(120000, 1));",
+"",
+"// 10. Mảng: nhiều giá trị trong một biến, vị trí đánh số từ 0",
+"const gioHang = [85000, 120000, 45000];",
+"gioHang.push(60000);",
+"let tong = 0;",
+"for (let i = 0; i < gioHang.length; i++) {",
+"  tong = tong + gioHang[i];",
+"}",
+"console.log(\"Món đầu tiên: \" + gioHang[0]);",
+"console.log(\"Số món: \" + gioHang.length + \", tổng: \" + tong);",
+"",
+"// 11. Đối tượng: gom thông tin của một thứ vào một biến",
+"const sach = {",
+"  ten: \"Lập trình Web\",",
+"  gia: 85000,",
+"  tacGia: \"Nhóm FIT\"",
+"};",
+"console.log(sach.ten + \" giá \" + sach.gia);",
+"",
+"// 12. Bắt lỗi: lỗi trong try không làm dừng chương trình",
+"try {",
+"  console.log(bienChuaKhaiBao);",
+"} catch (loi) {",
+"  console.log(\"Có lỗi: \" + loi.message);",
+"}",
+"console.log(\"Chương trình vẫn chạy tiếp\");"
+].join('\n');
+
+var RULES = {
+  s1: {sel:"console.log()", kind:"Mục 5.1", def:"In một giá trị ra cửa sổ Console của trình duyệt. Đây là cách xem chương trình đang làm gì khi chưa học tới cách đưa kết quả lên trang.", code:"// chú thích một dòng\n/* chú thích\n   nhiều dòng */\nconsole.log(\"Xin chào JavaScript\");\nconsole.log(\"Tổng:\", 2 + 3);", out:"Xin chào JavaScript\nTổng: 5", note:"Mở Console: bấm chuột phải lên trang, chọn Inspect (Kiểm tra), chọn tab Console. Tệp script.js được nối vào trang bằng <script src=\"script.js\"><\/script> đặt ngay trước </body>."},
+  s2: {sel:"let và const", kind:"Mục 5.2", def:"Biến là một cái tên giữ một giá trị. let cho phép gán lại giá trị mới bằng dấu =, const thì không cho gán lại.", code:"let soLuong = 3;\nsoLuong = soLuong + 1;\nconsole.log(soLuong);\n\nconst ten = \"Trang Giấy\";\nconsole.log(ten);", out:"4\nTrang Giấy", note:"Gán lại một biến const bằng dấu = là báo lỗi ngay. Nếu giá trị của const là mảng hay đối tượng thì vẫn thêm, sửa được phần bên trong, chỉ không thay được cả mảng. Giáo trình dùng nhiều từ khoá var: cách cũ, phạm vi khó đoán, bài tập này không dùng. Tên biến không bắt đầu bằng số, không có dấu cách, phân biệt chữ hoa chữ thường."},
+  s3: {sel:"typeof", kind:"Mục 5.3", def:"Ba kiểu hay gặp: số (number), chuỗi ký tự (string) đặt trong dấu nháy, và đúng sai (boolean) chỉ có true hoặc false. typeof cho biết một giá trị thuộc kiểu nào.", code:"console.log(typeof 85000);\nconsole.log(typeof \"Lập trình Web\");\nconsole.log(typeof true);\n\nlet chuaGan;\nconsole.log(chuaGan);", out:"number\nstring\nboolean\nundefined", note:"Số nguyên và số thập phân dùng chung một kiểu number. Biến khai báo mà chưa gán có giá trị undefined. Number(\"20\") đổi chuỗi thành số, String(20) đổi số thành chuỗi."},
+  s4: {sel:"+ - * / %", kind:"Mục 5.4", def:"Năm phép tính: cộng, trừ, nhân, chia và % lấy phần dư. Riêng dấu + gặp chuỗi thì thành phép ghép chuỗi.", code:"console.log(7 / 2);\nconsole.log(7 % 2);\nconsole.log(\"Thành tiền: \" + 340000 + \" đồng\");\nconsole.log(\"2\" + 3);\nconsole.log(\"2\" * 3);", out:"3.5\n1\nThành tiền: 340000 đồng\n23\n6", note:"\"2\" + 3 ra \"23\" vì + ưu tiên ghép chuỗi. \"2\" * 3 ra 6 vì phép nhân tự đổi chuỗi thành số. Viết gọn: x += 2 nghĩa là x = x + 2, i++ nghĩa là tăng i thêm 1."},
+  s5: {sel:"=== và ==", kind:"Mục 5.4", def:"=== chỉ đúng khi cùng giá trị và cùng kiểu. == tự đổi kiểu trước khi so nên dễ cho kết quả bất ngờ.", code:"console.log(5 == \"5\");\nconsole.log(5 === \"5\");\nconsole.log(5 !== \"5\");\nconsole.log(8 >= 6.5);", out:"true\nfalse\ntrue\ntrue", note:"Quy ước của môn học: luôn dùng === và !==. Các phép so sánh còn lại: >, <, >=, <=. Kết quả của phép so sánh luôn là true hoặc false."},
+  s6: {sel:"&& và ||", kind:"Mục 5.4", def:"Ghép nhiều điều kiện: && đúng khi cả hai vế đều đúng, || đúng khi ít nhất một vế đúng, ! đổi đúng thành sai và sai thành đúng.", code:"const tuoi = 20;\nconsole.log(tuoi >= 18 && tuoi < 25);\nconsole.log(tuoi < 6 || tuoi > 60);\nconsole.log(!(tuoi >= 18));", out:"true\nfalse\nfalse", note:"Ví dụ thật: miễn phí giao hàng khi đơn từ 300000 trở lên && khách là thành viên. Dùng ngoặc tròn để nhóm khi một điều kiện có cả && lẫn ||."},
+  s7: {sel:"if ... else", kind:"Mục 5.7", def:"Chọn một trong nhiều nhánh để chạy. Các điều kiện được xét từ trên xuống, gặp điều kiện đúng đầu tiên thì chạy nhánh đó rồi bỏ qua phần còn lại.", code:"const thanhTien = 340000;\nif (thanhTien >= 500000) {\n  console.log(\"Giảm 10%\");\n} else if (thanhTien >= 300000) {\n  console.log(\"Giảm 5%\");\n} else {\n  console.log(\"Không giảm\");\n}", out:"Giảm 5%", note:"Thứ tự các nhánh quan trọng: phải xét điều kiện chặt (>= 500000) trước điều kiện lỏng (>= 300000). Viết ngược lại thì đơn 600000 cũng chỉ được giảm 5%. Giáo trình còn có switch, dùng khi so một giá trị với nhiều hằng số."},
+  s8: {sel:"for", kind:"Mục 5.8", def:"Lặp một khối lệnh nhiều lần. Trong ngoặc có ba phần ngăn bằng dấu chấm phẩy: khởi tạo biến đếm, điều kiện để lặp tiếp, bước tăng sau mỗi lần.", code:"for (let i = 1; i <= 3; i++) {\n  console.log(\"Lần lặp thứ \" + i);\n}", out:"Lần lặp thứ 1\nLần lặp thứ 2\nLần lặp thứ 3", note:"Quên i++ hoặc viết sai điều kiện thì vòng lặp chạy mãi, trang bị treo: đóng tab rồi sửa lại. Giáo trình còn có while, do...while, for...of, cùng break để thoát và continue để bỏ qua một lượt."},
+  s9: {sel:"function", kind:"Mục 5.5", def:"Hàm đặt tên cho một việc. Giá trị đưa vào qua tham số, kết quả trả ra bằng return. Viết một lần, gọi bao nhiêu lần cũng được.", code:"function tinhThanhTien(donGia, sl) {\n  return donGia * sl;\n}\n\nconsole.log(tinhThanhTien(50000, 2));\nconsole.log(tinhThanhTien(120000, 1));", out:"100000\n120000", note:"return vừa trả kết quả vừa kết thúc hàm, các dòng phía sau return không chạy. Hàm không có return thì trả về undefined. Cách viết ngắn bằng mũi tên: const tinh = (a, b) => a * b;"},
+  s10: {sel:"mảng [ ]", kind:"Mục 5.6", def:"Mảng giữ nhiều giá trị trong một biến. Mỗi phần tử có một chỉ số, đánh từ 0. length cho biết số phần tử, push thêm vào cuối.", code:"const gioHang = [85000, 120000, 45000];\ngioHang.push(60000);\nconsole.log(gioHang[0]);\nconsole.log(gioHang.length);\n\nlet tong = 0;\nfor (let i = 0; i < gioHang.length; i++) {\n  tong = tong + gioHang[i];\n}\nconsole.log(tong);", out:"85000\n4\n310000", note:"Phần tử cuối nằm ở chỉ số length - 1, không phải length. Vòng lặp duyệt mảng viết i < length, viết <= là đọc lố một ô, ra undefined. Giáo trình còn giới thiệu forEach, map, filter, sort để tra khi cần."},
+  s11: {sel:"đối tượng { }", kind:"Mục 5.10", def:"Đối tượng gom nhiều thông tin của cùng một thứ, mỗi thông tin là một cặp tên: giá trị. Đọc một thông tin bằng dấu chấm.", code:"const sach = {\n  ten: \"Lập trình Web\",\n  gia: 85000\n};\nconsole.log(sach.ten);\nsach.gia = 80000;\nconsole.log(sach.gia);", out:"Lập trình Web\n80000", note:"Mảng đánh số các giá trị, đối tượng đặt tên cho chúng. Ở chương 6, document mà ta dùng để điều khiển trang web cũng là một đối tượng như vậy. Lớp (class) và kế thừa trong giáo trình để tra khi cần."},
+  s12: {sel:"try ... catch", kind:"Mục 5.9", def:"Bọc đoạn mã có thể lỗi trong try. Khi lỗi xảy ra, chương trình nhảy vào catch thay vì dừng hẳn.", code:"try {\n  console.log(bienChuaKhaiBao);\n} catch (loi) {\n  console.log(\"Có lỗi: \" + loi.message);\n}\nconsole.log(\"Vẫn chạy tiếp\");", out:"Có lỗi: bienChuaKhaiBao is not defined\nVẫn chạy tiếp", note:"Không có try thì lỗi hiện chữ đỏ trong Console và mọi dòng phía sau không chạy. Đọc dòng lỗi đỏ đó trước tiên khi chương trình không ra kết quả: nó cho biết lỗi gì và ở dòng nào."}
+};
+
+var EX = [
+ {
+  "no": "Bài 1",
+  "topic": "Cụm A. Biến, toán tử và rẽ nhánh",
+  "title": "Tính điểm trung bình và xếp loại",
+  "goal": "Làm ngay tại lớp, trên một bộ tệp mới. Khoảng 30 phút.",
+  "reqs": [
+   "<b>Bộ tệp mới:</b> tạo <code>index.html</code> và <code>script.js</code>, nối bằng <code>&lt;script src=\"script.js\"&gt;&lt;/script&gt;</code> đặt ngay trước <code>&lt;/body&gt;</code>. Dòng đầu của <code>script.js</code> in ra <code>Bài 1</code> kèm họ tên của mình.",
+   "<b>Biến:</b> một hằng <code>hoTen</code> kiểu chuỗi, ba biến <code>diemToan</code>, <code>diemVan</code>, <code>diemAnh</code> kiểu số, khai báo bằng <code>let</code>.",
+   "<b>Kiểu dữ liệu:</b> in ra <code>typeof</code> của <code>hoTen</code> và của <code>diemToan</code>.",
+   "<b>Điểm trung bình:</b> tính vào biến <code>diemTB</code>, in ra theo mẫu <code>Điểm trung bình của Nguyễn An: 7.25</code> bằng phép ghép chuỗi. Làm tròn hai chữ số thập phân bằng <code>diemTB.toFixed(2)</code>.",
+   "<b>Xếp loại:</b> dùng <code>if</code>, <code>else if</code>, <code>else</code>: từ 8 trở lên là Giỏi, từ 6.5 là Khá, từ 5 là Trung bình, còn lại là Yếu.",
+   "<b>Đạt hay không:</b> đạt khi điểm trung bình từ 5 trở lên và không môn nào dưới 3. Viết bằng một điều kiện có <code>&amp;&amp;</code>, in ra Đạt hoặc Không đạt.",
+   "<b>Thử ba bộ điểm:</b> đổi giá trị ba biến điểm rồi chạy lại, sao cho ra ít nhất ba loại xếp hạng khác nhau và có một lần Không đạt dù trung bình trên 5. Ghi ba bộ điểm và kết quả vào chú thích.",
+   "<b>Thí nghiệm:</b> in ra <code>\"8\" + 2</code>, <code>\"8\" * 2</code>, <code>8 == \"8\"</code>, <code>8 === \"8\"</code>. Dự đoán trước, ghi dự đoán, kết quả thật và lý do vào chú thích."
+  ]
+ },
+ {
+  "no": "Bài 2",
+  "topic": "Cụm B. Vòng lặp, hàm, mảng và đối tượng",
+  "title": "Thống kê điểm của cả lớp",
+  "goal": "Làm ở nhà, viết tiếp vào <code>script.js</code> của Bài 1, sau một dòng in ra <code>--- Bài 2 ---</code>. Khoảng 60 phút. Đây là bài nộp chính của chương 5.",
+  "reqs": [
+   "<b>Mảng điểm:</b> khai báo <code>const diemLop</code> là một mảng có ít nhất tám điểm, mỗi điểm từ 0 đến 10.",
+   "<b>Hàm xếp loại:</b> viết hàm <code>xepLoai(diem)</code> trả về chuỗi Giỏi, Khá, Trung bình hoặc Yếu theo quy tắc của Bài 1.",
+   "<b>In từng điểm:</b> dùng <code>for</code> in mỗi điểm kèm số thứ tự bắt đầu từ 1 và xếp loại do hàm trả về, theo mẫu <code>Sinh viên 1: 7.5 - Khá</code>.",
+   "<b>Hàm trung bình:</b> viết hàm <code>tinhTrungBinh(mang)</code> dùng <code>for</code> cộng dồn rồi <code>return</code> trung bình. In trung bình của cả lớp.",
+   "<b>Đếm số đạt:</b> dùng <code>for</code> và <code>if</code> đếm số điểm từ 5 trở lên, in theo mẫu <code>Số sinh viên đạt: 6/8</code>.",
+   "<b>Điểm cao nhất:</b> tìm bằng vòng lặp, không dùng <code>Math.max</code>. In điểm cao nhất và số thứ tự của sinh viên đó.",
+   "<b>Thêm điểm:</b> dùng <code>push</code> thêm một điểm vào cuối mảng, in lại số phần tử và trung bình mới bằng cách gọi lại <code>tinhTrungBinh</code>, không viết lại công thức.",
+   "<b>Đối tượng:</b> tạo <code>const sinhVien</code> có ba thuộc tính <code>hoTen</code>, <code>lop</code> và <code>diem</code> (một mảng ba điểm). In họ tên, lớp, trung bình và xếp loại của sinh viên đó bằng hai hàm đã viết."
+  ]
+ }
+];
+
+var HINT = {
+  "Bài 1": {html:"<!DOCTYPE html>\n<html lang=\"vi\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>___</title>\n</head>\n<body>\n\n  <h1>___</h1>\n  <p>Mở Console để xem kết quả.</p>\n\n  <script src=\"___\"><\/script>\n\n</body>\n</html>", code:"console.log(\"Bài 1 - \" + \"___\");\n\n// bien\nconst hoTen = \"___\";\nlet diemToan = ___;\nlet diemVan = ___;\nlet diemAnh = ___;\n\nconsole.log(typeof ___);\nconsole.log(typeof ___);\n\n// diem trung binh\nconst diemTB = (___ + ___ + ___) / ___;\nconsole.log(\"Điểm trung bình của \" + ___ + \": \" + diemTB.toFixed(2));\n\n// xep loai: xet dieu kien chat truoc\nif (diemTB >= ___) {\n  console.log(\"___\");\n} else if (diemTB >= ___) {\n  console.log(\"___\");\n} else if (___) {\n  console.log(\"___\");\n} else {\n  console.log(\"___\");\n}\n\n// dat khi TB >= 5 va khong mon nao duoi 3\nif (diemTB >= 5 && ___ && ___ && ___) {\n  console.log(\"___\");\n} else {\n  console.log(\"___\");\n}\n\n// thi nghiem: du doan ... ket qua ...\nconsole.log(\"8\" + 2);", warn:"Ba biến điểm phải là số, viết không có dấu nháy: <code>7.5</code> chứ không phải <code>\"7.5\"</code>. Viết có dấu nháy thì phép cộng thành ghép chuỗi và điểm trung bình sai hẳn. Trong JavaScript số thập phân viết bằng dấu chấm: <code>6.5</code>, không phải <code>6,5</code>. Nhớ ngoặc tròn khi tính trung bình: thiếu ngoặc thì chỉ điểm cuối bị chia cho 3. <code>toFixed(2)</code> chỉ đổi cách hiển thị, không đổi giá trị dùng để so sánh: trung bình 4.999999 in ra 5.00 nhưng vẫn xếp Yếu. Không thấy gì trong Console thì kiểm tra trước tiên đường dẫn trong thẻ <code>&lt;script&gt;</code> và dòng lỗi màu đỏ."},
+  "Bài 2": {html:"", code:"console.log(\"--- Bài 2 ---\");\n\nconst diemLop = [___, ___, ___, ___, ___, ___, ___, ___];\n\nfunction xepLoai(diem) {\n  if (diem >= ___) {\n    return \"___\";\n  } else if (___) {\n    return \"___\";\n  }\n  // ...\n}\n\n// in tung diem, so thu tu bat dau tu 1\nfor (let i = 0; i < ___; i++) {\n  console.log(\"Sinh viên \" + (___) + \": \" + diemLop[i] + \" - \" + xepLoai(___));\n}\n\nfunction tinhTrungBinh(mang) {\n  let tong = 0;\n  for (___; ___; ___) {\n    tong = tong + ___;\n  }\n  return ___;\n}\n\n// dem so dat\nlet soDat = 0;\n// ...\n\n// diem cao nhat: gia su phan tu dau la lon nhat, roi so lan luot\nlet caoNhat = diemLop[0];\nlet viTri = 0;\n// ...\n\ndiemLop.push(___);\n\nconst sinhVien = {\n  hoTen: \"___\",\n  lop: \"___\",\n  diem: [___, ___, ___]\n};\nconsole.log(sinhVien.___ + \" ...\");", warn:"Bài 2 nằm chung tệp với Bài 1, nên không khai báo lại tên đã có như <code>diemTB</code> hay <code>hoTen</code>; đặt tên mới, ví dụ <code>tbSinhVien</code>. Trùng tên là lỗi làm cả tệp không chạy, kể cả phần Bài 1. Chỉ số của mảng đánh từ 0, nên số thứ tự in ra là <code>i + 1</code>, phải có ngoặc: <code>\"Sinh viên \" + (i + 1)</code>. Thiếu ngoặc thì ra <code>Sinh viên 01</code>, <code>Sinh viên 11</code>. Điều kiện lặp là <code>i &lt; mang.length</code>; viết <code>&lt;=</code> là đọc lố một ô và nhận <code>undefined</code>, trung bình thành <code>NaN</code>. Hàm phải <code>return</code> kết quả, chỉ <code>console.log</code> bên trong hàm thì lời gọi hàm nhận về <code>undefined</code>. Khai báo <code>diemLop</code> bằng <code>const</code> vẫn <code>push</code> được: <code>const</code> chỉ cấm gán lại cả mảng, không cấm thêm phần tử."}
+};
+
+var CHECK = [["&lt;script src&gt;", "Nối tệp script.js vào trang", "Bài 1"], ["console.log()", "In kết quả ra Console", "Bài 1 và 2"], ["let, const", "Khai báo biến và hằng", "Bài 1 và 2"], ["typeof", "Xem kiểu của một giá trị", "Bài 1"], ["+ - * /", "Tính toán, ghép chuỗi", "Bài 1"], ["===, >=, <", "So sánh", "Bài 1 và 2"], ["&&", "Ghép hai điều kiện cùng phải đúng", "Bài 1"], ["if, else if, else", "Chọn nhánh theo điều kiện", "Bài 1 và 2"], ["for", "Lặp qua từng phần tử", "Bài 2"], ["function, return", "Viết hàm và trả kết quả", "Bài 2"], ["mảng, length, push", "Giữ và thêm nhiều giá trị", "Bài 2"], ["đối tượng, dấu chấm", "Gom thông tin của một sinh viên", "Bài 2"], ["<i>biết để tra</i>", "%, ||, !; var; switch; while, do...while, for...of, break, continue; hàm mũi tên; forEach, map, filter, sort; try, catch, finally; class", "Tra cứu"]];
+
+var TIPS = [
+ "Mở Console: không có dòng chữ đỏ nào.",
+ "Dòng đầu tiên in ra Bài 1 kèm họ tên của mình.",
+ "Ba bộ điểm ở Bài 1 ra ít nhất ba loại xếp hạng, có một lần Không đạt dù trung bình trên 5.",
+ "Số thứ tự sinh viên ở Bài 2 bắt đầu từ 1, không phải từ 0.",
+ "Trung bình in ra sau khi push đã khác trung bình lúc đầu.",
+ "Trong tệp không còn từ khoá var.",
+ "Vào validator.w3.org kiểm tra tệp HTML."
+];
+
+var FILES = [{"n": "demo-js.html", "t": "text/html;charset=utf-8", "u": "Trang mẫu, chỉ có thẻ script nối tệp JavaScript", "kb": "0,5 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+RGVtbyBKYXZhU2NyaXB0IGPGoSBi4bqjbjwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CgogIDxoMT5EZW1vIEphdmFTY3JpcHQgY8ahIGLhuqNuPC9oMT4KICA8cD5UcmFuZyBuw6B5IGtow7RuZyBoaeG7h24gZ8OsIHRow6ptLiBN4buNaSBr4bq/dCBxdeG6oyBu4bqxbSB0cm9uZyBDb25zb2xlOgogICAgIGLhuqVtIGNodeG7mXQgcGjhuqNpLCBjaOG7jW4gSW5zcGVjdCAoS2nhu4NtIHRyYSksIHLhu5NpIGNo4buNbiB0YWIgQ29uc29sZS48L3A+CgogIDwhLS0gxJDhurd0IHRo4bq7IHNjcmlwdCBuZ2F5IHRyxrDhu5tjIDwvYm9keT4gxJHhu4MgdHJhbmcgaGnhu4duIHJhIHRyxrDhu5tjLCBtw6MgY2jhuqF5IHNhdSAtLT4KICA8c2NyaXB0IHNyYz0iZGVtby1qcy5qcyI+PC9zY3JpcHQ+Cgo8L2JvZHk+CjwvaHRtbD4K"}, {"n": "demo-js.js", "t": "text/javascript;charset=utf-8", "u": "Mười hai đoạn mã đã chạy trên lớp, mỗi đoạn một dòng chú thích", "kb": "2,5 KB", "b": "Ly8gRGVtbyBKYXZhU2NyaXB0IGPGoSBi4bqjbi4gTeG7nyBEZXZUb29scywgY2jhu41uIHRhYiBDb25zb2xlIMSR4buDIHhlbSBr4bq/dCBxdeG6oy4KCi8vIDEuIEluIHJhIENvbnNvbGUuIETDsm5nIGLhuq90IMSR4bqndSBi4bqxbmcgLy8gbMOgIGNow7ogdGjDrWNoLCBtw6F5IGLhu48gcXVhCmNvbnNvbGUubG9nKCJYaW4gY2jDoG8gSmF2YVNjcmlwdCIpOwoKLy8gMi4gQmnhur9uOiBsZXQgZ8OhbiBs4bqhaSDEkcaw4bujYywgY29uc3QgdGjDrCBraMO0bmcKY29uc3QgdGVuQ3VhSGFuZyA9ICJIaeG7h3Ugc8OhY2ggVHJhbmcgR2nhuqV5IjsKbGV0IHNvTHVvbmcgPSAzOwpzb0x1b25nID0gc29MdW9uZyArIDE7CmNvbnNvbGUubG9nKHRlbkN1YUhhbmcsICItIHPhu5EgbMaw4bujbmc6Iiwgc29MdW9uZyk7CgovLyAzLiBLaeG7g3UgZOG7ryBsaeG7h3U6IHPhu5EsIGNodeG7l2ksIMSRw7puZyBzYWkuIHR5cGVvZiBjaG8gYmnhur90IGtp4buDdQpjb25zdCBnaWEgPSA4NTAwMDsKY29uc3QgdGVuU2FjaCA9ICJM4bqtcCB0csOsbmggV2ViIjsKY29uc3QgY29uSGFuZyA9IHRydWU7CmNvbnNvbGUubG9nKHR5cGVvZiBnaWEsIHR5cGVvZiB0ZW5TYWNoLCB0eXBlb2YgY29uSGFuZyk7CgovLyA0LiBUb8OhbiB04butIHRvw6FuIGjhu41jLiBE4bqldSArIGdp4buvYSBjaHXhu5dpIHbDoCBz4buRIGzDoCBnaMOpcCBjaHXhu5dpCmNvbnN0IHRoYW5oVGllbiA9IGdpYSAqIHNvTHVvbmc7CmNvbnNvbGUubG9nKCJUaMOgbmggdGnhu4FuOiAiICsgdGhhbmhUaWVuICsgIiDEkeG7k25nIik7CmNvbnNvbGUubG9nKDEwICUgMyk7CmNvbnNvbGUubG9nKCIyIiArIDMpOwpjb25zb2xlLmxvZygiMiIgKiAzKTsKCi8vIDUuIFNvIHPDoW5oOiBkw7luZyA9PT0gxJHhu4Mgc28gY+G6oyBnacOhIHRy4buLIGzhuqtuIGtp4buDdQpjb25zb2xlLmxvZyg1ID09ICI1Iik7CmNvbnNvbGUubG9nKDUgPT09ICI1Iik7CgovLyA2LiBMb2dpYzogJiYgbMOgICJ2w6AiLCB8fCBsw6AgImhv4bq3YyIsICEgbMOgICJraMO0bmciCmNvbnN0IGxhVGhhbmhWaWVuID0gdHJ1ZTsKY29uc29sZS5sb2codGhhbmhUaWVuID49IDMwMDAwMCAmJiBsYVRoYW5oVmllbik7CmNvbnNvbGUubG9nKHRoYW5oVGllbiA+PSA1MDAwMDAgfHwgbGFUaGFuaFZpZW4pOwoKLy8gNy4gQ8OidSDEkWnhu4F1IGtp4buHbjogeMOpdCB04burIHRyw6puIHh14buRbmcsIGfhurdwIMSRaeG7gXUga2nhu4duIMSRw7puZyB0aMOsIGThu6tuZwpsZXQgZ2lhbUdpYTsKaWYgKHRoYW5oVGllbiA+PSA1MDAwMDApIHsKICBnaWFtR2lhID0gMTA7Cn0gZWxzZSBpZiAodGhhbmhUaWVuID49IDMwMDAwMCkgewogIGdpYW1HaWEgPSA1Owp9IGVsc2UgewogIGdpYW1HaWEgPSAwOwp9CmNvbnNvbGUubG9nKCJHaeG6o20gZ2nDoTogIiArIGdpYW1HaWEgKyAiJSIpOwoKLy8gOC4gVsOybmcgbOG6t3AgZm9yOiBraOG7n2kgdOG6oW87IMSRaeG7gXUga2nhu4duOyBixrDhu5tjIHTEg25nCmZvciAobGV0IGkgPSAxOyBpIDw9IDM7IGkrKykgewogIGNvbnNvbGUubG9nKCJM4bqnbiBs4bq3cCB0aOG7qSAiICsgaSk7Cn0KCi8vIDkuIEjDoG06IMSR4bq3dCB0w6puIGNobyBt4buZdCB2aeG7h2MsIGfhu41pIGzhuqFpIGJhbyBuaGnDqnUgbOG6p24gY8WpbmcgxJHGsOG7o2MKZnVuY3Rpb24gdGluaFRoYW5oVGllbihkb25HaWEsIHNsKSB7CiAgcmV0dXJuIGRvbkdpYSAqIHNsOwp9CmNvbnNvbGUubG9nKHRpbmhUaGFuaFRpZW4oNTAwMDAsIDIpKTsKY29uc29sZS5sb2codGluaFRoYW5oVGllbigxMjAwMDAsIDEpKTsKCi8vIDEwLiBN4bqjbmc6IG5oaeG7gXUgZ2nDoSB0cuG7iyB0cm9uZyBt4buZdCBiaeG6v24sIHbhu4sgdHLDrSDEkcOhbmggc+G7kSB04burIDAKY29uc3QgZ2lvSGFuZyA9IFs4NTAwMCwgMTIwMDAwLCA0NTAwMF07Cmdpb0hhbmcucHVzaCg2MDAwMCk7CmxldCB0b25nID0gMDsKZm9yIChsZXQgaSA9IDA7IGkgPCBnaW9IYW5nLmxlbmd0aDsgaSsrKSB7CiAgdG9uZyA9IHRvbmcgKyBnaW9IYW5nW2ldOwp9CmNvbnNvbGUubG9nKCJNw7NuIMSR4bqndSB0acOqbjogIiArIGdpb0hhbmdbMF0pOwpjb25zb2xlLmxvZygiU+G7kSBtw7NuOiAiICsgZ2lvSGFuZy5sZW5ndGggKyAiLCB04buVbmc6ICIgKyB0b25nKTsKCi8vIDExLiDEkOG7kWkgdMaw4bujbmc6IGdvbSB0aMO0bmcgdGluIGPhu6dhIG3hu5l0IHRo4bupIHbDoG8gbeG7mXQgYmnhur9uCmNvbnN0IHNhY2ggPSB7CiAgdGVuOiAiTOG6rXAgdHLDrG5oIFdlYiIsCiAgZ2lhOiA4NTAwMCwKICB0YWNHaWE6ICJOaMOzbSBGSVQiCn07CmNvbnNvbGUubG9nKHNhY2gudGVuICsgIiBnacOhICIgKyBzYWNoLmdpYSk7CgovLyAxMi4gQuG6r3QgbOG7l2k6IGzhu5dpIHRyb25nIHRyeSBraMO0bmcgbMOgbSBk4burbmcgY2jGsMahbmcgdHLDrG5oCnRyeSB7CiAgY29uc29sZS5sb2coYmllbkNodWFLaGFpQmFvKTsKfSBjYXRjaCAobG9pKSB7CiAgY29uc29sZS5sb2coIkPDsyBs4buXaTogIiArIGxvaS5tZXNzYWdlKTsKfQpjb25zb2xlLmxvZygiQ2jGsMahbmcgdHLDrG5oIHbhuqtuIGNo4bqheSB0aeG6v3AiKTsK"}];
+
+/* ---------- tô màu mã CSS ---------- */
+/* ---------- tô màu mã JavaScript ---------- */
+var KW = /\b(const|let|var|function|return|if|else|for|while|do|break|continue|true|false|null|undefined|new|typeof|try|catch|finally|throw|switch|case|default|of|in|class)\b/g;
+function hljs(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var keep = [];
+  function mark(cls){ return function(m){ keep.push('<span class="' + cls + '">' + m + '</span>'); return '\u0001' + String.fromCharCode(0xE000 + keep.length - 1) + '\u0001'; }; }
+  s = s.replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`/g, function(m){
+    return mark(m.charAt(0) === '/' ? 'c' : 's')(m);
+  });
+  s = s.replace(KW, '<span class="t2">$1</span>');
+  s = s.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="a">$1</span>');
+  s = s.replace(/\b([a-zA-Z_$][\w$]*)(?=\()/g, '<span class="t">$1</span>');
+  s = s.replace(/\u0001([-])\u0001/g, function(m, c){ return keep[c.charCodeAt(0) - 0xE000]; });
+  return s;
+}
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- mã nguồn: hai tệp --- */
+  var view = document.getElementById('srcView');
+  var bH = document.getElementById('srcHtml'), bC = document.getElementById('srcJs');
+  var cur = 'html';
+  function showSrc(which){
+    cur = which;
+    view.innerHTML = which === 'js' ? hljs(SRC_JS) : hl(SRC_HTML);
+    bC.classList.toggle('on', which === 'js');
+    bH.classList.toggle('on', which === 'html');
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bH.addEventListener('click', function(){ showSrc('html'); });
+  bC.addEventListener('click', function(){ showSrc('js'); });
+  showSrc('js');
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var isJs = cur === 'js';
+    var blob = new Blob([isJs ? SRC_JS : SRC_HTML],
+                        {type: (isJs ? 'text/javascript' : 'text/html') + ';charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = isJs ? 'script.js' : 'index.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+
+  function fill(key){
+    var d = RULES[key];
+    if(!d) return false;
+    document.getElementById('tipTag').textContent = d.sel;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = hljs(d.code);
+    document.getElementById('tipNote').textContent = d.note;
+    document.getElementById('tipOut').textContent = d.out;
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-r]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-r');
+    if(pinned && current === el){ hideTip(); return; }
+    current = el;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+
+(function(){
+  var list = document.getElementById('exList');
+  if(!list) return;
+
+  EX.forEach(function(ex){
+    var box = document.createElement('div');
+    box.className = 'ex';
+    var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
+    box.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-no">' + ex.no + '</span>' +
+        '<span class="ex-title">' + ex.title + '</span>' +
+        '<span class="ex-topic">' + ex.topic + '</span>' +
+      '</div>' +
+      '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
+      '<ol class="ex-req">' + reqs + '</ol>' +
+      (HINT[ex.no]
+        ? '<p class="sec-lbl">Gợi ý</p>' +
+          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần câu lệnh nào và đặt ở đâu. Chỗ có dấu <code>___</code> là phần tự điền theo trang của mình.</p>' +
+          (HINT[ex.no].html
+            ? '<p class="note-src"><b>Khung HTML</b></p><pre class="ex-code">' + hl(HINT[ex.no].html) + '</pre>' +
+              '<p class="note-src"><b>Khung JavaScript</b></p>'
+            : '') +
+          '<pre class="ex-code">' + hljs(HINT[ex.no].code) + '</pre>' +
+          '<div class="ex-warn"><b>Lưu ý:</b> ' + HINT[ex.no].warn + '</div>'
+        : '');
+    list.appendChild(box);
+  });
+
+  var frows = FILES.map(function(f){
+    return '<tr>' +
+      '<td class="ck-tag">' + f.n + '</td>' +
+      '<td>' + f.u + '</td>' +
+      '<td class="dl-cell">' + f.kb + '</td>' +
+      '<td class="dl-cell"><a class="dl" download="' + f.n +
+        '" href="data:' + f.t + ';base64,' + f.b + '">Tải</a></td></tr>';
+  }).join('');
+
+  var fb = document.createElement('div');
+  fb.className = 'ex';
+  fb.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Tệp demo</span>' +
+    '<span class="ex-title">Tệp đã chiếu trên lớp</span></div>' +
+    '<p class="ex-goal">Đây là các tệp dùng làm ví dụ trong buổi học, có đầy đủ chú thích giải thích từng khối. Tải về để một bên, đừng nộp lại.</p>' +
+    '<table class="ck"><thead><tr><th>Tệp</th><th>Nội dung</th><th>Cỡ</th><th></th></tr></thead>' +
+    '<tbody>' + frows + '</tbody></table>';
+  list.appendChild(fb);
+
+  var rows = CHECK.map(function(r){
+    return '<tr><td class="ck-tag">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
+  }).join('');
+
+  var ck = document.createElement('div');
+  ck.className = 'ex';
+  ck.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Bảng kiểm</span>' +
+    '<span class="ex-title">Mọi thứ phải dùng trong chương này</span></div>' +
+    '<p class="ex-goal">Làm xong hai bài, đối chiếu lại bảng này. Thiếu dòng nào là bài chưa đủ yêu cầu.</p>' +
+    '<table class="ck"><thead><tr><th>Câu lệnh hoặc từ khoá</th><th>Dùng để làm gì</th><th>Nằm ở bài</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+  list.appendChild(ck);
+
+  var tipBox = document.createElement('div');
+  tipBox.className = 'ex';
+  tipBox.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Trước khi nộp</span>' +
+    '<span class="ex-title">Tự kiểm tra lại bài</span></div>' +
+    '<ol class="ex-req">' + TIPS.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ol>';
+  list.appendChild(tipBox);
+})();
+
+/* tô màu các đoạn mã trong trình soạn */
+[].forEach.call(document.querySelectorAll('#rows pre.js'), function(p){ p.innerHTML = hljs(p.textContent); });
+</script>
+</body>
+</html>
