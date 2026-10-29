@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>___</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- header: logo SVG tự vẽ, tên câu lạc bộ, khẩu hiệu -->
+
+  <!-- nav: 4 liên kết neo tới các section -->
+
+  <!-- aside: 3 ô thống kê -->
+
+  <main>
+    <!-- section giới thiệu: article (h2, figure có img và figcaption, danh sách ul, em) và khung thông báo -->
+    <!-- ảnh dùng được: https://thainq107.github.io/thiet-ke-web/bai-tap-c6/khung/anh-thu-vien.svg -->
+
+    <section id="tu-sach">
+      <h2>Tủ sách</h2>
+      <div class="thanh-cong-cu">
+        <input type="search" id="oTim" placeholder="Tìm theo tên sách hoặc tác giả" aria-label="Tìm sách">
+        <select id="chonTheLoai" aria-label="Lọc theo thể loại">
+          <option value="">Tất cả thể loại</option>
+        </select>
+      </div>
+      <p id="dongDem"></p>
+      <div id="luoiSach" class="luoi-sach"></div>
+      <p id="khongCo" hidden>Không có sách nào khớp với điều kiện tìm.</p>
+    </section>
+
+    <!-- section phiếu mượn: form novalidate, mỗi ô kèm một chỗ hiện lỗi -->
+
+    <!-- section sách đang mượn (phần nâng cao): bảng, nút xuất, thẻ pre -->
+  </main>
+
+  <!-- footer -->
+
+  <!-- du-lieu.js phải nạp trước script.js -->
+  <script src="du-lieu.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
