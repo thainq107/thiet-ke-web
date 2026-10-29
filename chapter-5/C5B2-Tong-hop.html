@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Học liệu chương 5 buổi 2: while, for...of, for...in, phương thức chuỗi và mảng, hàm so sánh, throw và try...catch, JSON">
+<title>Chương 5 - Buổi 2: Tổng hợp</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+
+  /* bảng và danh sách ở chế độ có CSS */
+  .styled table{border-collapse:collapse; width:100%; font-size:13.5px; margin-bottom:12px}
+  .styled caption{text-align:left; font-weight:600; padding-bottom:6px}
+  .styled th, .styled td{border:1px solid var(--line); padding:6px 9px; text-align:left}
+  .styled thead th{background:#eef3f8}
+  .styled tfoot td{background:#f6f8fa; font-weight:600}
+  .styled ul, .styled ol, .styled dl{margin:0 0 12px; padding-left:22px}
+  .styled dl{padding-left:0}
+  .styled dt{font-weight:600; margin-top:6px}
+  .styled dd{margin:0 0 0 18px}
+  .styled pre{background:#f6f8fa; color:var(--ink); padding:10px 12px; font-size:12.5px}
+  .demo.plain pre{background:transparent; color:#000; padding:0; font-size:14px; overflow:visible}
+
+  /* biểu mẫu */
+  .demo.plain fieldset{margin-bottom:10px}
+  .demo .d-form p{margin:9px 0}
+  .demo .ann[data-tag="radio"], .demo .ann[data-tag="checkbox"],
+  .demo .ann[data-tag="button"]{padding:5px 0 5px 7px}
+  /* chú thích của fieldset dời sang phải để không che mất legend */
+  .demo .ann[data-tag="fieldset"] > .lbl{left:auto; right:0}
+  .styled .d-form{background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:16px}
+  .styled .d-form label{display:inline-block; min-width:132px; font-weight:600; font-size:13.5px}
+  .styled .d-form input[type="text"], .styled .d-form input[type="email"],
+  .styled .d-form input[type="tel"], .styled .d-form input[type="password"],
+  .styled .d-form input[type="url"], .styled .d-form input[type="number"],
+  .styled .d-form input[type="date"], .styled .d-form textarea, .styled .d-form select{
+    border:1px solid #c8d2dd; border-radius:6px; padding:6px 9px; font-size:13.5px;
+    font-family:inherit; background:#fff}
+  .styled .d-form textarea{vertical-align:top; width:100%; max-width:380px}
+  .styled .d-form fieldset{border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:0 0 14px}
+  .styled .d-form legend{font-weight:600; font-size:13.5px; color:var(--blue-deep, #0f3d6e); padding:0 6px}
+  .styled .d-form button{background:var(--blue); color:#fff; border:0; border-radius:7px;
+    padding:8px 16px; font-size:13.5px; font-weight:600; cursor:pointer; margin-right:8px}
+  .styled .d-form button[type="reset"]{background:#e6ecf3; color:var(--ink)}
+
+  /* bài tập */
+  .note-ex{font-size:13.5px; color:var(--muted); margin:0 0 14px}
+  .ex{border:1px solid var(--line); border-radius:9px; padding:14px 16px; margin-bottom:12px}
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:9px; margin-bottom:6px}
+  .ex-no{font-weight:700; color:var(--blue); font-size:14px}
+  .ex-title{font-weight:600; font-size:15px}
+  .ex-topic{font-size:12px; color:var(--muted); border:1px solid var(--line);
+            border-radius:20px; padding:1px 9px}
+  .ex-goal{font-size:14px; margin:0 0 8px}
+  .ex-req{font-size:13.5px; margin:0 0 12px; padding-left:20px}
+  .ex-req li{margin-bottom:4px}
+  .ex-req code, .ex-goal code{background:#f1f4f7; padding:1px 5px; border-radius:4px;
+            font-size:12.5px; color:#a1155a; font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ex .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+         color:var(--muted); margin:12px 0 6px; font-weight:700}
+  .ex-code{max-height:420px}
+  .ex-warn{background:var(--amber-soft); border-left:3px solid var(--amber);
+           border-radius:0 5px 5px 0; padding:9px 11px; font-size:13px;
+           color:#6b4a08; margin:10px 0 0}
+  .ex-warn code{background:#fff; color:#8a4b06; padding:1px 5px; border-radius:4px;
+           font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12px}
+  pre.tree{background:#f7f9fb; color:var(--ink); border:1px solid var(--line);
+           padding:11px 13px; font-size:12.5px; line-height:1.55; max-height:none}
+  td.dl-cell{white-space:nowrap; text-align:right}
+  a.dl{display:inline-block; text-decoration:none; background:var(--blue-soft);
+       border:1px solid #bcd6fb; color:var(--blue); font-size:12px; font-weight:600;
+       padding:3px 11px; border-radius:20px}
+  a.dl:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+  .dl-all{margin:10px 0 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .dl-all .note{font-size:12.5px; color:var(--muted)}
+  .ex-out{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff}
+  table.ck{width:100%; border-collapse:collapse; font-size:13px; margin-top:4px}
+  table.ck th{background:#f7f9fb; text-align:left; padding:7px 9px; border-bottom:1px solid var(--line);
+              font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted)}
+  table.ck td{padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.ck td.ck-tag{font-family:"SF Mono",Menlo,Consolas,monospace; color:#a1155a; overflow-wrap:anywhere}
+  table.ck tr:last-child td{border-bottom:0}
+  .ex-out iframe{width:100%; border:0; display:block; height:200px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+
+/* ---------- trình soạn mã: mỗi đoạn một hàng, bên phải là Console ---------- */
+.editor .chrome{gap:8px}
+.editor .con-pill{margin-left:auto; background:#16202b; color:#cfe3f6; border-color:#16202b}
+.rows{background:var(--ink); padding:10px 0}
+.row{display:grid; grid-template-columns:minmax(0,1fr) 300px; border-top:1px solid #2a323c}
+.row:first-child{border-top:0}
+.row pre{margin:0; border-radius:0; background:transparent; padding:10px 16px; font-size:12.5px}
+.row pre.out{background:#10161d; color:#e6edf3; border-left:1px solid #2a323c; white-space:pre-wrap}
+.row pre.out:empty::before{content:"(không in gì)"; color:#5b6672}
+@media(max-width:760px){.row{grid-template-columns:1fr} .row pre.out{border-left:0; border-top:1px dashed #2a323c}}
+
+/* chú thích trên nền tối */
+body.show-ann .row.ann{margin-top:0; outline-offset:-3px}
+.row .lbl{top:6px; right:8px; left:auto; transform:none; z-index:6}
+body.show-ann .row.ann:not(.inline) > .lbl{display:block}
+body.show-ann .row:hover{background:#1b232c}
+body.dim .row.ann:not(.hl){opacity:.35}
+
+/* Console trong thẻ giải thích */
+#tip pre.con{background:#10161d; color:#e6edf3; white-space:pre-wrap}
+pre .t{color:#d2a8ff}
+#tip .t-tag{white-space:normal; word-break:break-word}
+/* nhãn đặt ở mép phải cột mã, không che cột Console */
+.row .lbl{right:308px}
+@media(max-width:760px){.row .lbl{right:8px}}
+/* phông chữ mã có đủ dấu tiếng Việt dựng sẵn trên cả Mac, Windows và Linux */
+pre, code, .lbl, #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,"Liberation Mono","Courier New",monospace}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 5 - Buổi 2: Tổng hợp</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Bấm vào một đoạn mã bất kỳ để xem giải thích, cú pháp và kết quả chạy thật. Cột bên phải là những gì đoạn mã đó in ra Console.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức buổi 2</h2>
+
+      <div class="k-item" data-k="k1">
+        <div class="num">MỤC 5.8</div>
+        <div class="name">Vòng lặp</div>
+        <div class="tags">while · for...of · for...in · lặp lồng nhau</div>
+      </div>
+
+      <div class="k-item" data-k="k2">
+        <div class="num">MỤC 5.10</div>
+        <div class="name">Đối tượng làm bảng đếm</div>
+        <div class="tags">obj[khoa] · undefined · Object.keys</div>
+      </div>
+
+      <div class="k-item" data-k="k3">
+        <div class="num">MỤC 5.3</div>
+        <div class="name">Xử lý chuỗi</div>
+        <div class="tags">trim · toLowerCase · includes · str[i]</div>
+      </div>
+
+      <div class="k-item" data-k="k4">
+        <div class="num">MỤC 5.6</div>
+        <div class="name">Phương thức mảng</div>
+        <div class="tags">slice · sort · join · indexOf · includes · findIndex · splice</div>
+      </div>
+
+      <div class="k-item" data-k="k5">
+        <div class="num">MỤC 5.5</div>
+        <div class="name">Hàm trả về đối tượng</div>
+        <div class="tags">return { } · hàm chỉ tính, không in</div>
+      </div>
+
+      <div class="k-item" data-k="k6">
+        <div class="num">MỤC 5.9</div>
+        <div class="name">Xử lý lỗi</div>
+        <div class="tags">throw · try · catch · finally · Number.isInteger</div>
+      </div>
+
+      <div class="k-item" data-k="k7">
+        <div class="num">MỤC 6.7 · XEM TRƯỚC</div>
+        <div class="name">JSON</div>
+        <div class="tags">JSON.stringify · JSON.parse</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="browser editor">
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="tabpill">script.js</div>
+          <div class="tabpill con-pill">Console</div>
+        </div>
+        <div class="rows" id="rows">
+          <div class="row ann" data-k="k1" data-r="s1"><span class="lbl">while</span><pre class="js">// 1. Lặp khi chưa biết trước số lần
+let tongPhut = 0;
+let soNgay = 0;
+while (tongPhut &lt; 150 &amp;&amp; soNgay &lt; phutTap.length) {
+  tongPhut = tongPhut + phutTap[soNgay];
+  soNgay++;
+}
+console.log(soNgay + &quot; ngày, &quot; + tongPhut + &quot; phút&quot;);</pre><pre class="out">5 ngày, 225 phút</pre></div>
+          <div class="row ann" data-k="k1" data-r="s2"><span class="lbl">for...of và for...in</span><pre class="js">// 2. for...of và for...in
+let soNgayNghi = 0;
+for (const phut of phutTap) {
+  if (phut === 0) {
+    soNgayNghi++;
+  }
+}
+console.log(&quot;Số ngày nghỉ: &quot; + soNgayNghi);
+
+const diemRenLuyen = { Hà: 8, Minh: 6, Quân: 9 };
+for (const ten in diemRenLuyen) {
+  console.log(ten + &quot; được &quot; + diemRenLuyen[ten] + &quot; điểm&quot;);
+}</pre><pre class="out">Số ngày nghỉ: 2
+Hà được 8 điểm
+Minh được 6 điểm
+Quân được 9 điểm</pre></div>
+          <div class="row ann" data-k="k2" data-r="s3"><span class="lbl">obj[khoa]</span><pre class="js">// 3. Đối tượng làm bảng đếm
+const soBuoi = {};
+for (const mon of lichTap) {
+  if (soBuoi[mon] === undefined) {
+    soBuoi[mon] = 0;
+  }
+  soBuoi[mon] = soBuoi[mon] + 1;
+}
+for (const mon in soBuoi) {
+  console.log(mon + &quot;: &quot; + soBuoi[mon] + &quot; buổi&quot;);
+}
+console.log(Object.keys(soBuoi).length + &quot; môn khác nhau&quot;);</pre><pre class="out">bơi: 3 buổi
+chạy: 2 buổi
+cầu lông: 1 buổi
+3 môn khác nhau</pre></div>
+          <div class="row ann" data-k="k3" data-r="s4"><span class="lbl">trim, toLowerCase, includes</span><pre class="js">// 4. Xử lý chuỗi
+const tenNhap = &quot;  Nguyễn THU Hà  &quot;;
+const tenChuan = tenNhap.trim().toLowerCase();
+console.log(&quot;[&quot; + tenChuan + &quot;]&quot;);
+console.log(tenChuan.includes(&quot;thu&quot;));
+
+const maThe = &quot;CLB0123&quot;;
+let soChuSo = 0;
+for (let i = 0; i &lt; maThe.length; i++) {
+  if (maThe[i] &gt;= &quot;0&quot; &amp;&amp; maThe[i] &lt;= &quot;9&quot;) {
+    soChuSo++;
+  }
+}
+console.log(maThe + &quot; có &quot; + soChuSo + &quot; chữ số&quot;);</pre><pre class="out">[nguyễn thu hà]
+true
+CLB0123 có 4 chữ số</pre></div>
+          <div class="row ann" data-k="k4" data-r="s5"><span class="lbl">slice, sort, join</span><pre class="js">// 5. Sắp xếp mà giữ mảng gốc
+const thanhTich = [12.5, 11.8, 13.1, 12.0];
+const xepHang = thanhTich.slice();
+xepHang.sort(function (a, b) {
+  return a - b;
+});
+console.log(&quot;Xếp hạng: &quot; + xepHang.join(&quot; &lt; &quot;));
+console.log(&quot;Mảng gốc: &quot; + thanhTich.join(&quot;, &quot;));</pre><pre class="out">Xếp hạng: 11.8 &lt; 12 &lt; 12.5 &lt; 13.1
+Mảng gốc: 12.5, 11.8, 13.1, 12</pre></div>
+          <div class="row ann" data-k="k4" data-r="s6"><span class="lbl">indexOf, findIndex, splice</span><pre class="js">// 6. Tìm vị trí và xoá
+const doiBong = [&quot;Hà&quot;, &quot;Minh&quot;, &quot;Quân&quot;, &quot;Lan&quot;];
+console.log(doiBong.indexOf(&quot;Quân&quot;));
+console.log(doiBong.indexOf(&quot;Tùng&quot;));
+const viTri = doiBong.findIndex(function (ten) {
+  return ten.length &gt; 3;
+});
+console.log(&quot;Vị trí tên dài đầu tiên: &quot; + viTri);
+doiBong.splice(1, 1);
+console.log(doiBong.join(&quot;, &quot;));</pre><pre class="out">2
+-1
+Vị trí tên dài đầu tiên: 1
+Hà, Quân, Lan</pre></div>
+          <div class="row ann" data-k="k5" data-r="s7"><span class="lbl">return { }</span><pre class="js">// 7. Hàm trả về đối tượng
+function thongKePhut(mang) {
+  let nhieuNhat = mang[0];
+  let tong = 0;
+  for (const p of mang) {
+    tong = tong + p;
+    if (p &gt; nhieuNhat) {
+      nhieuNhat = p;
+    }
+  }
+  return { tong: tong, nhieuNhat: nhieuNhat };
+}
+const kq = thongKePhut(phutTap);
+console.log(kq.tong + &quot; phút, nhiều nhất &quot; + kq.nhieuNhat);</pre><pre class="out">300 phút, nhiều nhất 90</pre></div>
+          <div class="row ann" data-k="k6" data-r="s8"><span class="lbl">throw và try ... catch</span><pre class="js">// 8. Báo lỗi và bắt lỗi
+function datSan(soNguoi) {
+  if (!Number.isInteger(soNguoi)) {
+    throw new Error(&quot;Số người phải là số nguyên&quot;);
+  }
+  if (soNguoi &gt; 10) {
+    throw new Error(&quot;Sân chỉ nhận tối đa 10 người&quot;);
+  }
+  return &quot;Đã đặt sân cho &quot; + soNguoi + &quot; người&quot;;
+}
+const cacLanDat = [4, 12, 2.5];
+for (const n of cacLanDat) {
+  try {
+    console.log(datSan(n));
+  } catch (loi) {
+    console.log(&quot;Không đặt được: &quot; + loi.message);
+  } finally {
+    console.log(&quot;  xong yêu cầu &quot; + n);
+  }
+}</pre><pre class="out">Đã đặt sân cho 4 người
+  xong yêu cầu 4
+Không đặt được: Sân chỉ nhận tối đa 10 người
+  xong yêu cầu 12
+Không đặt được: Số người phải là số nguyên
+  xong yêu cầu 2.5</pre></div>
+          <div class="row ann" data-k="k7" data-r="s9"><span class="lbl">JSON</span><pre class="js">// 9. Đổi dữ liệu thành chuỗi
+const lich = { mon: &quot;bơi&quot;, buoi: [&quot;thứ 2&quot;, &quot;thứ 5&quot;] };
+const chuoi = JSON.stringify(lich);
+console.log(chuoi);
+console.log(typeof chuoi);
+const docLai = JSON.parse(chuoi);
+console.log(docLai.buoi[1]);</pre><pre class="out">{&quot;mon&quot;:&quot;bơi&quot;,&quot;buoi&quot;:[&quot;thứ 2&quot;,&quot;thứ 5&quot;]}
+string
+thứ 5</pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcHtml">index.html</button>
+          <button id="srcJs" class="on">script.js</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải tệp đang xem</button>
+        </div>
+        <pre id="srcView"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bài tập</h2>
+        <p class="note-ex">Một bài: ý 1 đến 4 làm tại lớp, ý 5 đến 7 làm ở nhà. Đề đầy đủ, dữ liệu và kết quả Console cần đạt có trong tệp phát trên lớp.</p>
+        <div id="exList"></div>
+      </div>
+
+      <div class="foot">Tài liệu Thiết kế Web</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <p class="sec-lbl">Cú pháp và ví dụ</p>
+    <pre id="tipCode"></pre>
+    <p class="sec-lbl">Kết quả trong Console</p>
+    <pre class="con" id="tipOut"></pre>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr','form','fieldset','legend','label'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_HTML = [
+"<!DOCTYPE html>",
+"<html lang=\"vi\">",
+"<head>",
+"  <meta charset=\"UTF-8\">",
+"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+"  <title>Demo chương 5 buổi 2</title>",
+"</head>",
+"<body>",
+"  <h1>Câu lạc bộ thể thao</h1>",
+"  <p>Mở Console để xem kết quả.</p>",
+"  <script src=\"demo-tong-hop.js\"><\/script>",
+"</body>",
+"</html>"
+].join('\n');
+
+var SRC_JS = [
+"// Demo chương 5, buổi 2: câu lạc bộ thể thao",
+"// Mỗi đoạn đánh số ứng với một mục trên trang học liệu.",
+"",
+"const phutTap = [45, 60, 0, 30, 90, 0, 75];",
+"const lichTap = [\"bơi\", \"chạy\", \"bơi\", \"cầu lông\", \"chạy\", \"bơi\"];",
+"",
+"// 1. Lặp khi chưa biết trước số lần",
+"let tongPhut = 0;",
+"let soNgay = 0;",
+"while (tongPhut < 150 && soNgay < phutTap.length) {",
+"  tongPhut = tongPhut + phutTap[soNgay];",
+"  soNgay++;",
+"}",
+"console.log(soNgay + \" ngày, \" + tongPhut + \" phút\");",
+"",
+"// 2. for...of và for...in",
+"let soNgayNghi = 0;",
+"for (const phut of phutTap) {",
+"  if (phut === 0) {",
+"    soNgayNghi++;",
+"  }",
+"}",
+"console.log(\"Số ngày nghỉ: \" + soNgayNghi);",
+"",
+"const diemRenLuyen = { Hà: 8, Minh: 6, Quân: 9 };",
+"for (const ten in diemRenLuyen) {",
+"  console.log(ten + \" được \" + diemRenLuyen[ten] + \" điểm\");",
+"}",
+"",
+"// 3. Đối tượng làm bảng đếm",
+"const soBuoi = {};",
+"for (const mon of lichTap) {",
+"  if (soBuoi[mon] === undefined) {",
+"    soBuoi[mon] = 0;",
+"  }",
+"  soBuoi[mon] = soBuoi[mon] + 1;",
+"}",
+"for (const mon in soBuoi) {",
+"  console.log(mon + \": \" + soBuoi[mon] + \" buổi\");",
+"}",
+"console.log(Object.keys(soBuoi).length + \" môn khác nhau\");",
+"",
+"// 4. Xử lý chuỗi",
+"const tenNhap = \"  Nguyễn THU Hà  \";",
+"const tenChuan = tenNhap.trim().toLowerCase();",
+"console.log(\"[\" + tenChuan + \"]\");",
+"console.log(tenChuan.includes(\"thu\"));",
+"",
+"const maThe = \"CLB0123\";",
+"let soChuSo = 0;",
+"for (let i = 0; i < maThe.length; i++) {",
+"  if (maThe[i] >= \"0\" && maThe[i] <= \"9\") {",
+"    soChuSo++;",
+"  }",
+"}",
+"console.log(maThe + \" có \" + soChuSo + \" chữ số\");",
+"",
+"// 5. Sắp xếp mà giữ mảng gốc",
+"const thanhTich = [12.5, 11.8, 13.1, 12.0];",
+"const xepHang = thanhTich.slice();",
+"xepHang.sort(function (a, b) {",
+"  return a - b;",
+"});",
+"console.log(\"Xếp hạng: \" + xepHang.join(\" < \"));",
+"console.log(\"Mảng gốc: \" + thanhTich.join(\", \"));",
+"",
+"// 6. Tìm vị trí và xoá",
+"const doiBong = [\"Hà\", \"Minh\", \"Quân\", \"Lan\"];",
+"console.log(doiBong.indexOf(\"Quân\"));",
+"console.log(doiBong.indexOf(\"Tùng\"));",
+"const viTri = doiBong.findIndex(function (ten) {",
+"  return ten.length > 3;",
+"});",
+"console.log(\"Vị trí tên dài đầu tiên: \" + viTri);",
+"doiBong.splice(1, 1);",
+"console.log(doiBong.join(\", \"));",
+"",
+"// 7. Hàm trả về đối tượng",
+"function thongKePhut(mang) {",
+"  let nhieuNhat = mang[0];",
+"  let tong = 0;",
+"  for (const p of mang) {",
+"    tong = tong + p;",
+"    if (p > nhieuNhat) {",
+"      nhieuNhat = p;",
+"    }",
+"  }",
+"  return { tong: tong, nhieuNhat: nhieuNhat };",
+"}",
+"const kq = thongKePhut(phutTap);",
+"console.log(kq.tong + \" phút, nhiều nhất \" + kq.nhieuNhat);",
+"",
+"// 8. Báo lỗi và bắt lỗi",
+"function datSan(soNguoi) {",
+"  if (!Number.isInteger(soNguoi)) {",
+"    throw new Error(\"Số người phải là số nguyên\");",
+"  }",
+"  if (soNguoi > 10) {",
+"    throw new Error(\"Sân chỉ nhận tối đa 10 người\");",
+"  }",
+"  return \"Đã đặt sân cho \" + soNguoi + \" người\";",
+"}",
+"const cacLanDat = [4, 12, 2.5];",
+"for (const n of cacLanDat) {",
+"  try {",
+"    console.log(datSan(n));",
+"  } catch (loi) {",
+"    console.log(\"Không đặt được: \" + loi.message);",
+"  } finally {",
+"    console.log(\"  xong yêu cầu \" + n);",
+"  }",
+"}",
+"",
+"// 9. Đổi dữ liệu thành chuỗi",
+"const lich = { mon: \"bơi\", buoi: [\"thứ 2\", \"thứ 5\"] };",
+"const chuoi = JSON.stringify(lich);",
+"console.log(chuoi);",
+"console.log(typeof chuoi);",
+"const docLai = JSON.parse(chuoi);",
+"console.log(docLai.buoi[1]);"
+].join('\n');
+
+var RULES = {
+  s1: {sel:"while", kind:"Mục 5.8", def:"Lặp chừng nào điều kiện trong ngoặc còn đúng. Dùng khi chưa biết trước phải lặp bao nhiêu lần, ví dụ cộng dồn đến khi đủ một mức.", code:"let soTien = 0;\nlet thang = 0;\nwhile (soTien < 1000000) {\n  soTien = soTien + 300000;\n  thang++;\n}\nconsole.log(\"Sau \" + thang + \" tháng có \" + soTien);", out:"Sau 4 tháng có 1200000", note:"Trong thân vòng lặp phải có lệnh làm điều kiện tiến dần tới sai (ở đây là cộng tiền), thiếu thì vòng lặp chạy mãi và trang bị treo. Duyệt mảng bằng while thì tự khai báo biến chỉ số trước vòng lặp và tự tăng nó ở cuối thân; thêm điều kiện chỉ số < mang.length để không đọc lố khi mảng hết trước."},
+  s2: {sel:"for...of và for...in", kind:"Mục 5.8", def:"for...of lấy lần lượt từng giá trị của mảng, không cần chỉ số. for...in lấy lần lượt từng tên thuộc tính (khoá) của đối tượng.", code:"const mau = [\"đỏ\", \"xanh\"];\nfor (const m of mau) {\n  console.log(m);\n}\n\nconst gia = { ca: 25000, tra: 15000 };\nfor (const khoa in gia) {\n  console.log(khoa + \" = \" + gia[khoa]);\n}", out:"đỏ\nxanh\nca = 25000\ntra = 15000", note:"Cần số thứ tự thì dùng for thường. for...in đi qua các khoá theo thứ tự chúng được thêm vào đối tượng, và cho tên khoá, muốn lấy giá trị phải viết gia[khoa]; viết gia.khoa là đi tìm một thuộc tính tên đúng là \"khoa\", ra undefined."},
+  s3: {sel:"obj[khoa]", kind:"Mục 5.10", def:"Truy cập thuộc tính bằng ngoặc vuông khi tên thuộc tính nằm trong một biến. Kết hợp với vòng lặp để đếm số lần xuất hiện của từng giá trị.", code:"const phieu = [\"A\", \"B\", \"A\", \"A\"];\nconst dem = {};\nfor (const p of phieu) {\n  if (dem[p] === undefined) {\n    dem[p] = 0;\n  }\n  dem[p] = dem[p] + 1;\n}\nconsole.log(\"A: \" + dem[\"A\"] + \", B: \" + dem.B);\nconsole.log(Object.keys(dem).length);", out:"A: 3, B: 1\n2", note:"Thuộc tính chưa có thì đọc ra undefined, nên phải gán 0 trước khi cộng; cộng thẳng undefined + 1 ra NaN. Object.keys(obj) trả về mảng các khoá, .length của mảng đó là số khoá. Đối tượng rỗng {} có Object.keys(obj).length bằng 0."},
+  s4: {sel:"trim, toLowerCase, includes", kind:"Mục 5.3", def:"trim bỏ khoảng trắng ở hai đầu, toLowerCase đổi thành chữ thường, includes cho biết chuỗi có chứa một đoạn con hay không. Mỗi ký tự đọc được bằng str[i].", code:"const nhap = \"  Hà NỘI \";\nconst chuan = nhap.trim().toLowerCase();\nconsole.log(\"[\" + chuan + \"]\");\nconsole.log(chuan.includes(\"nội\"));\nconsole.log(chuan[0], chuan.length);\nconsole.log(\"7\" >= \"0\" && \"7\" <= \"9\");\n\nconst dc = \"ha@neu.edu\";\nconst viTriA = dc.indexOf(\"@\");\nconsole.log(viTriA, dc.indexOf(\".\", viTriA));", out:"[hà nội]\ntrue\nh 6\ntrue\n2 6", note:"Các phương thức chuỗi không sửa chuỗi gốc mà trả về chuỗi mới, nên phải gán kết quả vào biến. So sánh ký tự \"0\" đến \"9\" theo thứ tự trong bảng mã, nên kiểm được một ký tự có phải chữ số hay không. Muốn tìm không phân biệt hoa thường thì đổi cả hai vế về chữ thường rồi mới includes. indexOf(\".\", viTri) tìm từ vị trí viTri trở đi, không thấy thì trả về -1."},
+  s5: {sel:"slice, sort, join", kind:"Mục 5.6", def:"slice tạo bản sao của mảng. sort sắp xếp ngay trên mảng, nhận một hàm so sánh hai phần tử. join ghép các phần tử thành một chuỗi.", code:"const so = [10, 9, 100];\nconsole.log(so.slice().sort().join(\", \"));\n\nconst tang = so.slice();\ntang.sort(function (a, b) {\n  return a - b;\n});\nconsole.log(tang.join(\", \"));\nconsole.log(so.join(\", \"));", out:"10, 100, 9\n9, 10, 100\n10, 9, 100", note:"sort không có hàm so sánh thì so như chuỗi, nên 100 đứng trước 9. Hàm so sánh trả về số âm thì a đứng trước, số dương thì b đứng trước: a - b cho tăng dần, b - a cho giảm dần. Mảng đối tượng thì so một thuộc tính: return a.gia - b.gia. sort làm đổi mảng gốc, muốn giữ mảng gốc thì slice trước rồi sort bản sao."},
+  s6: {sel:"indexOf, findIndex, splice", kind:"Mục 5.6", def:"indexOf trả về vị trí của một giá trị, không có thì trả về -1. findIndex trả về vị trí phần tử đầu tiên thoả một hàm điều kiện. splice(viTri, soLuong) xoá phần tử ngay trên mảng.", code:"const ds = [{ ma: \"A1\" }, { ma: \"B2\" }, { ma: \"C3\" }];\nconst i = ds.findIndex(function (x) {\n  return x.ma === \"B2\";\n});\nconsole.log(i);\nds.splice(i, 1);\nconsole.log(ds.length);\nconsole.log([\"x\", \"y\"].indexOf(\"z\"));\nconsole.log([\"bơi\", \"chạy\"].includes(\"chạy\"));", out:"1\n2\n-1\ntrue", note:"Mảng đối tượng thì indexOf không tìm theo thuộc tính được, phải dùng findIndex. Luôn kiểm tra kết quả -1 trước khi dùng: splice(-1, 1) xoá nhầm phần tử cuối. Mảng cũng có includes giống chuỗi: cho true nếu mảng có giá trị đó."},
+  s7: {sel:"return { }", kind:"Mục 5.5", def:"Một hàm trả về được nhiều kết quả cùng lúc bằng cách gói chúng vào một đối tượng. Hàm chỉ tính và trả về, việc in để cho chỗ gọi hàm.", code:"function chiaDeu(tong, soNguoi) {\n  return {\n    moiNguoi: Math.floor(tong / soNguoi),\n    conDu: tong % soNguoi\n  };\n}\nconst kq = chiaDeu(100000, 3);\nconsole.log(kq.moiNguoi, kq.conDu);", out:"33333 1", note:"Hàm có console.log bên trong thì in ra mỗi lần gọi, không dùng lại được ở chỗ không muốn in, ví dụ khi chương 6 cần đưa kết quả lên trang. Hàm cũng có thể nhận mảng và sửa phần tử bên trong mảng đó: chỗ gọi hàm thấy ngay thay đổi."},
+  s8: {sel:"throw và try ... catch", kind:"Mục 5.9", def:"throw new Error(\"...\") tự báo một lỗi khi dữ liệu không hợp lệ, hàm dừng ngay tại đó. Chỗ gọi bắt lỗi bằng try...catch, đọc thông báo qua loi.message. finally luôn chạy dù có lỗi hay không.", code:"function chia(a, b) {\n  if (b === 0) {\n    throw new Error(\"Không chia được cho 0\");\n  }\n  return a / b;\n}\ntry {\n  console.log(chia(6, 3));\n  console.log(chia(1, 0));\n  console.log(\"Dòng này không chạy\");\n} catch (loi) {\n  console.log(\"Lỗi: \" + loi.message);\n} finally {\n  console.log(\"Xong\");\n}\nconsole.log(Number.isInteger(3), Number.isInteger(3.5));", out:"2\nLỗi: Không chia được cho 0\nXong\ntrue false", note:"Khi một lệnh trong try ném lỗi, các lệnh còn lại trong try bị bỏ qua. Muốn thử nhiều lần độc lập thì đặt try...catch bên trong vòng lặp, mỗi lần một khối. Number.isInteger kiểm một giá trị có phải số nguyên không; chuỗi \"5\" cho false."},
+  s9: {sel:"JSON", kind:"Mục 6.7 (xem trước)", def:"JSON là cách viết dữ liệu thành chuỗi để lưu hoặc gửi đi. JSON.stringify đổi mảng, đối tượng thành chuỗi; JSON.parse đọc chuỗi đó thành mảng, đối tượng như cũ.", code:"const sv = { ten: \"An\", diem: [8, 9] };\nconst chuoi = JSON.stringify(sv);\nconsole.log(chuoi);\nconst lai = JSON.parse(chuoi);\nconsole.log(lai.diem[1]);", out:"{\"ten\":\"An\",\"diem\":[8,9]}\n9", note:"Trong chuỗi JSON tên thuộc tính và chuỗi bắt buộc dùng nháy kép, không có dấu phẩy thừa ở cuối. Chương 6 dùng JSON.parse để đọc dữ liệu cho trang web."}
+};
+
+var EX = [
+ {
+  "no": "Bài 3",
+  "topic": "Tổng hợp chương 5",
+  "title": "Quản lý thư viện trong Console",
+  "goal": "Một bộ tệp mới <code>thu-vien/index.html</code> và <code>script.js</code>. <code>script.js</code> chia phần Hàm (chỉ <code>return</code> hoặc <code>throw</code>) và phần Thử (gọi hàm, in kết quả). Dữ liệu 8 sách, dữ liệu thử và kết quả Console cần đạt có trong tệp đề. Ý 1 đến 4 làm tại lớp, ý 5 đến 7 làm ở nhà.",
+  "reqs": [
+   "<b>Duyệt mảng:</b> in danh sách theo mẫu <code>1. [S01] Dế Mèn phiêu lưu ký - Tô Hoài (1941)</code> bằng <code>for</code>; tính tổng số cuốn đang có bằng <code>while</code>; in tên sách đã hết bằng <code>for...of</code>.",
+   "<b>Thống kê thể loại:</b> hàm <code>demTheLoai(mang)</code> trả về đối tượng đếm, dùng hai vòng lặp lồng nhau. In từng dòng bằng <code>for...in</code>, rồi in thể loại nhiều sách nhất.",
+   "<b>Tìm và lọc:</b> <code>timSach(mang, tuKhoa)</code> bỏ khoảng trắng thừa, không phân biệt hoa thường, tìm trong tên và tác giả; <code>locTheoTheLoai(mang, theLoai)</code>, chuỗi rỗng nghĩa là không lọc. Hai hàm trả về mảng mới, gọi lồng nhau được.",
+   "<b>Sắp xếp:</b> <code>sapXepTheoNam(mang, tangDan)</code> trả về mảng mới; mảng gốc không đổi.",
+   "<b>Mượn sách:</b> <code>muonSach(mang, phieuMuon, ma, hoTen, soNgay)</code> ném ba loại lỗi theo đúng thứ tự trong đề; hợp lệ thì giảm số lượng, lập phiếu <code>{ maPhieu, ma, ten, hoTen, soNgay }</code> và trả về phiếu. Thử bảy lần, mỗi lần một <code>try...catch</code>.",
+   "<b>Trả sách và tính phí:</b> <code>traSach(mang, phieuMuon, maPhieu, soNgayThucTe)</code> tăng lại số lượng, xoá phiếu bằng <code>splice</code>, trả về phí 2000 đồng mỗi ngày trễ, tối đa 50000. Phiếu không có thì ném lỗi.",
+   "<b>Kiểm tra người mượn:</b> <code>kiemTraNguoiMuon(nguoi)</code> trả về đối tượng lỗi theo từng trường (họ tên, mã sinh viên 8 chữ số, email); hợp lệ thì trả về <code>{}</code>."
+  ]
+ }
+];
+
+var HINT = {
+  "Bài 3": {html:"<!DOCTYPE html>\n<html lang=\"vi\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>___</title>\n</head>\n<body>\n  <h1>___</h1>\n  <p>Mở Console để xem kết quả.</p>\n  <script src=\"___\"><\/script>\n</body>\n</html>", code:"// ========== PHAN HAM: bay ham, chi return hoac throw ==========\nlet soPhieuDaLap = 0;\n\nfunction demTheLoai(mang) {\n  const dem = {};\n  // ...\n  return dem;\n}\n\nfunction timSach(mang, tuKhoa) {\n  const tk = ___;           // bo khoang trang, doi chu thuong\n  const ketQua = [];\n  // ...\n  return ketQua;\n}\n\nfunction muonSach(mang, phieuMuon, ma, hoTen, soNgay) {\n  // kiem lan luot ba dieu kien, sai thi throw new Error(___)\n  // hop le: giam soLuong, lap phieu, push, return phieu\n}\n\n// ========== PHAN THU: goi ham, in ket qua ==========\nconsole.log(\"Bài 3 - \" + \"___\");\n// chep khoi du lieu trong de vao day\n\nconsole.log(\"--- Ý 1 ---\");\nlet k = 0;\nwhile (___) {\n  ___;\n  k++;\n}", warn:"Không đặt <code>console.log</code> trong các hàm: hàm in thay vì trả về thì chương 6 không dùng lại được. Thứ tự kiểm tra trong <code>muonSach</code> quyết định thông báo lỗi nào hiện ra: kiểm mã sách, rồi số ngày, rồi số lượng. Đổi thứ tự là lệch kết quả mẫu. <code>sort</code> sắp xếp ngay trên mảng gốc; quên <code>slice</code> trước thì dòng <code>Mảng gốc sau</code> khác dòng <code>Mảng gốc trước</code>. Đọc thuộc tính bằng biến thì viết <code>dem[tl]</code>, không viết <code>dem.tl</code>. <code>3.5</code> và <code>15</code> phải bị từ chối: dùng <code>Number.isInteger</code> cùng điều kiện khoảng. Hàm làm thay đổi <code>soLuong</code>, nên chạy lại cả tệp thì dữ liệu mới bắt đầu từ đầu; đừng gọi thử thêm ở giữa làm lệch kết quả các ý sau."}
+};
+
+var CHECK = [["for, while, for...of", "Ba cách duyệt mảng, mỗi cách một việc", "Ý 1"], ["push, join", "Gom kết quả vào mảng, in nối bằng dấu phẩy", "Ý 3, ý 4, ý 5"], ["for...in, obj[khoa]", "Đếm và in bảng thống kê", "Ý 2, ý 7"], ["vòng lặp lồng nhau", "Duyệt sách rồi duyệt thể loại của sách", "Ý 2"], ["trim, toLowerCase, includes", "Tìm không phân biệt hoa thường; lọc theo thể loại", "Ý 3"], ["slice, sort, hàm so sánh", "Sắp xếp mà giữ nguyên mảng gốc", "Ý 4"], ["findIndex, splice", "Tìm vị trí và xoá phiếu", "Ý 5, ý 6"], ["throw, try...catch", "Báo lỗi và bắt lỗi", "Ý 5, ý 6"], ["Number.isInteger", "Từ chối số ngày không nguyên", "Ý 5"], ["str[i], so sánh ký tự, indexOf(x, viTri)", "Kiểm mã sinh viên toàn chữ số, kiểm email", "Ý 7"], ["return { }, Object.keys", "Trả về đối tượng lỗi, đếm số lỗi", "Ý 7"], ["<i>biết để tra</i>", "finally; JSON.stringify, JSON.parse (dùng ở chương 6)", "Tra cứu"]];
+
+var TIPS = [
+ "Console không có dòng chữ đỏ nào, và kết quả khớp từng dòng với khối Kết quả Console cần đạt trong đề.",
+ "Dòng đầu tiên trong Console là Bài 3 kèm họ tên của mình.",
+ "Trong bảy hàm của phần Hàm không còn console.log.",
+ "Dòng Mảng gốc sau giống hệt dòng Mảng gốc trước.",
+ "Lần mượn thứ 5 báo sách đã hết, vì lần 2 vừa mượn cuốn cuối cùng.",
+ "Trong tệp không còn từ khoá var.",
+ "Vào validator.w3.org kiểm tra tệp HTML."
+];
+
+var FILES = [{"n": "demo-tong-hop.html", "t": "text/html;charset=utf-8", "u": "Trang mẫu, chỉ có thẻ script nối tệp JavaScript", "kb": "0,3 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+RGVtbyBjaMawxqFuZyA1IGJ14buVaSAyPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICA8aDE+Q8OidSBs4bqhYyBi4buZIHRo4buDIHRoYW88L2gxPgogIDxwPk3hu58gQ29uc29sZSDEkeG7gyB4ZW0ga+G6v3QgcXXhuqMuPC9wPgogIDxzY3JpcHQgc3JjPSJkZW1vLXRvbmctaG9wLmpzIj48L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+Cg=="}, {"n": "demo-tong-hop.js", "t": "text/javascript;charset=utf-8", "u": "Chín đoạn mã đã chạy trên lớp, mỗi đoạn một dòng chú thích", "kb": "3,3 KB", "b": "Ly8gRGVtbyBjaMawxqFuZyA1LCBideG7lWkgMjogY8OidSBs4bqhYyBi4buZIHRo4buDIHRoYW8KLy8gTeG7l2kgxJFv4bqhbiDEkcOhbmggc+G7kSDhu6luZyB24bubaSBt4buZdCBt4bulYyB0csOqbiB0cmFuZyBo4buNYyBsaeG7h3UuCgpjb25zdCBwaHV0VGFwID0gWzQ1LCA2MCwgMCwgMzAsIDkwLCAwLCA3NV07CmNvbnN0IGxpY2hUYXAgPSBbImLGoWkiLCAiY2jhuqF5IiwgImLGoWkiLCAiY+G6p3UgbMO0bmciLCAiY2jhuqF5IiwgImLGoWkiXTsKCi8vIDEuIEzhurdwIGtoaSBjaMawYSBiaeG6v3QgdHLGsOG7m2Mgc+G7kSBs4bqnbgpsZXQgdG9uZ1BodXQgPSAwOwpsZXQgc29OZ2F5ID0gMDsKd2hpbGUgKHRvbmdQaHV0IDwgMTUwICYmIHNvTmdheSA8IHBodXRUYXAubGVuZ3RoKSB7CiAgdG9uZ1BodXQgPSB0b25nUGh1dCArIHBodXRUYXBbc29OZ2F5XTsKICBzb05nYXkrKzsKfQpjb25zb2xlLmxvZyhzb05nYXkgKyAiIG5nw6B5LCAiICsgdG9uZ1BodXQgKyAiIHBow7p0Iik7CgovLyAyLiBmb3IuLi5vZiB2w6AgZm9yLi4uaW4KbGV0IHNvTmdheU5naGkgPSAwOwpmb3IgKGNvbnN0IHBodXQgb2YgcGh1dFRhcCkgewogIGlmIChwaHV0ID09PSAwKSB7CiAgICBzb05nYXlOZ2hpKys7CiAgfQp9CmNvbnNvbGUubG9nKCJT4buRIG5nw6B5IG5naOG7iTogIiArIHNvTmdheU5naGkpOwoKY29uc3QgZGllbVJlbkx1eWVuID0geyBIw6A6IDgsIE1pbmg6IDYsIFF1w6JuOiA5IH07CmZvciAoY29uc3QgdGVuIGluIGRpZW1SZW5MdXllbikgewogIGNvbnNvbGUubG9nKHRlbiArICIgxJHGsOG7o2MgIiArIGRpZW1SZW5MdXllblt0ZW5dICsgIiDEkWnhu4NtIik7Cn0KCi8vIDMuIMSQ4buRaSB0xrDhu6NuZyBsw6BtIGLhuqNuZyDEkeG6v20KY29uc3Qgc29CdW9pID0ge307CmZvciAoY29uc3QgbW9uIG9mIGxpY2hUYXApIHsKICBpZiAoc29CdW9pW21vbl0gPT09IHVuZGVmaW5lZCkgewogICAgc29CdW9pW21vbl0gPSAwOwogIH0KICBzb0J1b2lbbW9uXSA9IHNvQnVvaVttb25dICsgMTsKfQpmb3IgKGNvbnN0IG1vbiBpbiBzb0J1b2kpIHsKICBjb25zb2xlLmxvZyhtb24gKyAiOiAiICsgc29CdW9pW21vbl0gKyAiIGJ14buVaSIpOwp9CmNvbnNvbGUubG9nKE9iamVjdC5rZXlzKHNvQnVvaSkubGVuZ3RoICsgIiBtw7RuIGtow6FjIG5oYXUiKTsKCi8vIDQuIFjhu60gbMO9IGNodeG7l2kKY29uc3QgdGVuTmhhcCA9ICIgIE5ndXnhu4VuIFRIVSBIw6AgICI7CmNvbnN0IHRlbkNodWFuID0gdGVuTmhhcC50cmltKCkudG9Mb3dlckNhc2UoKTsKY29uc29sZS5sb2coIlsiICsgdGVuQ2h1YW4gKyAiXSIpOwpjb25zb2xlLmxvZyh0ZW5DaHVhbi5pbmNsdWRlcygidGh1IikpOwoKY29uc3QgbWFUaGUgPSAiQ0xCMDEyMyI7CmxldCBzb0NodVNvID0gMDsKZm9yIChsZXQgaSA9IDA7IGkgPCBtYVRoZS5sZW5ndGg7IGkrKykgewogIGlmIChtYVRoZVtpXSA+PSAiMCIgJiYgbWFUaGVbaV0gPD0gIjkiKSB7CiAgICBzb0NodVNvKys7CiAgfQp9CmNvbnNvbGUubG9nKG1hVGhlICsgIiBjw7MgIiArIHNvQ2h1U28gKyAiIGNo4buvIHPhu5EiKTsKCi8vIDUuIFPhuq9wIHjhur9wIG3DoCBnaeG7ryBt4bqjbmcgZ+G7kWMKY29uc3QgdGhhbmhUaWNoID0gWzEyLjUsIDExLjgsIDEzLjEsIDEyLjBdOwpjb25zdCB4ZXBIYW5nID0gdGhhbmhUaWNoLnNsaWNlKCk7CnhlcEhhbmcuc29ydChmdW5jdGlvbiAoYSwgYikgewogIHJldHVybiBhIC0gYjsKfSk7CmNvbnNvbGUubG9nKCJY4bq/cCBo4bqhbmc6ICIgKyB4ZXBIYW5nLmpvaW4oIiA8ICIpKTsKY29uc29sZS5sb2coIk3huqNuZyBn4buRYzogIiArIHRoYW5oVGljaC5qb2luKCIsICIpKTsKCi8vIDYuIFTDrG0gduG7iyB0csOtIHbDoCB4b8OhCmNvbnN0IGRvaUJvbmcgPSBbIkjDoCIsICJNaW5oIiwgIlF1w6JuIiwgIkxhbiJdOwpjb25zb2xlLmxvZyhkb2lCb25nLmluZGV4T2YoIlF1w6JuIikpOwpjb25zb2xlLmxvZyhkb2lCb25nLmluZGV4T2YoIlTDuW5nIikpOwpjb25zdCB2aVRyaSA9IGRvaUJvbmcuZmluZEluZGV4KGZ1bmN0aW9uICh0ZW4pIHsKICByZXR1cm4gdGVuLmxlbmd0aCA+IDM7Cn0pOwpjb25zb2xlLmxvZygiVuG7iyB0csOtIHTDqm4gZMOgaSDEkeG6p3UgdGnDqm46ICIgKyB2aVRyaSk7CmRvaUJvbmcuc3BsaWNlKDEsIDEpOwpjb25zb2xlLmxvZyhkb2lCb25nLmpvaW4oIiwgIikpOwoKLy8gNy4gSMOgbSB0cuG6oyB24buBIMSR4buRaSB0xrDhu6NuZwpmdW5jdGlvbiB0aG9uZ0tlUGh1dChtYW5nKSB7CiAgbGV0IG5oaWV1TmhhdCA9IG1hbmdbMF07CiAgbGV0IHRvbmcgPSAwOwogIGZvciAoY29uc3QgcCBvZiBtYW5nKSB7CiAgICB0b25nID0gdG9uZyArIHA7CiAgICBpZiAocCA+IG5oaWV1TmhhdCkgewogICAgICBuaGlldU5oYXQgPSBwOwogICAgfQogIH0KICByZXR1cm4geyB0b25nOiB0b25nLCBuaGlldU5oYXQ6IG5oaWV1TmhhdCB9Owp9CmNvbnN0IGtxID0gdGhvbmdLZVBodXQocGh1dFRhcCk7CmNvbnNvbGUubG9nKGtxLnRvbmcgKyAiIHBow7p0LCBuaGnhu4F1IG5o4bqldCAiICsga3EubmhpZXVOaGF0KTsKCi8vIDguIELDoW8gbOG7l2kgdsOgIGLhuq90IGzhu5dpCmZ1bmN0aW9uIGRhdFNhbihzb05ndW9pKSB7CiAgaWYgKCFOdW1iZXIuaXNJbnRlZ2VyKHNvTmd1b2kpKSB7CiAgICB0aHJvdyBuZXcgRXJyb3IoIlPhu5EgbmfGsOG7nWkgcGjhuqNpIGzDoCBz4buRIG5ndXnDqm4iKTsKICB9CiAgaWYgKHNvTmd1b2kgPiAxMCkgewogICAgdGhyb3cgbmV3IEVycm9yKCJTw6JuIGNo4buJIG5o4bqtbiB04buRaSDEkWEgMTAgbmfGsOG7nWkiKTsKICB9CiAgcmV0dXJuICLEkMOjIMSR4bq3dCBzw6JuIGNobyAiICsgc29OZ3VvaSArICIgbmfGsOG7nWkiOwp9CmNvbnN0IGNhY0xhbkRhdCA9IFs0LCAxMiwgMi41XTsKZm9yIChjb25zdCBuIG9mIGNhY0xhbkRhdCkgewogIHRyeSB7CiAgICBjb25zb2xlLmxvZyhkYXRTYW4obikpOwogIH0gY2F0Y2ggKGxvaSkgewogICAgY29uc29sZS5sb2coIktow7RuZyDEkeG6t3QgxJHGsOG7o2M6ICIgKyBsb2kubWVzc2FnZSk7CiAgfSBmaW5hbGx5IHsKICAgIGNvbnNvbGUubG9nKCIgIHhvbmcgecOqdSBj4bqndSAiICsgbik7CiAgfQp9CgovLyA5LiDEkOG7lWkgZOG7ryBsaeG7h3UgdGjDoG5oIGNodeG7l2kKY29uc3QgbGljaCA9IHsgbW9uOiAiYsahaSIsIGJ1b2k6IFsidGjhu6kgMiIsICJ0aOG7qSA1Il0gfTsKY29uc3QgY2h1b2kgPSBKU09OLnN0cmluZ2lmeShsaWNoKTsKY29uc29sZS5sb2coY2h1b2kpOwpjb25zb2xlLmxvZyh0eXBlb2YgY2h1b2kpOwpjb25zdCBkb2NMYWkgPSBKU09OLnBhcnNlKGNodW9pKTsKY29uc29sZS5sb2coZG9jTGFpLmJ1b2lbMV0pOwo="}];
+
+/* ---------- tô màu mã CSS ---------- */
+/* ---------- tô màu mã JavaScript ---------- */
+var KW = /\b(const|let|var|function|return|if|else|for|while|do|break|continue|true|false|null|undefined|new|typeof|try|catch|finally|throw|switch|case|default|of|in|class)\b/g;
+function hljs(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var keep = [];
+  function mark(cls){ return function(m){ keep.push('<span class="' + cls + '">' + m + '</span>'); return '\u0001' + String.fromCharCode(0xE000 + keep.length - 1) + '\u0001'; }; }
+  s = s.replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`/g, function(m){
+    return mark(m.charAt(0) === '/' ? 'c' : 's')(m);
+  });
+  s = s.replace(KW, '<span class="t2">$1</span>');
+  s = s.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="a">$1</span>');
+  s = s.replace(/\b([a-zA-Z_$][\w$]*)(?=\()/g, '<span class="t">$1</span>');
+  s = s.replace(/\u0001([-])\u0001/g, function(m, c){ return keep[c.charCodeAt(0) - 0xE000]; });
+  return s;
+}
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- mã nguồn: hai tệp --- */
+  var view = document.getElementById('srcView');
+  var bH = document.getElementById('srcHtml'), bC = document.getElementById('srcJs');
+  var cur = 'html';
+  function showSrc(which){
+    cur = which;
+    view.innerHTML = which === 'js' ? hljs(SRC_JS) : hl(SRC_HTML);
+    bC.classList.toggle('on', which === 'js');
+    bH.classList.toggle('on', which === 'html');
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bH.addEventListener('click', function(){ showSrc('html'); });
+  bC.addEventListener('click', function(){ showSrc('js'); });
+  showSrc('js');
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var isJs = cur === 'js';
+    var blob = new Blob([isJs ? SRC_JS : SRC_HTML],
+                        {type: (isJs ? 'text/javascript' : 'text/html') + ';charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = isJs ? 'script.js' : 'index.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+
+  function fill(key){
+    var d = RULES[key];
+    if(!d) return false;
+    document.getElementById('tipTag').textContent = d.sel;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = hljs(d.code);
+    document.getElementById('tipNote').textContent = d.note;
+    document.getElementById('tipOut').textContent = d.out;
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-r]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-r');
+    if(pinned && current === el){ hideTip(); return; }
+    current = el;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+
+(function(){
+  var list = document.getElementById('exList');
+  if(!list) return;
+
+  EX.forEach(function(ex){
+    var box = document.createElement('div');
+    box.className = 'ex';
+    var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
+    box.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-no">' + ex.no + '</span>' +
+        '<span class="ex-title">' + ex.title + '</span>' +
+        '<span class="ex-topic">' + ex.topic + '</span>' +
+      '</div>' +
+      '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
+      '<ol class="ex-req">' + reqs + '</ol>' +
+      (HINT[ex.no]
+        ? '<p class="sec-lbl">Gợi ý</p>' +
+          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần câu lệnh nào và đặt ở đâu. Chỗ có dấu <code>___</code> là phần tự điền theo trang của mình.</p>' +
+          (HINT[ex.no].html
+            ? '<p class="note-src"><b>Khung HTML</b></p><pre class="ex-code">' + hl(HINT[ex.no].html) + '</pre>' +
+              '<p class="note-src"><b>Khung JavaScript</b></p>'
+            : '') +
+          '<pre class="ex-code">' + hljs(HINT[ex.no].code) + '</pre>' +
+          '<div class="ex-warn"><b>Lưu ý:</b> ' + HINT[ex.no].warn + '</div>'
+        : '');
+    list.appendChild(box);
+  });
+
+  var frows = FILES.map(function(f){
+    return '<tr>' +
+      '<td class="ck-tag">' + f.n + '</td>' +
+      '<td>' + f.u + '</td>' +
+      '<td class="dl-cell">' + f.kb + '</td>' +
+      '<td class="dl-cell"><a class="dl" download="' + f.n +
+        '" href="data:' + f.t + ';base64,' + f.b + '">Tải</a></td></tr>';
+  }).join('');
+
+  var fb = document.createElement('div');
+  fb.className = 'ex';
+  fb.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Tệp demo</span>' +
+    '<span class="ex-title">Tệp đã chiếu trên lớp</span></div>' +
+    '<p class="ex-goal">Đây là các tệp dùng làm ví dụ trong buổi học, có đầy đủ chú thích giải thích từng khối. Tải về để một bên, đừng nộp lại.</p>' +
+    '<table class="ck"><thead><tr><th>Tệp</th><th>Nội dung</th><th>Cỡ</th><th></th></tr></thead>' +
+    '<tbody>' + frows + '</tbody></table>';
+  list.appendChild(fb);
+
+  var rows = CHECK.map(function(r){
+    return '<tr><td class="ck-tag">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
+  }).join('');
+
+  var ck = document.createElement('div');
+  ck.className = 'ex';
+  ck.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Bảng kiểm</span>' +
+    '<span class="ex-title">Mọi thứ phải dùng trong chương này</span></div>' +
+    '<p class="ex-goal">Làm xong bài, đối chiếu lại bảng này. Thiếu dòng nào là bài chưa đủ yêu cầu.</p>' +
+    '<table class="ck"><thead><tr><th>Câu lệnh hoặc từ khoá</th><th>Dùng để làm gì</th><th>Nằm ở bài</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+  list.appendChild(ck);
+
+  var tipBox = document.createElement('div');
+  tipBox.className = 'ex';
+  tipBox.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Trước khi nộp</span>' +
+    '<span class="ex-title">Tự kiểm tra lại bài</span></div>' +
+    '<ol class="ex-req">' + TIPS.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ol>';
+  list.appendChild(tipBox);
+})();
+
+/* tô màu các đoạn mã trong trình soạn */
+[].forEach.call(document.querySelectorAll('#rows pre.js'), function(p){ p.innerHTML = hljs(p.textContent); });
+</script>
+</body>
+</html>
