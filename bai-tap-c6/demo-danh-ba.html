@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh bạ lớp</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; max-width: 480px; margin: 16px auto; padding: 0 12px; color: #333; }
+    h1 { font-size: 1.4rem; }
+    label { display: block; margin-top: 8px; }
+    input, select, button { font: inherit; padding: 6px; }
+    .bao-loi { display: block; min-height: 1.1em; color: #b3261e; font-size: 0.85rem; }
+    .loi { border: 2px solid #b3261e; }
+    #danhBa li { margin: 6px 0; }
+    .nhom { color: #666; font-size: 0.85rem; }
+    #thongBao { color: #1d6b3a; }
+    pre { background: #f2f2f2; padding: 8px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <h1>Danh bạ lớp</h1>
+
+  <form id="formThem" novalidate>
+    <label for="hoTen">Họ tên</label>
+    <input type="text" id="hoTen" name="hoTen">
+    <span class="bao-loi" id="loiHoTen"></span>
+
+    <label for="soDT">Số điện thoại</label>
+    <input type="text" id="soDT" name="soDT">
+    <span class="bao-loi" id="loiSoDT"></span>
+
+    <label for="nhom">Nhóm</label>
+    <select id="nhom" name="nhom">
+      <option value="">Chọn nhóm</option>
+      <option value="Nhóm 1">Nhóm 1</option>
+      <option value="Nhóm 2">Nhóm 2</option>
+    </select>
+    <span class="bao-loi" id="loiNhom"></span>
+
+    <p><button type="submit">Thêm vào danh bạ</button></p>
+    <p id="thongBao"></p>
+  </form>
+
+  <p>
+    <label for="oLoc">Lọc theo tên</label>
+    <input type="text" id="oLoc">
+  </p>
+  <p id="dem"></p>
+  <ul id="danhBa"></ul>
+
+  <button type="button" id="nutXuat">Xuất JSON</button>
+  <pre id="ketQua"></pre>
+
+  <script src="demo-danh-ba.js"></script>
+</body>
+</html>
