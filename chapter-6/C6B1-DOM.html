@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Học liệu chương 6: chọn và thay đổi phần tử, tạo và xoá nút, xử lý sự kiện, kiểm tra biểu mẫu, JSON trên trang web">
+<title>Chương 6: DOM và sự kiện</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --card:#fff;
+    --blue:#1f6feb; --blue-soft:#e8f1fe;
+    --green:#0f8a5f; --amber:#b0730d; --amber-soft:#fdf3e0;
+    --purple:#7048b6; --purple-soft:#f0eafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  code,.mono{font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace}
+
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--line); padding:9px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  }
+  .topbar h1{font-size:16px; margin:0; font-weight:600}
+  .controls{display:flex; gap:7px; flex-wrap:wrap}
+  .controls button{
+    background:#eef1f4; color:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:5px 12px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .controls button:hover{background:#e3e8ee}
+  .controls button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+
+  .wrap{max-width:1280px; margin:0 auto; padding:22px 24px 40px}
+  .howto{font-size:14px; color:var(--muted); margin:0 0 18px}
+  .layout{display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; position:sticky; top:66px;
+  }
+  .panel h2{font-size:13px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .k-item{
+    border:1px solid var(--line); border-left:4px solid var(--line); border-radius:7px;
+    padding:8px 11px; margin-bottom:7px; cursor:pointer; transition:.15s; background:#fff;
+  }
+  .k-item:hover{border-color:#bcc5cf; background:#fafbfc}
+  .k-item .num{font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.4px}
+  .k-item .name{font-size:14px; font-weight:600; margin:1px 0 2px}
+  .k-item .tags{font-size:12px; color:var(--muted)}
+  .k-item.sel{border-left-color:var(--blue); background:var(--blue-soft); border-color:#b9d4fb}
+  .k-item.sel .num{color:var(--blue)}
+  .legend{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12px; color:var(--muted)}
+  .legend div{margin-bottom:5px; display:flex; align-items:center; gap:7px}
+  .sw{width:20px; height:0; border-top:2px dashed var(--green); display:inline-block}
+  .sw.n{border-top-color:var(--amber); border-top-style:dotted}
+
+  .stage{min-width:0}
+  .browser{background:var(--card); border:1px solid var(--line); border-radius:10px;
+           overflow:hidden; box-shadow:0 2px 14px rgba(16,24,40,.07)}
+  .chrome{background:#eceff2; border-bottom:1px solid var(--line); padding:9px 12px;
+          display:flex; align-items:center; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#cfd6dd;display:block}
+  .tabpill{background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 12px;
+           font-size:12.5px; display:flex; align-items:center; gap:7px; max-width:340px}
+  .fav{width:15px;height:15px;border-radius:3px;overflow:hidden;flex:none}
+  .fav img{width:100%;height:100%;display:block}
+
+  /* Chế độ mặc định: đúng những gì trình duyệt tự hiển thị khi chưa có CSS */
+  .demo.plain{font-family:"Times New Roman",Times,serif; font-size:16px; line-height:normal;
+              color:#000; background:#fff; padding:8px 16px 16px}
+  .demo.plain .d-figure{padding-top:1px}
+  body.show-ann .demo.plain .d-main{padding-top:1px}
+  .demo.plain .d-figure img{width:200px}
+
+  /* Chế độ có CSS: xem trước sau khi học chương sau */
+  .styled{font-size:14.5px}
+  .styled h1{font-size:26px; margin:0 0 4px}
+  .styled h2{font-size:19px; margin:0 0 8px}
+  .styled h3{font-size:16px; margin:0 0 6px}
+  .styled p{margin:0 0 10px}
+  .styled .d-header{background:#0f2a43; color:#fff; padding:24px}
+  .styled .d-header .tagline{color:#9dc2e8; font-size:14px; margin:0}
+  .styled .d-nav{background:#143a5c; padding:11px 24px; display:flex; gap:20px; flex-wrap:wrap}
+  .styled .d-nav a{color:#cfe3f6; text-decoration:none; font-size:14px}
+  .styled .d-body{display:grid; grid-template-columns:1fr 250px; gap:22px; padding:24px}
+  @media(max-width:760px){.styled .d-body{grid-template-columns:1fr}}
+  .styled .d-main{min-width:0}
+  .styled .d-section{margin-bottom:18px}
+  .styled .d-figure{margin:0 0 12px; padding-top:1px}
+  .styled .d-figure img{width:120px; height:120px; border-radius:8px; display:block; background:#eaf2fa}
+  .styled .d-figure figcaption{font-size:12.5px; color:var(--muted); margin-top:5px; font-style:italic}
+  .styled .d-aside{background:#f6f8fa; border-radius:8px; padding:14px; font-size:13.5px}
+  .styled .d-footer{background:#0f2a43; color:#9dc2e8; padding:16px 24px; font-size:13px; text-align:center}
+
+  /* chú thích vùng */
+  .ann{position:relative}
+  body.show-ann .ann{outline:2px dashed var(--green); outline-offset:-2px; border-radius:3px; cursor:pointer}
+  body.show-ann .ann.future{outline-color:var(--amber); outline-style:dotted}
+  .lbl{display:none; position:absolute; top:-2px; left:0; transform:translateY(-100%);
+       background:var(--green); color:#fff; font-size:11px; font-weight:600; padding:2px 7px;
+       border-radius:4px; white-space:nowrap; z-index:5;
+       font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ann.future > .lbl{background:var(--amber)}
+  body.show-ann .ann:not(.inline) > .lbl{display:block}
+  body.show-ann .ann:not(.inline){margin-top:24px}
+  body.show-ann .chrome{padding-top:32px}
+  body.show-ann .chrome .ann{margin-top:0}
+  body.show-ann .page{padding-top:1px}
+  body.show-ann .styled .d-body{padding-top:8px}
+  .ann.inline > .lbl{display:none}
+  .ann.inline.hl > .lbl, .ann.inline.opened > .lbl{display:block}
+  body.show-ann .ann.hov{outline-color:var(--blue); outline-style:solid}
+  .ann.hl, body.show-ann .ann.opened{
+    outline:3px solid var(--blue) !important; outline-offset:-3px;
+    box-shadow:0 0 0 5px rgba(31,111,235,.16);
+  }
+  .ann.hl > .lbl, .ann.opened > .lbl{background:var(--blue) !important; display:block}
+  body.dim .ann:not(.hl){opacity:.32}
+
+  /* thẻ giải thích */
+  #tip{position:fixed; z-index:200; width:380px; max-width:calc(100vw - 24px);
+       background:#fff; border:1px solid #c8d2dd; border-radius:10px;
+       box-shadow:0 12px 34px rgba(16,24,40,.2); display:none; overflow:hidden}
+  #tip.show{display:block}
+  #tip .t-head{background:var(--ink); color:#fff; padding:9px 12px; display:flex; align-items:center; gap:9px}
+  #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; font-weight:700; color:#7ee787}
+  #tip .t-kind{font-size:11px; background:#333a42; padding:2px 7px; border-radius:20px; color:#c9d1d9}
+  #tip .t-close{margin-left:auto; background:none; border:0; color:#9aa5b1; font-size:20px;
+                cursor:pointer; line-height:1; padding:0 4px}
+  #tip .t-close:hover{color:#fff}
+  #tip .t-body{padding:12px; max-height:60vh; overflow:auto}
+  #tip .t-def{font-size:13.5px; margin:0 0 10px}
+  #tip .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:0 0 5px}
+  #tip pre{font-size:12px; padding:10px 11px; border-radius:6px; margin:0 0 10px}
+  #tip .t-out{border:1px solid var(--line); border-radius:6px; margin:0 0 10px; overflow:hidden}
+  #tip iframe{width:100%; border:0; display:block; height:70px}
+  #tip .t-note{background:var(--amber-soft); border-left:3px solid var(--amber);
+               border-radius:0 5px 5px 0; padding:8px 10px; font-size:12.5px; color:#6b4a08; margin:0}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding:18px 20px; margin-top:22px}
+  .card h2{font-size:16px; margin:0 0 12px}
+  .seg{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px}
+  .seg button{background:#eef1f4; border:1px solid var(--line); color:var(--ink);
+              border-radius:6px; padding:6px 13px; font-size:13px; cursor:pointer; font-family:inherit}
+  .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+  .seg .grow{margin-left:auto}
+  pre{background:var(--ink); color:#e6edf3; padding:15px 17px; border-radius:8px;
+      overflow:auto; font-size:12.5px; line-height:1.6; margin:0}
+  #srcView{max-height:640px; transition:max-height .2s}
+  #srcView.mini{max-height:150px}
+  pre .c{color:#7d8590}
+  pre .t{color:#7ee787}
+  pre .t2{color:#79c0ff}
+  pre .a{color:#ffa657}
+  pre .s{color:#a5d6ff}
+  .note-src{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+  .box{background:var(--purple-soft); border:1px solid #ddd0f5; border-radius:8px;
+       padding:13px 15px; margin-top:14px; font-size:13.5px}
+  .box b{color:var(--purple)}
+  .steps{font-size:13.5px}
+  .steps div{margin-bottom:7px}
+  .steps b{display:inline-block; min-width:74px}
+
+  /* bảng và danh sách ở chế độ có CSS */
+  .styled table{border-collapse:collapse; width:100%; font-size:13.5px; margin-bottom:12px}
+  .styled caption{text-align:left; font-weight:600; padding-bottom:6px}
+  .styled th, .styled td{border:1px solid var(--line); padding:6px 9px; text-align:left}
+  .styled thead th{background:#eef3f8}
+  .styled tfoot td{background:#f6f8fa; font-weight:600}
+  .styled ul, .styled ol, .styled dl{margin:0 0 12px; padding-left:22px}
+  .styled dl{padding-left:0}
+  .styled dt{font-weight:600; margin-top:6px}
+  .styled dd{margin:0 0 0 18px}
+  .styled pre{background:#f6f8fa; color:var(--ink); padding:10px 12px; font-size:12.5px}
+  .demo.plain pre{background:transparent; color:#000; padding:0; font-size:14px; overflow:visible}
+
+  /* biểu mẫu */
+  .demo.plain fieldset{margin-bottom:10px}
+  .demo .d-form p{margin:9px 0}
+  .demo .ann[data-tag="radio"], .demo .ann[data-tag="checkbox"],
+  .demo .ann[data-tag="button"]{padding:5px 0 5px 7px}
+  /* chú thích của fieldset dời sang phải để không che mất legend */
+  .demo .ann[data-tag="fieldset"] > .lbl{left:auto; right:0}
+  .styled .d-form{background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:16px}
+  .styled .d-form label{display:inline-block; min-width:132px; font-weight:600; font-size:13.5px}
+  .styled .d-form input[type="text"], .styled .d-form input[type="email"],
+  .styled .d-form input[type="tel"], .styled .d-form input[type="password"],
+  .styled .d-form input[type="url"], .styled .d-form input[type="number"],
+  .styled .d-form input[type="date"], .styled .d-form textarea, .styled .d-form select{
+    border:1px solid #c8d2dd; border-radius:6px; padding:6px 9px; font-size:13.5px;
+    font-family:inherit; background:#fff}
+  .styled .d-form textarea{vertical-align:top; width:100%; max-width:380px}
+  .styled .d-form fieldset{border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:0 0 14px}
+  .styled .d-form legend{font-weight:600; font-size:13.5px; color:var(--blue-deep, #0f3d6e); padding:0 6px}
+  .styled .d-form button{background:var(--blue); color:#fff; border:0; border-radius:7px;
+    padding:8px 16px; font-size:13.5px; font-weight:600; cursor:pointer; margin-right:8px}
+  .styled .d-form button[type="reset"]{background:#e6ecf3; color:var(--ink)}
+
+  /* bài tập */
+  .note-ex{font-size:13.5px; color:var(--muted); margin:0 0 14px}
+  .ex{border:1px solid var(--line); border-radius:9px; padding:14px 16px; margin-bottom:12px}
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:9px; margin-bottom:6px}
+  .ex-no{font-weight:700; color:var(--blue); font-size:14px}
+  .ex-title{font-weight:600; font-size:15px}
+  .ex-topic{font-size:12px; color:var(--muted); border:1px solid var(--line);
+            border-radius:20px; padding:1px 9px}
+  .ex-goal{font-size:14px; margin:0 0 8px}
+  .ex-req{font-size:13.5px; margin:0 0 12px; padding-left:20px}
+  .ex-req li{margin-bottom:4px}
+  .ex-req code, .ex-goal code{background:#f1f4f7; padding:1px 5px; border-radius:4px;
+            font-size:12.5px; color:#a1155a; font-family:"SF Mono",Menlo,Consolas,monospace}
+  .ex .sec-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+         color:var(--muted); margin:12px 0 6px; font-weight:700}
+  .ex-code{max-height:420px}
+  .ex-warn{background:var(--amber-soft); border-left:3px solid var(--amber);
+           border-radius:0 5px 5px 0; padding:9px 11px; font-size:13px;
+           color:#6b4a08; margin:10px 0 0}
+  .ex-warn code{background:#fff; color:#8a4b06; padding:1px 5px; border-radius:4px;
+           font-family:"SF Mono",Menlo,Consolas,monospace; font-size:12px}
+  pre.tree{background:#f7f9fb; color:var(--ink); border:1px solid var(--line);
+           padding:11px 13px; font-size:12.5px; line-height:1.55; max-height:none}
+  td.dl-cell{white-space:nowrap; text-align:right}
+  a.dl{display:inline-block; text-decoration:none; background:var(--blue-soft);
+       border:1px solid #bcd6fb; color:var(--blue); font-size:12px; font-weight:600;
+       padding:3px 11px; border-radius:20px}
+  a.dl:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+  .dl-all{margin:10px 0 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .dl-all .note{font-size:12.5px; color:var(--muted)}
+  .ex-out{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff}
+  table.ck{width:100%; border-collapse:collapse; font-size:13px; margin-top:4px}
+  table.ck th{background:#f7f9fb; text-align:left; padding:7px 9px; border-bottom:1px solid var(--line);
+              font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted)}
+  table.ck td{padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.ck td.ck-tag{font-family:"SF Mono",Menlo,Consolas,monospace; color:#a1155a; overflow-wrap:anywhere}
+  table.ck tr:last-child td{border-bottom:0}
+  .ex-out iframe{width:100%; border:0; display:block; height:200px}
+  .foot{text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 0}
+
+/* ---------- trình soạn mã: mỗi đoạn một hàng, bên phải là Console ---------- */
+.editor .chrome{gap:8px}
+.editor .con-pill{margin-left:auto; background:#16202b; color:#cfe3f6; border-color:#16202b}
+.rows{background:var(--ink); padding:10px 0}
+.row{display:grid; grid-template-columns:minmax(0,1fr) 300px; border-top:1px solid #2a323c}
+.row:first-child{border-top:0}
+.row pre{margin:0; border-radius:0; background:transparent; padding:10px 16px; font-size:12.5px}
+.row pre.out{background:#10161d; color:#e6edf3; border-left:1px solid #2a323c; white-space:pre-wrap}
+.row pre.out:empty::before{content:"(không in gì)"; color:#5b6672}
+@media(max-width:760px){.row{grid-template-columns:1fr} .row pre.out{border-left:0; border-top:1px dashed #2a323c}}
+
+/* chú thích trên nền tối */
+body.show-ann .row.ann{margin-top:0; outline-offset:-3px}
+.row .lbl{top:6px; right:8px; left:auto; transform:none; z-index:6}
+body.show-ann .row.ann:not(.inline) > .lbl{display:block}
+body.show-ann .row:hover{background:#1b232c}
+body.dim .row.ann:not(.hl){opacity:.35}
+
+/* Console trong thẻ giải thích */
+#tip pre.con{background:#10161d; color:#e6edf3; white-space:pre-wrap}
+pre .t{color:#d2a8ff}
+#tip .t-tag{white-space:normal; word-break:break-word}
+/* nhãn đặt ở mép phải cột mã, không che cột Console */
+.row .lbl{right:308px}
+@media(max-width:760px){.row .lbl{right:8px}}
+/* phông chữ mã có đủ dấu tiếng Việt dựng sẵn trên cả Mac, Windows và Linux */
+pre, code, .lbl, #tip .t-tag{font-family:"SF Mono",Menlo,Consolas,"Liberation Mono","Courier New",monospace}
+
+/* chương 6: khung chạy thật */
+.live iframe{width:100%; height:560px; border:1px solid var(--line, #d0d7de); border-radius:8px; background:#fff}
+#tip iframe.frame-out{width:100%; border:1px solid #d0d7de; border-radius:6px; background:#fff; display:block}
+.row pre.out{font-family:inherit; font-size:13px; line-height:1.5}
+</style>
+</head>
+<body class="show-ann">
+
+<div class="topbar">
+  <h1>Chương 6: DOM và sự kiện</h1>
+  <div class="controls">
+    <button id="btnAnn" class="on">Ẩn chú thích</button>
+    <button id="btnReset">Bỏ chọn</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="howto">Khung trên cùng là trang demo chạy thật: gõ, bấm, thêm, xoá thử. Bên dưới là mã của trang, chia theo từng việc; bấm vào một đoạn để xem giải thích, cú pháp và một ví dụ nhỏ bấm thử được. Cột bên phải ghi điều thấy được trên trang.</p>
+
+  <div class="layout">
+
+    <aside class="panel">
+      <h2>Kiến thức chương 6</h2>
+
+      <div class="k-item" data-k="k1">
+        <div class="num">MỤC 6.2</div>
+        <div class="name">Chọn và thay đổi phần tử</div>
+        <div class="tags">getElementById · querySelector · textContent · value · classList · disabled</div>
+      </div>
+
+      <div class="k-item" data-k="k3">
+        <div class="num">MỤC 6.4</div>
+        <div class="name">Tạo và xoá phần tử</div>
+        <div class="tags">createElement · append · remove · innerHTML = "". Giáo trình gọi mỗi phần tử là một nút (Node)</div>
+      </div>
+
+      <div class="k-item" data-k="k4">
+        <div class="num">MỤC 6.3</div>
+        <div class="name">Xử lý sự kiện</div>
+        <div class="tags">addEventListener · click · input · change · closest · dataset</div>
+      </div>
+
+      <div class="k-item" data-k="k5">
+        <div class="num">MỤC 6.5</div>
+        <div class="name">Xác thực biểu mẫu</div>
+        <div class="tags">submit · preventDefault · novalidate · focus · reset</div>
+      </div>
+
+      <div class="k-item" data-k="k6">
+        <div class="num">MỤC 6.7</div>
+        <div class="name">JSON trên trang</div>
+        <div class="tags">JSON.parse · JSON.stringify(x, null, 2)</div>
+      </div>
+
+      <div class="k-item" data-k="k7">
+        <div class="num">MỤC 6.1</div>
+        <div class="name">Đối tượng cửa sổ</div>
+        <div class="tags">setTimeout · scrollIntoView · alert (không dùng)</div>
+      </div>
+
+      <div class="k-item k-doc" data-k="k8">
+        <div class="num">MỤC 6.6 · 6.8 · ĐỌC THÊM</div>
+        <div class="name">Đồ hoạ và giao tiếp máy chủ</div>
+        <div class="tags">canvas vẽ hình bằng mã · fetch tải dữ liệu từ máy chủ. Chưa dùng trong bài tập: fetch không chạy khi mở tệp trực tiếp từ máy</div>
+      </div>
+    </aside>
+
+    <div class="stage">
+      <div class="card live">
+        <h2>Trang demo chạy thật</h2>
+        <iframe id="demoLive" title="Trang demo danh bạ lớp"></iframe>
+      </div>
+
+      <div class="browser editor">
+        <div class="chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="tabpill">script.js</div>
+          <div class="tabpill con-pill">Trên trang</div>
+        </div>
+        <div class="rows" id="rows">
+          <div class="row ann" data-k="k1" data-r="s1"><span class="lbl">getElementById, querySelector</span><pre class="js">// 1. Chọn phần tử trên trang
+const formThem = document.getElementById(&quot;formThem&quot;);
+const oLoc = document.getElementById(&quot;oLoc&quot;);
+const danhBa = document.getElementById(&quot;danhBa&quot;);
+const dem = document.querySelector(&quot;#dem&quot;);</pre><pre class="out">Chưa thấy gì thay đổi. Bốn biến giữ bốn phần tử để các đoạn sau dùng.</pre></div>
+          <div class="row ann" data-k="k6" data-r="s2"><span class="lbl">JSON.parse</span><pre class="js">// 2. Đọc dữ liệu ban đầu từ chuỗi JSON
+const chuoiBanDau = &#x27;[{&quot;ten&quot;:&quot;Lê Hà&quot;,&quot;soDT&quot;:&quot;0912345678&quot;,&quot;nhom&quot;:&quot;Nhóm 1&quot;},&#x27; +
+  &#x27;{&quot;ten&quot;:&quot;Trần Minh&quot;,&quot;soDT&quot;:&quot;0987654321&quot;,&quot;nhom&quot;:&quot;Nhóm 2&quot;}]&#x27;;
+const banBe = JSON.parse(chuoiBanDau);</pre><pre class="out">Mảng banBe có 2 người, đọc từ chuỗi JSON viết sẵn.</pre></div>
+          <div class="row ann" data-k="k3" data-r="s3"><span class="lbl">createElement, append</span><pre class="js">// 3. Tạo phần tử mới và gắn vào trang
+function veDanhBa() {
+  const tu = oLoc.value.trim().toLowerCase();
+  danhBa.innerHTML = &quot;&quot;;
+  for (let i = 0; i &lt; banBe.length; i++) {
+    if (!banBe[i].ten.toLowerCase().includes(tu)) {
+      continue;
+    }
+    const li = document.createElement(&quot;li&quot;);
+    li.textContent = banBe[i].ten + &quot; - &quot; + banBe[i].soDT + &quot; &quot;;
+    const nhom = document.createElement(&quot;span&quot;);
+    nhom.classList.add(&quot;nhom&quot;);
+    nhom.textContent = &quot;(&quot; + banBe[i].nhom + &quot;) &quot;;
+    const nut = document.createElement(&quot;button&quot;);
+    nut.textContent = &quot;Xoá&quot;;
+    nut.dataset.viTri = i;
+    li.append(nhom, nut);
+    danhBa.append(li);
+  }
+  dem.textContent = &quot;Có &quot; + banBe.length + &quot; người&quot;;
+}
+veDanhBa();</pre><pre class="out">Danh sách hiện 2 dòng, mỗi dòng có tên, số điện thoại, nhóm và nút Xoá. Dòng đếm ghi Có 2 người. Người không khớp ô lọc thì bỏ qua bằng continue.</pre></div>
+          <div class="row ann" data-k="k4" data-r="s4"><span class="lbl">addEventListener</span><pre class="js">// 4. Sự kiện input: vẽ lại mỗi lần gõ
+oLoc.addEventListener(&quot;input&quot;, veDanhBa);</pre><pre class="out">Gõ &quot;hà&quot; vào ô lọc: chỉ còn dòng Lê Hà. Xoá chữ trong ô: hiện lại đủ. Thêm, xoá người trong lúc đang lọc vẫn giữ điều kiện lọc.</pre></div>
+          <div class="row ann" data-k="k4" data-r="s5"><span class="lbl">closest, dataset</span><pre class="js">// 5. Một trình xử lý cho cả danh sách
+danhBa.addEventListener(&quot;click&quot;, function (e) {
+  const nut = e.target.closest(&quot;button&quot;);
+  if (nut === null) {
+    return;
+  }
+  banBe.splice(Number(nut.dataset.viTri), 1);
+  veDanhBa();
+});</pre><pre class="out">Bấm Xoá ở một dòng: dòng đó biến mất, dòng đếm giảm 1.</pre></div>
+          <div class="row ann" data-k="k5" data-r="s6"><span class="lbl">submit, preventDefault</span><pre class="js">// 6. Kiểm tra form trước khi thêm
+function laSoDT(chuoi) {
+  if (chuoi.length !== 10 || chuoi[0] !== &quot;0&quot;) {
+    return false;
+  }
+  for (const kt of chuoi) {
+    if (kt &lt; &quot;0&quot; || kt &gt; &quot;9&quot;) {
+      return false;
+    }
+  }
+  return true;
+}
+
+formThem.addEventListener(&quot;submit&quot;, function (e) {
+  e.preventDefault();
+  const ten = formThem.hoTen.value.trim();
+  const soDT = formThem.soDT.value.trim();
+  const nhom = formThem.nhom.value;
+  const loi = { hoTen: &quot;&quot;, soDT: &quot;&quot;, nhom: &quot;&quot; };
+  if (ten === &quot;&quot;) {
+    loi.hoTen = &quot;Chưa nhập họ tên&quot;;
+  }
+  if (!laSoDT(soDT)) {
+    loi.soDT = &quot;Cần 10 chữ số, bắt đầu bằng 0&quot;;
+  }
+  if (nhom === &quot;&quot;) {
+    loi.nhom = &quot;Chưa chọn nhóm&quot;;
+  }
+
+  document.getElementById(&quot;loiHoTen&quot;).textContent = loi.hoTen;
+  document.getElementById(&quot;loiSoDT&quot;).textContent = loi.soDT;
+  document.getElementById(&quot;loiNhom&quot;).textContent = loi.nhom;
+  formThem.hoTen.classList.toggle(&quot;loi&quot;, loi.hoTen !== &quot;&quot;);
+  formThem.soDT.classList.toggle(&quot;loi&quot;, loi.soDT !== &quot;&quot;);
+  formThem.nhom.classList.toggle(&quot;loi&quot;, loi.nhom !== &quot;&quot;);
+
+  if (loi.hoTen !== &quot;&quot;) {
+    formThem.hoTen.focus();
+  } else if (loi.soDT !== &quot;&quot;) {
+    formThem.soDT.focus();
+  } else if (loi.nhom !== &quot;&quot;) {
+    formThem.nhom.focus();
+  } else {
+    themNguoi(ten, soDT, nhom);
+  }
+});</pre><pre class="out">Bấm Thêm khi form trống: ba dòng lỗi đỏ, ô Họ tên có viền đỏ và con trỏ nằm ở đó. Số điện thoại 12345 bị báo lỗi.</pre></div>
+          <div class="row ann" data-k="k7" data-r="s7"><span class="lbl">setTimeout, clearTimeout</span><pre class="js">// 7. Thêm thành công: cập nhật dữ liệu rồi vẽ lại
+function themNguoi(ten, soDT, nhom) {
+  banBe.push({ ten: ten, soDT: soDT, nhom: nhom });
+  veDanhBa();
+  formThem.reset();
+  const tb = document.getElementById(&quot;thongBao&quot;);
+  tb.textContent = &quot;Đã thêm &quot; + ten;
+  setTimeout(function () {
+    tb.textContent = &quot;&quot;;
+  }, 2000);
+}</pre><pre class="out">Nhập đủ và đúng: danh sách thêm một dòng, form xoá trắng, dòng &quot;Đã thêm ...&quot; hiện 2 giây rồi mất.</pre></div>
+          <div class="row ann" data-k="k6" data-r="s8"><span class="lbl">JSON.stringify</span><pre class="js">// 8. Xuất dữ liệu thành JSON
+document.getElementById(&quot;nutXuat&quot;).addEventListener(&quot;click&quot;, function () {
+  document.getElementById(&quot;ketQua&quot;).textContent = JSON.stringify(banBe, null, 2);
+});</pre><pre class="out">Bấm Xuất JSON: mảng banBe hiện thành chuỗi JSON nhiều dòng trong khung xám.</pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mã nguồn</h2>
+        <div class="seg">
+          <button id="srcHtml">index.html</button>
+          <button id="srcJs" class="on">script.js</button>
+          <button id="srcToggle" class="grow">Thu gọn</button>
+          <button id="srcDl">Tải tệp đang xem</button>
+        </div>
+        <pre id="srcView"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bài tập</h2>
+        <p class="note-ex">Một bài, nối tiếp Bài 3 chương 5: ý 1 và 2 làm tại lớp trên tệp khung, phần còn lại làm ở nhà. Đề đầy đủ có trong tệp phát trên lớp.</p>
+        <div id="exList"></div>
+      </div>
+
+      <div class="foot">Tài liệu Thiết kế Web</div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="t-head">
+    <span class="t-tag" id="tipTag"></span>
+    <span class="t-kind" id="tipKind"></span>
+    <button class="t-close" id="tipClose" title="Đóng">&times;</button>
+  </div>
+  <div class="t-body">
+    <p class="t-def" id="tipDef"></p>
+    <p class="sec-lbl">Cú pháp và ví dụ</p>
+    <pre id="tipCode"></pre>
+    <p class="sec-lbl">Kết quả trên trang, bấm thử được</p>
+    <iframe id="tipOut" class="frame-out" title="Kết quả của ví dụ"></iframe>
+    <p class="t-note" id="tipNote"></p>
+  </div>
+</div>
+
+<script>
+var SEM = ['html','head','body','header','nav','main','section','article','aside','footer','figure','figcaption','hr','form','fieldset','legend','label'];
+function hl(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var cm = [];
+  s = s.replace(/&lt;!--[\s\S]*?--&gt;/g, function(m){ cm.push(m); return '\u0001' + (cm.length-1) + '\u0001'; });
+  s = s.replace(/&lt;(\/?)([a-zA-Z0-9!]+)([^&]*?)&gt;/g, function(m, sl, tag, rest){
+    rest = rest.replace(/([a-zA-Z-]+)=("[^"]*")/g, '<span class="a">$1</span>=<span class="s">$2</span>');
+    var c = SEM.indexOf(tag.toLowerCase()) >= 0 ? 't' : 't2';
+    return '<span class="' + c + '">&lt;' + sl + tag + '</span>' + rest + '<span class="' + c + '">&gt;</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, function(m, i){ return '<span class="c">' + cm[i] + '</span>'; });
+  return s;
+}
+
+var SRC_HTML = [
+"<!DOCTYPE html>",
+"<html lang=\"vi\">",
+"<head>",
+"  <meta charset=\"UTF-8\">",
+"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+"  <title>Danh bạ lớp</title>",
+"  <style>",
+"    body { font-family: Arial, Helvetica, sans-serif; max-width: 480px; margin: 16px auto; padding: 0 12px; color: #333; }",
+"    h1 { font-size: 1.4rem; }",
+"    label { display: block; margin-top: 8px; }",
+"    input, select, button { font: inherit; padding: 6px; }",
+"    .bao-loi { display: block; min-height: 1.1em; color: #b3261e; font-size: 0.85rem; }",
+"    .loi { border: 2px solid #b3261e; }",
+"    #danhBa li { margin: 6px 0; }",
+"    .nhom { color: #666; font-size: 0.85rem; }",
+"    #thongBao { color: #1d6b3a; }",
+"    pre { background: #f2f2f2; padding: 8px; white-space: pre-wrap; }",
+"  </style>",
+"</head>",
+"<body>",
+"",
+"  <h1>Danh bạ lớp</h1>",
+"",
+"  <form id=\"formThem\" novalidate>",
+"    <label for=\"hoTen\">Họ tên</label>",
+"    <input type=\"text\" id=\"hoTen\" name=\"hoTen\">",
+"    <span class=\"bao-loi\" id=\"loiHoTen\"></span>",
+"",
+"    <label for=\"soDT\">Số điện thoại</label>",
+"    <input type=\"text\" id=\"soDT\" name=\"soDT\">",
+"    <span class=\"bao-loi\" id=\"loiSoDT\"></span>",
+"",
+"    <label for=\"nhom\">Nhóm</label>",
+"    <select id=\"nhom\" name=\"nhom\">",
+"      <option value=\"\">Chọn nhóm</option>",
+"      <option value=\"Nhóm 1\">Nhóm 1</option>",
+"      <option value=\"Nhóm 2\">Nhóm 2</option>",
+"    </select>",
+"    <span class=\"bao-loi\" id=\"loiNhom\"></span>",
+"",
+"    <p><button type=\"submit\">Thêm vào danh bạ</button></p>",
+"    <p id=\"thongBao\"></p>",
+"  </form>",
+"",
+"  <p>",
+"    <label for=\"oLoc\">Lọc theo tên</label>",
+"    <input type=\"text\" id=\"oLoc\">",
+"  </p>",
+"  <p id=\"dem\"></p>",
+"  <ul id=\"danhBa\"></ul>",
+"",
+"  <button type=\"button\" id=\"nutXuat\">Xuất JSON</button>",
+"  <pre id=\"ketQua\"></pre>",
+"",
+"  <script src=\"demo-danh-ba.js\"><\/script>",
+"</body>",
+"</html>"
+].join('\n');
+
+var SRC_JS = [
+"// Demo chương 6: danh bạ lớp",
+"// Mỗi đoạn đánh số ứng với một mục trên trang học liệu.",
+"",
+"// 1. Chọn phần tử trên trang",
+"const formThem = document.getElementById(\"formThem\");",
+"const oLoc = document.getElementById(\"oLoc\");",
+"const danhBa = document.getElementById(\"danhBa\");",
+"const dem = document.querySelector(\"#dem\");",
+"",
+"// 2. Đọc dữ liệu ban đầu từ chuỗi JSON",
+"const chuoiBanDau = '[{\"ten\":\"Lê Hà\",\"soDT\":\"0912345678\",\"nhom\":\"Nhóm 1\"},' +",
+"  '{\"ten\":\"Trần Minh\",\"soDT\":\"0987654321\",\"nhom\":\"Nhóm 2\"}]';",
+"const banBe = JSON.parse(chuoiBanDau);",
+"",
+"// 3. Tạo phần tử mới và gắn vào trang",
+"function veDanhBa() {",
+"  const tu = oLoc.value.trim().toLowerCase();",
+"  danhBa.innerHTML = \"\";",
+"  for (let i = 0; i < banBe.length; i++) {",
+"    if (!banBe[i].ten.toLowerCase().includes(tu)) {",
+"      continue;",
+"    }",
+"    const li = document.createElement(\"li\");",
+"    li.textContent = banBe[i].ten + \" - \" + banBe[i].soDT + \" \";",
+"    const nhom = document.createElement(\"span\");",
+"    nhom.classList.add(\"nhom\");",
+"    nhom.textContent = \"(\" + banBe[i].nhom + \") \";",
+"    const nut = document.createElement(\"button\");",
+"    nut.textContent = \"Xoá\";",
+"    nut.dataset.viTri = i;",
+"    li.append(nhom, nut);",
+"    danhBa.append(li);",
+"  }",
+"  dem.textContent = \"Có \" + banBe.length + \" người\";",
+"}",
+"veDanhBa();",
+"",
+"// 4. Sự kiện input: vẽ lại mỗi lần gõ",
+"oLoc.addEventListener(\"input\", veDanhBa);",
+"",
+"// 5. Một trình xử lý cho cả danh sách",
+"danhBa.addEventListener(\"click\", function (e) {",
+"  const nut = e.target.closest(\"button\");",
+"  if (nut === null) {",
+"    return;",
+"  }",
+"  banBe.splice(Number(nut.dataset.viTri), 1);",
+"  veDanhBa();",
+"});",
+"",
+"// 6. Kiểm tra form trước khi thêm",
+"function laSoDT(chuoi) {",
+"  if (chuoi.length !== 10 || chuoi[0] !== \"0\") {",
+"    return false;",
+"  }",
+"  for (const kt of chuoi) {",
+"    if (kt < \"0\" || kt > \"9\") {",
+"      return false;",
+"    }",
+"  }",
+"  return true;",
+"}",
+"",
+"formThem.addEventListener(\"submit\", function (e) {",
+"  e.preventDefault();",
+"  const ten = formThem.hoTen.value.trim();",
+"  const soDT = formThem.soDT.value.trim();",
+"  const nhom = formThem.nhom.value;",
+"  const loi = { hoTen: \"\", soDT: \"\", nhom: \"\" };",
+"  if (ten === \"\") {",
+"    loi.hoTen = \"Chưa nhập họ tên\";",
+"  }",
+"  if (!laSoDT(soDT)) {",
+"    loi.soDT = \"Cần 10 chữ số, bắt đầu bằng 0\";",
+"  }",
+"  if (nhom === \"\") {",
+"    loi.nhom = \"Chưa chọn nhóm\";",
+"  }",
+"",
+"  document.getElementById(\"loiHoTen\").textContent = loi.hoTen;",
+"  document.getElementById(\"loiSoDT\").textContent = loi.soDT;",
+"  document.getElementById(\"loiNhom\").textContent = loi.nhom;",
+"  formThem.hoTen.classList.toggle(\"loi\", loi.hoTen !== \"\");",
+"  formThem.soDT.classList.toggle(\"loi\", loi.soDT !== \"\");",
+"  formThem.nhom.classList.toggle(\"loi\", loi.nhom !== \"\");",
+"",
+"  if (loi.hoTen !== \"\") {",
+"    formThem.hoTen.focus();",
+"  } else if (loi.soDT !== \"\") {",
+"    formThem.soDT.focus();",
+"  } else if (loi.nhom !== \"\") {",
+"    formThem.nhom.focus();",
+"  } else {",
+"    themNguoi(ten, soDT, nhom);",
+"  }",
+"});",
+"",
+"// 7. Thêm thành công: cập nhật dữ liệu rồi vẽ lại",
+"function themNguoi(ten, soDT, nhom) {",
+"  banBe.push({ ten: ten, soDT: soDT, nhom: nhom });",
+"  veDanhBa();",
+"  formThem.reset();",
+"  const tb = document.getElementById(\"thongBao\");",
+"  tb.textContent = \"Đã thêm \" + ten;",
+"  setTimeout(function () {",
+"    tb.textContent = \"\";",
+"  }, 2000);",
+"}",
+"",
+"// 8. Xuất dữ liệu thành JSON",
+"document.getElementById(\"nutXuat\").addEventListener(\"click\", function () {",
+"  document.getElementById(\"ketQua\").textContent = JSON.stringify(banBe, null, 2);",
+"});"
+].join('\n');
+
+var RULES = {
+  s1: {"sel": "getElementById, querySelector", "kind": "Mục 6.2", "def": "document là cả trang web. getElementById lấy một phần tử theo id. querySelector lấy phần tử đầu tiên khớp một bộ chọn CSS, querySelectorAll lấy tất cả.", "html": "<p id=\"chao\">Chào</p>\n<p class=\"ghi\">Ghi chú A</p>\n<p class=\"ghi\">Ghi chú B</p>\n<button id=\"gui\">Gửi</button>", "js": "const chao = document.getElementById(\"chao\");\nchao.textContent = \"Chào lớp Thiết kế Web\";\n\nconst dau = document.querySelector(\".ghi\");\ndau.textContent = \"Ghi chú đầu tiên\";\n\nconst tatCa = document.querySelectorAll(\".ghi\");\ntatCa[1].textContent = \"Có \" + tatCa.length + \" ghi chú\";\ntatCa[1].classList.add(\"noi-bat\");\n\ndocument.getElementById(\"gui\").disabled = true;", "note": "Không tìm thấy thì getElementById và querySelector trả về null, dòng tiếp theo báo lỗi đỏ \"Cannot set properties of null\": kiểm tra lại id, và đặt thẻ script ngay trước </body> để phần tử đã có trên trang. Trong querySelector viết bộ chọn như CSS: \"#id\", \".lop\", \"ul li\". classList.add thêm lớp, remove bỏ lớp, toggle(\"lop\", dieuKien) thêm khi điều kiện đúng và bỏ khi sai. disabled = true làm nút không bấm được."},
+  s2: {"sel": "JSON.parse", "kind": "Mục 6.7", "def": "Dữ liệu thường được viết sẵn hoặc gửi tới dưới dạng chuỗi JSON. JSON.parse đọc chuỗi đó thành mảng, đối tượng để vòng lặp dùng được.", "html": "<p id=\"kq\"></p>", "js": "const chuoi = `[\n  { \"ten\": \"Bơi\", \"phut\": 45 },\n  { \"ten\": \"Chạy\", \"phut\": 30 }\n]`;\nconst mon = JSON.parse(chuoi);\ndocument.getElementById(\"kq\").textContent =\n  mon.length + \" môn, môn đầu: \" + mon[0].ten;", "note": "Chuỗi JSON dài nhiều dòng thì đặt trong cặp dấu huyền ` `. Trong JSON tên thuộc tính phải có nháy kép, không có dấu phẩy sau phần tử cuối. Sai cú pháp thì JSON.parse báo lỗi đỏ có chữ \"Unexpected token\" kèm vị trí: đếm tới vị trí đó để tìm chỗ sai."},
+  s3: {"sel": "createElement, append", "kind": "Mục 6.4", "def": "createElement tạo một phần tử mới chưa nằm trên trang. Gán nội dung, lớp cho nó, rồi append để gắn vào một phần tử cha. Muốn vẽ lại từ đầu thì xoá hết con bằng innerHTML = \"\".", "html": "<ul id=\"ds\"></ul>", "js": "const ds = document.getElementById(\"ds\");\nconst cacMon = [\"Bơi\", \"Chạy\", \"Cầu lông\"];\n\nds.innerHTML = \"\";\nfor (const m of cacMon) {\n  const li = document.createElement(\"li\");\n  li.textContent = m;\n  if (m === \"Chạy\") {\n    li.classList.add(\"noi-bat\");\n  }\n  ds.append(li);\n}", "note": "Chữ lấy từ dữ liệu thì gán bằng textContent: dữ liệu có chứa dấu < > vẫn hiện đúng là chữ, không biến thành thẻ. append nhận nhiều phần tử một lúc: the.append(ten, tacGia, nut). Xoá một phần tử: phanTu.remove()."},
+  s4: {"sel": "addEventListener", "kind": "Mục 6.3", "def": "Gắn một hàm chạy khi có sự kiện: click khi bấm, input mỗi lần gõ, change khi đổi lựa chọn của select hoặc radio. Hàm nhận đối tượng sự kiện e, e.target là phần tử vừa nhận sự kiện.", "html": "<input id=\"o\" placeholder=\"Gõ thử\">\n<p id=\"chu\"></p>\n<button id=\"nut\">Bấm</button> <span id=\"dem\">0</span>", "js": "const o = document.getElementById(\"o\");\no.addEventListener(\"input\", function () {\n  document.getElementById(\"chu\").textContent = o.value.toUpperCase();\n});\n\nlet soLan = 0;\ndocument.getElementById(\"nut\").addEventListener(\"click\", function () {\n  soLan++;\n  document.getElementById(\"dem\").textContent = soLan;\n});", "note": "Truyền tên hàm, không có ngoặc: addEventListener(\"input\", capNhat). Viết capNhat() là gọi hàm ngay một lần lúc tải trang. Giá trị của ô nhập luôn là chuỗi, cần số thì Number(o.value). Giáo trình còn có cách gắn onclick=\"...\" trong HTML: không dùng trong bài."},
+  s5: {"sel": "closest, dataset", "kind": "Mục 6.3", "def": "Gắn một trình xử lý cho phần tử cha thay vì cho từng nút con. Khi bấm, e.target.closest(\"button\") tìm ra nút được bấm; thuộc tính data-ma trên nút đọc được qua nut.dataset.ma.", "html": "<div id=\"ke\">\n  <button data-ma=\"A1\">Ghế A1</button>\n  <button data-ma=\"B2\">Ghế B2</button>\n</div>\n<p id=\"chon\">Chưa chọn</p>", "js": "document.getElementById(\"ke\").addEventListener(\"click\", function (e) {\n  const nut = e.target.closest(\"button\");\n  if (nut === null) {\n    return;\n  }\n  document.getElementById(\"chon\").textContent = \"Đã chọn \" + nut.dataset.ma;\n});", "note": "Cách này vẫn chạy với các nút tạo ra sau bằng createElement, kể cả khi vẽ lại cả danh sách nhiều lần, nên không phải gắn lại sự kiện. Bấm vào khoảng trống giữa các nút thì closest trả về null, phải return sớm."},
+  s6: {"sel": "submit, preventDefault", "kind": "Mục 6.5", "def": "Bắt sự kiện submit của form, gọi e.preventDefault() để trang không tải lại, tự kiểm từng ô rồi hiện lỗi ngay dưới ô. novalidate tắt bảng báo lỗi có sẵn của trình duyệt.", "html": "<form id=\"f\" novalidate>\n  <input name=\"tuoi\" placeholder=\"Tuổi\">\n  <span id=\"loiTuoi\" style=\"color:#b3261e\"></span>\n  <button>Gửi</button>\n</form>\n<p id=\"kq\"></p>", "js": "const f = document.getElementById(\"f\");\nf.addEventListener(\"submit\", function (e) {\n  e.preventDefault();\n  const tuoi = Number(f.tuoi.value);\n  const loi = document.getElementById(\"loiTuoi\");\n  if (f.tuoi.value === \"\" || !Number.isInteger(tuoi) || tuoi < 18) {\n    loi.textContent = \"Tuổi là số nguyên từ 18\";\n    f.tuoi.focus();\n    return;\n  }\n  loi.textContent = \"\";\n  document.getElementById(\"kq\").textContent = \"Hợp lệ: \" + tuoi;\n  f.reset();\n});", "note": "Thiếu preventDefault thì trang tải lại ngay, mọi thông báo vừa hiện mất sạch. Ô trong form đọc được bằng tên: f.tuoi.value; nhóm radio cùng name thì f.tenNhom.value là giá trị đang chọn, chưa chọn thì là chuỗi rỗng. Muốn đặt con trỏ vào nhóm radio thì focus nút đầu tiên: document.querySelector('input[name=\"tenNhom\"]').focus(). Ô type=\"date\" cho chuỗi dạng 2026-11-03, so sánh trước sau được bằng < và >."},
+  s7: {"sel": "setTimeout, clearTimeout", "kind": "Mục 6.1", "def": "window là cửa sổ trình duyệt. setTimeout(hàm, số mili giây) chạy một hàm sau một khoảng thời gian, dùng để thông báo tự ẩn. phanTu.scrollIntoView() cuộn trang tới phần tử đó.", "html": "<button id=\"luu\">Lưu</button>\n<p id=\"tb\"></p>", "js": "let henGio = null;\ndocument.getElementById(\"luu\").addEventListener(\"click\", function () {\n  const tb = document.getElementById(\"tb\");\n  tb.textContent = \"Đã lưu lúc \" + new Date().toLocaleTimeString();\n  clearTimeout(henGio);\n  henGio = setTimeout(function () {\n    tb.textContent = \"\";\n  }, 2000);\n});", "note": "1000 mili giây là 1 giây. alert, confirm, prompt cũng thuộc window nhưng chặn cả trang và bị tắt trong một số môi trường chạy bài như codelab, nên bài tập không dùng. Thuộc tính hidden của phần tử ẩn hoặc hiện nó: tb.hidden = true. setTimeout trả về một mã hẹn giờ; clearTimeout(ma) huỷ hẹn giờ đó, dùng khi bấm liên tiếp để thông báo mới không bị lần hẹn cũ ẩn sớm."},
+  s8: {"sel": "JSON.stringify", "kind": "Mục 6.7", "def": "JSON.stringify đổi mảng, đối tượng thành chuỗi JSON. Thêm hai tham số null, 2 để chuỗi xuống dòng và thụt lề, dễ đọc khi hiện trong thẻ pre.", "html": "<button id=\"xuat\">Xuất</button>\n<pre id=\"ra\"></pre>", "js": "const ds = [{ ten: \"An\", diem: 8 }, { ten: \"Bình\", diem: 7 }];\ndocument.getElementById(\"xuat\").addEventListener(\"click\", function () {\n  document.getElementById(\"ra\").textContent = JSON.stringify(ds, null, 2);\n});", "note": "Thẻ pre giữ nguyên xuống dòng và khoảng trắng của chuỗi. Gán bằng textContent để các dấu ngoặc hiện đúng như chữ."}
+};
+
+var EX = [
+ {
+  "no": "Bài 1",
+  "topic": "Tổng hợp chương 2 đến 6",
+  "title": "Trang thư viện câu lạc bộ đọc sách",
+  "goal": "Thư mục <code>STT_HoTen_C6</code> gồm <code>index.html</code>, <code>style.css</code>, <code>du-lieu.js</code>, <code>script.js</code>, bắt đầu từ tệp khung. <code>script.js</code> mở đầu bằng <code>const sach = JSON.parse(chuoiSach);</code>, tiếp theo là phần Hàm chép nguyên từ Bài 3 chương 5. Ý 1 và 2 làm tại lớp, phần ý 2 chưa xong thì làm tiếp ở nhà. Bài 3 chưa chạy đúng thì dùng phần Hàm chuẩn giảng viên phát. Phần chính 10 điểm, phần nâng cao cộng tối đa 2 điểm.",
+  "reqs": [
+   "<b>Dữ liệu và lưới sách:</b> tự thêm 2 sách vào chuỗi JSON (một sách hết); <code>veLuoiSach(mang)</code> tạo mỗi sách một <code>article.the-sach</code> gồm tên, tác giả kèm năm, nhãn thể loại <code>span.nhan</code>, số cuốn còn, nút Mượn. Sách hết có lớp <code>het-sach</code>, nhãn Hết, nút bị <code>disabled</code>.",
+   "<b>Tìm và lọc:</b> tìm khi gõ bằng <code>timSach</code>; hộp chọn thể loại tạo bằng <code>while</code> từ <code>demTheLoai</code>, lọc bằng <code>locTheoTheLoai</code>; hai điều kiện kết hợp; dòng <code>Đang hiển thị x/y sách</code>; không có kết quả thì hiện câu thông báo.",
+   "<b>Bố cục và nội dung tĩnh:</b> <code>header</code> có logo SVG tự vẽ (ít nhất hai hình, màu từ biến CSS); <code>nav</code> 4 liên kết neo; <code>aside</code> 3 ô thống kê; <code>article</code> giới thiệu có <code>h2</code>, <code>figure</code> với <code>img</code> và <code>figcaption</code>, <code>ul</code>, <code>em</code>; khung thông báo viền nét đứt; <code>footer</code>.",
+   "<b>Phiếu mượn và kiểm tra:</b> form <code>novalidate</code> 7 ô (mã sách, họ tên, mã sinh viên, email, ngày mượn, số ngày, hình thức radio trong <code>fieldset</code>). Dùng lại <code>kiemTraNguoiMuon</code>; ngày mượn không trước <code>homNay()</code>; các ô khác hợp lệ mới gọi <code>muonSach</code>. Lỗi dưới từng ô, lớp <code>loi</code>, focus ô lỗi đầu tiên, sửa thì lỗi tự mất.",
+   "<b>Mượn thành công:</b> vẽ lại lưới, cập nhật thống kê, <code>reset()</code> form, thông báo kèm mã phiếu và hạn trả (<code>congNgay</code>), tự ẩn sau 3 giây, dùng <code>clearTimeout</code> khi mượn liên tiếp.",
+   "<b>CSS và đáp ứng:</b> biến màu trong <code>:root</code>; grid 1 cột, từ 600px 2 cột, từ 900px 3 cột, từ 1200px 4 cột; <code>nav</code> và thanh công cụ dùng flex có <code>flex-wrap</code>; ba ô thống kê một hàng căn giữa; thẻ sách nhô lên khi rê chuột; sách hết mờ, tên in nghiêng; <code>:focus</code> và <code>.loi</code> khác màu viền.",
+   "<b>Chất lượng:</b> Console sạch, HTML qua Validator, không <code>var</code>.",
+   "<b>Nâng cao:</b> N1 bấm Mượn trên thẻ thì điền mã sách, cuộn tới phiếu (một trình xử lý cho cả lưới); N2 bảng Sách đang mượn có ô ngày trả; N3 nút Trả gọi <code>traSach</code> với <code>soNgayGiua(ngày mượn, ngày trả)</code>; N4 sắp xếp theo năm và xuất JSON."
+  ]
+ }
+];
+
+var HINT = {
+  "Bài 1": {html:"<header class=\"dau-trang\">\n  <svg viewBox=\"0 0 64 64\" width=\"56\" height=\"56\">\n    <circle cx=\"32\" cy=\"32\" r=\"30\" fill=\"var(___)\"/>\n    <!-- them it nhat mot hinh nua -->\n  </svg>\n  <div>\n    <h1>___</h1>\n    <p>___</p>\n  </div>\n</header>\n\n<form id=\"___\" novalidate>\n  <div class=\"truong\">\n    <label for=\"hoTen\">Họ tên</label>\n    <input type=\"text\" id=\"hoTen\" name=\"hoTen\">\n    <span class=\"bao-loi\" id=\"loi-hoTen\"></span>\n  </div>\n  <!-- cac o con lai cung mau tren; nhom radio dat trong fieldset -->\n</form>", code:"const sach = JSON.parse(chuoiSach);\n// chep phan Ham cua Bai 3 vao day\n\nconst luoiSach = document.getElementById(\"___\");\n\nfunction veLuoiSach(mang) {\n  luoiSach.innerHTML = \"\";\n  for (const s of mang) {\n    const the = document.createElement(\"article\");\n    the.classList.add(\"___\");\n    // ten, tac gia, nhan the loai, so luong, nut Muon\n    // sach het: them lop, nhan Het, khoa nut\n    luoiSach.append(the);\n  }\n}\n\nfunction capNhatLuoi() {\n  // lay gia tri o tim va hop chon, goi hai ham cua Bai 3, ve lai\n  // cap nhat dong dem, an hoac hien cau thong bao\n}\n\nform.addEventListener(\"submit\", function (e) {\n  e.___();\n  // gom loi vao mot doi tuong: bat dau tu kiemTraNguoiMuon(...)\n  // hien loi duoi tung o, focus o loi dau tien\n  // khong co loi: goi muonSach trong try...catch\n});\n\ncapNhatLuoi();", warn:"Thứ tự nạp tệp: <code>du-lieu.js</code> trước <code>script.js</code>, cả hai đặt ngay trước <code>&lt;/body&gt;</code>; đảo thứ tự là lỗi <code>chuoiSach is not defined</code>. Chỉ chép phần Hàm của Bài 3, không chép phần Thử: các lần mượn thử sẽ làm số lượng sách sai ngay khi mở trang. Chỉ gọi <code>muonSach</code> khi các ô khác đã hợp lệ, vì hàm này giảm số lượng ngay khi thành công. Hàm <code>veLuoiSach</code> phải xoá nội dung cũ trước khi vẽ, quên thì mỗi lần gõ một chữ lưới lại dài thêm. Giá trị của ô nhập là chuỗi: số ngày đổi bằng <code>Number()</code> trước khi kiểm và trước khi truyền vào <code>muonSach</code>. Logo SVG viết thẳng trong HTML, không dùng tệp ảnh rời: codelab không tải được ảnh theo đường dẫn tương đối. Ảnh trong phần giới thiệu dùng đường dẫn đầy đủ bắt đầu bằng <code>https://</code>. Ngày hôm nay lấy bằng <code>homNay()</code> có sẵn trong <code>du-lieu.js</code>, không dùng <code>toISOString()</code>: hàm đó theo giờ quốc tế nên trước 7 giờ sáng cho ra ngày hôm qua."}
+};
+
+var CHECK = [["getElementById, querySelector", "Lấy phần tử để đọc và đổi", "Ý 1 đến 5"], ["textContent, value", "Đặt chữ lên trang, đọc ô nhập", "Ý 1 đến 5"], ["classList.add / remove, disabled", "Lớp het-sach, loi; khoá nút Mượn", "Ý 1, ý 4"], ["createElement, append, innerHTML = \"\"", "Vẽ lại lưới sách và hộp chọn", "Ý 1, ý 2"], ["JSON.parse", "Đọc dữ liệu sách", "Ý 1"], ["while", "Tạo các lựa chọn thể loại", "Ý 2"], ["addEventListener: input, change, submit, click", "Tìm khi gõ, lọc, gửi form, bấm nút", "Ý 2, ý 4"], ["figure, figcaption, ul, em, SVG nhúng", "Nội dung tĩnh của trang", "Ý 3"], ["preventDefault, novalidate, focus, reset", "Tự kiểm và xử lý form", "Ý 4, ý 5"], ["setTimeout, clearTimeout", "Thông báo tự ẩn", "Ý 5"], ["grid, flex, @media min-width", "Bố cục đáp ứng bốn mốc", "Ý 6"], [":root, var(), :hover, :focus, position: relative", "Biến màu và trạng thái", "Ý 3, ý 6"], ["closest, dataset, scrollIntoView", "Một trình xử lý cho cả lưới", "N1"], ["remove, soNgayGiua, JSON.stringify", "Trả sách, xuất phiếu", "N3, N4"], ["<i>biết để tra</i>", "alert, confirm; canvas; fetch", "Tra cứu"]];
+
+var TIPS = [
+ "Mở trang lần đầu: dòng đếm ghi 10/10, có đúng 2 thẻ sách mờ và nút Mượn không bấm được.",
+ "Gõ \"  NGUYỄN \" (có khoảng trắng, chữ hoa) vẫn tìm ra Tôi thấy hoa vàng trên cỏ xanh.",
+ "Bấm Lập phiếu mượn khi form trống: 7 dòng lỗi hiện ra, con trỏ nằm ở ô đầu tiên.",
+ "Điền đúng các ô khác rồi nhập mã một sách đã hết: lỗi hiện dưới ô mã sách, không có phiếu nào được lập.",
+ "Mượn thành công cuốn cuối cùng của một sách: thẻ sách đó chuyển sang mờ, ô số cuốn còn giảm 1, ô phiếu đang mượn tăng 1.",
+ "Thu cửa sổ xuống khoảng 375px: lưới còn 1 cột, không có thanh cuộn ngang.",
+ "Console không có dòng chữ đỏ; tệp HTML qua validator.w3.org."
+];
+
+var FILES = [{"n": "demo-danh-ba.html", "t": "text/html;charset=utf-8", "u": "Trang demo danh bạ lớp, CSS viết trong thẻ style", "kb": "1,7 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+RGFuaCBi4bqhIGzhu5twPC90aXRsZT4KICA8c3R5bGU+CiAgICBib2R5IHsgZm9udC1mYW1pbHk6IEFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWY7IG1heC13aWR0aDogNDgwcHg7IG1hcmdpbjogMTZweCBhdXRvOyBwYWRkaW5nOiAwIDEycHg7IGNvbG9yOiAjMzMzOyB9CiAgICBoMSB7IGZvbnQtc2l6ZTogMS40cmVtOyB9CiAgICBsYWJlbCB7IGRpc3BsYXk6IGJsb2NrOyBtYXJnaW4tdG9wOiA4cHg7IH0KICAgIGlucHV0LCBzZWxlY3QsIGJ1dHRvbiB7IGZvbnQ6IGluaGVyaXQ7IHBhZGRpbmc6IDZweDsgfQogICAgLmJhby1sb2kgeyBkaXNwbGF5OiBibG9jazsgbWluLWhlaWdodDogMS4xZW07IGNvbG9yOiAjYjMyNjFlOyBmb250LXNpemU6IDAuODVyZW07IH0KICAgIC5sb2kgeyBib3JkZXI6IDJweCBzb2xpZCAjYjMyNjFlOyB9CiAgICAjZGFuaEJhIGxpIHsgbWFyZ2luOiA2cHggMDsgfQogICAgLm5ob20geyBjb2xvcjogIzY2NjsgZm9udC1zaXplOiAwLjg1cmVtOyB9CiAgICAjdGhvbmdCYW8geyBjb2xvcjogIzFkNmIzYTsgfQogICAgcHJlIHsgYmFja2dyb3VuZDogI2YyZjJmMjsgcGFkZGluZzogOHB4OyB3aGl0ZS1zcGFjZTogcHJlLXdyYXA7IH0KICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5PgoKICA8aDE+RGFuaCBi4bqhIGzhu5twPC9oMT4KCiAgPGZvcm0gaWQ9ImZvcm1UaGVtIiBub3ZhbGlkYXRlPgogICAgPGxhYmVsIGZvcj0iaG9UZW4iPkjhu40gdMOqbjwvbGFiZWw+CiAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9ImhvVGVuIiBuYW1lPSJob1RlbiI+CiAgICA8c3BhbiBjbGFzcz0iYmFvLWxvaSIgaWQ9ImxvaUhvVGVuIj48L3NwYW4+CgogICAgPGxhYmVsIGZvcj0ic29EVCI+U+G7kSDEkWnhu4duIHRob+G6oWk8L2xhYmVsPgogICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJzb0RUIiBuYW1lPSJzb0RUIj4KICAgIDxzcGFuIGNsYXNzPSJiYW8tbG9pIiBpZD0ibG9pU29EVCI+PC9zcGFuPgoKICAgIDxsYWJlbCBmb3I9Im5ob20iPk5ow7NtPC9sYWJlbD4KICAgIDxzZWxlY3QgaWQ9Im5ob20iIG5hbWU9Im5ob20iPgogICAgICA8b3B0aW9uIHZhbHVlPSIiPkNo4buNbiBuaMOzbTwvb3B0aW9uPgogICAgICA8b3B0aW9uIHZhbHVlPSJOaMOzbSAxIj5OaMOzbSAxPC9vcHRpb24+CiAgICAgIDxvcHRpb24gdmFsdWU9Ik5ow7NtIDIiPk5ow7NtIDI8L29wdGlvbj4KICAgIDwvc2VsZWN0PgogICAgPHNwYW4gY2xhc3M9ImJhby1sb2kiIGlkPSJsb2lOaG9tIj48L3NwYW4+CgogICAgPHA+PGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlRow6ptIHbDoG8gZGFuaCBi4bqhPC9idXR0b24+PC9wPgogICAgPHAgaWQ9InRob25nQmFvIj48L3A+CiAgPC9mb3JtPgoKICA8cD4KICAgIDxsYWJlbCBmb3I9Im9Mb2MiPkzhu41jIHRoZW8gdMOqbjwvbGFiZWw+CiAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9Im9Mb2MiPgogIDwvcD4KICA8cCBpZD0iZGVtIj48L3A+CiAgPHVsIGlkPSJkYW5oQmEiPjwvdWw+CgogIDxidXR0b24gdHlwZT0iYnV0dG9uIiBpZD0ibnV0WHVhdCI+WHXhuqV0IEpTT048L2J1dHRvbj4KICA8cHJlIGlkPSJrZXRRdWEiPjwvcHJlPgoKICA8c2NyaXB0IHNyYz0iZGVtby1kYW5oLWJhLmpzIj48L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+Cg=="}, {"n": "demo-danh-ba.js", "t": "text/javascript;charset=utf-8", "u": "Tám đoạn mã của demo, mỗi đoạn một dòng chú thích", "kb": "3,4 KB", "b": "Ly8gRGVtbyBjaMawxqFuZyA2OiBkYW5oIGLhuqEgbOG7m3AKLy8gTeG7l2kgxJFv4bqhbiDEkcOhbmggc+G7kSDhu6luZyB24bubaSBt4buZdCBt4bulYyB0csOqbiB0cmFuZyBo4buNYyBsaeG7h3UuCgovLyAxLiBDaOG7jW4gcGjhuqduIHThu60gdHLDqm4gdHJhbmcKY29uc3QgZm9ybVRoZW0gPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgiZm9ybVRoZW0iKTsKY29uc3Qgb0xvYyA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJvTG9jIik7CmNvbnN0IGRhbmhCYSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJkYW5oQmEiKTsKY29uc3QgZGVtID0gZG9jdW1lbnQucXVlcnlTZWxlY3RvcigiI2RlbSIpOwoKLy8gMi4gxJDhu41jIGThu68gbGnhu4d1IGJhbiDEkeG6p3UgdOG7qyBjaHXhu5dpIEpTT04KY29uc3QgY2h1b2lCYW5EYXUgPSAnW3sidGVuIjoiTMOqIEjDoCIsInNvRFQiOiIwOTEyMzQ1Njc4IiwibmhvbSI6Ik5ow7NtIDEifSwnICsKICAneyJ0ZW4iOiJUcuG6p24gTWluaCIsInNvRFQiOiIwOTg3NjU0MzIxIiwibmhvbSI6Ik5ow7NtIDIifV0nOwpjb25zdCBiYW5CZSA9IEpTT04ucGFyc2UoY2h1b2lCYW5EYXUpOwoKLy8gMy4gVOG6oW8gcGjhuqduIHThu60gbeG7m2kgdsOgIGfhuq9uIHbDoG8gdHJhbmcKZnVuY3Rpb24gdmVEYW5oQmEoKSB7CiAgY29uc3QgdHUgPSBvTG9jLnZhbHVlLnRyaW0oKS50b0xvd2VyQ2FzZSgpOwogIGRhbmhCYS5pbm5lckhUTUwgPSAiIjsKICBmb3IgKGxldCBpID0gMDsgaSA8IGJhbkJlLmxlbmd0aDsgaSsrKSB7CiAgICBpZiAoIWJhbkJlW2ldLnRlbi50b0xvd2VyQ2FzZSgpLmluY2x1ZGVzKHR1KSkgewogICAgICBjb250aW51ZTsKICAgIH0KICAgIGNvbnN0IGxpID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgibGkiKTsKICAgIGxpLnRleHRDb250ZW50ID0gYmFuQmVbaV0udGVuICsgIiAtICIgKyBiYW5CZVtpXS5zb0RUICsgIiAiOwogICAgY29uc3QgbmhvbSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNwYW4iKTsKICAgIG5ob20uY2xhc3NMaXN0LmFkZCgibmhvbSIpOwogICAgbmhvbS50ZXh0Q29udGVudCA9ICIoIiArIGJhbkJlW2ldLm5ob20gKyAiKSAiOwogICAgY29uc3QgbnV0ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiYnV0dG9uIik7CiAgICBudXQudGV4dENvbnRlbnQgPSAiWG/DoSI7CiAgICBudXQuZGF0YXNldC52aVRyaSA9IGk7CiAgICBsaS5hcHBlbmQobmhvbSwgbnV0KTsKICAgIGRhbmhCYS5hcHBlbmQobGkpOwogIH0KICBkZW0udGV4dENvbnRlbnQgPSAiQ8OzICIgKyBiYW5CZS5sZW5ndGggKyAiIG5nxrDhu51pIjsKfQp2ZURhbmhCYSgpOwoKLy8gNC4gU+G7sSBraeG7h24gaW5wdXQ6IHbhur0gbOG6oWkgbeG7l2kgbOG6p24gZ8O1Cm9Mb2MuYWRkRXZlbnRMaXN0ZW5lcigiaW5wdXQiLCB2ZURhbmhCYSk7CgovLyA1LiBN4buZdCB0csOsbmggeOG7rSBsw70gY2hvIGPhuqMgZGFuaCBzw6FjaApkYW5oQmEuYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLCBmdW5jdGlvbiAoZSkgewogIGNvbnN0IG51dCA9IGUudGFyZ2V0LmNsb3Nlc3QoImJ1dHRvbiIpOwogIGlmIChudXQgPT09IG51bGwpIHsKICAgIHJldHVybjsKICB9CiAgYmFuQmUuc3BsaWNlKE51bWJlcihudXQuZGF0YXNldC52aVRyaSksIDEpOwogIHZlRGFuaEJhKCk7Cn0pOwoKLy8gNi4gS2nhu4NtIHRyYSBmb3JtIHRyxrDhu5tjIGtoaSB0aMOqbQpmdW5jdGlvbiBsYVNvRFQoY2h1b2kpIHsKICBpZiAoY2h1b2kubGVuZ3RoICE9PSAxMCB8fCBjaHVvaVswXSAhPT0gIjAiKSB7CiAgICByZXR1cm4gZmFsc2U7CiAgfQogIGZvciAoY29uc3Qga3Qgb2YgY2h1b2kpIHsKICAgIGlmIChrdCA8ICIwIiB8fCBrdCA+ICI5IikgewogICAgICByZXR1cm4gZmFsc2U7CiAgICB9CiAgfQogIHJldHVybiB0cnVlOwp9Cgpmb3JtVGhlbS5hZGRFdmVudExpc3RlbmVyKCJzdWJtaXQiLCBmdW5jdGlvbiAoZSkgewogIGUucHJldmVudERlZmF1bHQoKTsKICBjb25zdCB0ZW4gPSBmb3JtVGhlbS5ob1Rlbi52YWx1ZS50cmltKCk7CiAgY29uc3Qgc29EVCA9IGZvcm1UaGVtLnNvRFQudmFsdWUudHJpbSgpOwogIGNvbnN0IG5ob20gPSBmb3JtVGhlbS5uaG9tLnZhbHVlOwogIGNvbnN0IGxvaSA9IHsgaG9UZW46ICIiLCBzb0RUOiAiIiwgbmhvbTogIiIgfTsKICBpZiAodGVuID09PSAiIikgewogICAgbG9pLmhvVGVuID0gIkNoxrBhIG5o4bqtcCBo4buNIHTDqm4iOwogIH0KICBpZiAoIWxhU29EVChzb0RUKSkgewogICAgbG9pLnNvRFQgPSAiQ+G6p24gMTAgY2jhu68gc+G7kSwgYuG6r3QgxJHhuqd1IGLhurFuZyAwIjsKICB9CiAgaWYgKG5ob20gPT09ICIiKSB7CiAgICBsb2kubmhvbSA9ICJDaMawYSBjaOG7jW4gbmjDs20iOwogIH0KCiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImxvaUhvVGVuIikudGV4dENvbnRlbnQgPSBsb2kuaG9UZW47CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImxvaVNvRFQiKS50ZXh0Q29udGVudCA9IGxvaS5zb0RUOwogIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJsb2lOaG9tIikudGV4dENvbnRlbnQgPSBsb2kubmhvbTsKICBmb3JtVGhlbS5ob1Rlbi5jbGFzc0xpc3QudG9nZ2xlKCJsb2kiLCBsb2kuaG9UZW4gIT09ICIiKTsKICBmb3JtVGhlbS5zb0RULmNsYXNzTGlzdC50b2dnbGUoImxvaSIsIGxvaS5zb0RUICE9PSAiIik7CiAgZm9ybVRoZW0ubmhvbS5jbGFzc0xpc3QudG9nZ2xlKCJsb2kiLCBsb2kubmhvbSAhPT0gIiIpOwoKICBpZiAobG9pLmhvVGVuICE9PSAiIikgewogICAgZm9ybVRoZW0uaG9UZW4uZm9jdXMoKTsKICB9IGVsc2UgaWYgKGxvaS5zb0RUICE9PSAiIikgewogICAgZm9ybVRoZW0uc29EVC5mb2N1cygpOwogIH0gZWxzZSBpZiAobG9pLm5ob20gIT09ICIiKSB7CiAgICBmb3JtVGhlbS5uaG9tLmZvY3VzKCk7CiAgfSBlbHNlIHsKICAgIHRoZW1OZ3VvaSh0ZW4sIHNvRFQsIG5ob20pOwogIH0KfSk7CgovLyA3LiBUaMOqbSB0aMOgbmggY8O0bmc6IGPhuq1wIG5o4bqtdCBk4buvIGxp4buHdSBy4buTaSB24bq9IGzhuqFpCmZ1bmN0aW9uIHRoZW1OZ3VvaSh0ZW4sIHNvRFQsIG5ob20pIHsKICBiYW5CZS5wdXNoKHsgdGVuOiB0ZW4sIHNvRFQ6IHNvRFQsIG5ob206IG5ob20gfSk7CiAgdmVEYW5oQmEoKTsKICBmb3JtVGhlbS5yZXNldCgpOwogIGNvbnN0IHRiID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInRob25nQmFvIik7CiAgdGIudGV4dENvbnRlbnQgPSAixJDDoyB0aMOqbSAiICsgdGVuOwogIHNldFRpbWVvdXQoZnVuY3Rpb24gKCkgewogICAgdGIudGV4dENvbnRlbnQgPSAiIjsKICB9LCAyMDAwKTsKfQoKLy8gOC4gWHXhuqV0IGThu68gbGnhu4d1IHRow6BuaCBKU09OCmRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJudXRYdWF0IikuYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLCBmdW5jdGlvbiAoKSB7CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImtldFF1YSIpLnRleHRDb250ZW50ID0gSlNPTi5zdHJpbmdpZnkoYmFuQmUsIG51bGwsIDIpOwp9KTsK"}, {"n": "index.html", "t": "text/html;charset=utf-8", "u": "Tệp khung của bài: thứ tự các khu và hai thẻ script", "kb": "1,5 KB", "b": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InZpIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+X19fPC90aXRsZT4KICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9InN0eWxlLmNzcyI+CjwvaGVhZD4KPGJvZHk+CgogIDwhLS0gaGVhZGVyOiBsb2dvIFNWRyB04buxIHbhur0sIHTDqm4gY8OidSBs4bqhYyBi4buZLCBraOG6qXUgaGnhu4d1IC0tPgoKICA8IS0tIG5hdjogNCBsacOqbiBr4bq/dCBuZW8gdOG7m2kgY8OhYyBzZWN0aW9uIC0tPgoKICA8IS0tIGFzaWRlOiAzIMO0IHRo4buRbmcga8OqIC0tPgoKICA8bWFpbj4KICAgIDwhLS0gc2VjdGlvbiBnaeG7m2kgdGhp4buHdTogYXJ0aWNsZSAoaDIsIGZpZ3VyZSBjw7MgaW1nIHbDoCBmaWdjYXB0aW9uLCBkYW5oIHPDoWNoIHVsLCBlbSkgdsOgIGtodW5nIHRow7RuZyBiw6FvIC0tPgogICAgPCEtLSDhuqNuaCBkw7luZyDEkcaw4bujYzogaHR0cHM6Ly90aGFpbnExMDcuZ2l0aHViLmlvL3RoaWV0LWtlLXdlYi9iYWktdGFwLWM2L2todW5nL2FuaC10aHUtdmllbi5zdmcgLS0+CgogICAgPHNlY3Rpb24gaWQ9InR1LXNhY2giPgogICAgICA8aDI+VOG7pyBzw6FjaDwvaDI+CiAgICAgIDxkaXYgY2xhc3M9InRoYW5oLWNvbmctY3UiPgogICAgICAgIDxpbnB1dCB0eXBlPSJzZWFyY2giIGlkPSJvVGltIiBwbGFjZWhvbGRlcj0iVMOsbSB0aGVvIHTDqm4gc8OhY2ggaG/hurdjIHTDoWMgZ2nhuqMiIGFyaWEtbGFiZWw9IlTDrG0gc8OhY2giPgogICAgICAgIDxzZWxlY3QgaWQ9ImNob25UaGVMb2FpIiBhcmlhLWxhYmVsPSJM4buNYyB0aGVvIHRo4buDIGxv4bqhaSI+CiAgICAgICAgICA8b3B0aW9uIHZhbHVlPSIiPlThuqV0IGPhuqMgdGjhu4MgbG/huqFpPC9vcHRpb24+CiAgICAgICAgPC9zZWxlY3Q+CiAgICAgIDwvZGl2PgogICAgICA8cCBpZD0iZG9uZ0RlbSI+PC9wPgogICAgICA8ZGl2IGlkPSJsdW9pU2FjaCIgY2xhc3M9Imx1b2ktc2FjaCI+PC9kaXY+CiAgICAgIDxwIGlkPSJraG9uZ0NvIiBoaWRkZW4+S2jDtG5nIGPDsyBzw6FjaCBuw6BvIGto4bubcCB24bubaSDEkWnhu4F1IGtp4buHbiB0w6xtLjwvcD4KICAgIDwvc2VjdGlvbj4KCiAgICA8IS0tIHNlY3Rpb24gcGhp4bq/dSBtxrDhu6NuOiBmb3JtIG5vdmFsaWRhdGUsIG3hu5dpIMO0IGvDqG0gbeG7mXQgY2jhu5cgaGnhu4duIGzhu5dpIC0tPgoKICAgIDwhLS0gc2VjdGlvbiBzw6FjaCDEkWFuZyBtxrDhu6NuIChwaOG6p24gbsOibmcgY2FvKTogYuG6o25nLCBuw7p0IHh14bqldCwgdGjhursgcHJlIC0tPgogIDwvbWFpbj4KCiAgPCEtLSBmb290ZXIgLS0+CgogIDwhLS0gZHUtbGlldS5qcyBwaOG6o2kgbuG6oXAgdHLGsOG7m2Mgc2NyaXB0LmpzIC0tPgogIDxzY3JpcHQgc3JjPSJkdS1saWV1LmpzIj48L3NjcmlwdD4KICA8c2NyaXB0IHNyYz0ic2NyaXB0LmpzIj48L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+Cg=="}, {"n": "du-lieu.js", "t": "text/javascript;charset=utf-8", "u": "Chuỗi JSON 8 sách và hai hàm ngày homNay, congNgay", "kb": "2,5 KB", "b": "Ly8gROG7ryBsaeG7h3UgdGjGsCB2aeG7h24gdmnhur90IGLhurFuZyBKU09OLCDEkeG6t3QgdHJvbmcgY+G6t3AgZOG6pXUgaHV54buBbiBgIGAgxJHhu4Mgdmnhur90IMSRxrDhu6NjIG5oaeG7gXUgZMOybmcuCi8vIFThu7EgdGjDqm0gMiBzw6FjaCBu4buvYSB2w6BvIGN14buRaSBt4bqjbmcgKFMwOSwgUzEwKS4gTmjhu5sgZOG6pXUgcGjhuql5IGdp4buvYSBjw6FjIHPDoWNoIHbDoCBraMO0bmcgxJHhu4MgZOG6pXUgcGjhuql5IHNhdSBzw6FjaCBjdeG7kWkuCmNvbnN0IGNodW9pU2FjaCA9IGBbCiAgeyAibWEiOiAiUzAxIiwgInRlbiI6ICJE4bq/IE3DqG4gcGhpw6p1IGzGsHUga8O9IiwgInRhY0dpYSI6ICJUw7QgSG/DoGkiLCAibmFtIjogMTk0MSwgInRoZUxvYWkiOiBbIlRoaeG6v3UgbmhpIiwgIlbEg24gaOG7jWMiXSwgInNvTHVvbmciOiAzIH0sCiAgeyAibWEiOiAiUzAyIiwgInRlbiI6ICJT4buRIMSR4buPIiwgInRhY0dpYSI6ICJWxakgVHLhu41uZyBQaOG7pW5nIiwgIm5hbSI6IDE5MzYsICJ0aGVMb2FpIjogWyJWxINuIGjhu41jIiwgIlRyw6BvIHBow7puZyJdLCAic29MdW9uZyI6IDIgfSwKICB7ICJtYSI6ICJTMDMiLCAidGVuIjogIk5ow6AgZ2nhuqMga2ltIiwgInRhY0dpYSI6ICJQYXVsbyBDb2VsaG8iLCAibmFtIjogMTk4OCwgInRoZUxvYWkiOiBbIlbEg24gaOG7jWMiXSwgInNvTHVvbmciOiA0IH0sCiAgeyAibWEiOiAiUzA0IiwgInRlbiI6ICLEkOG6r2MgbmjDom4gdMOibSIsICJ0YWNHaWEiOiAiRGFsZSBDYXJuZWdpZSIsICJuYW0iOiAxOTM2LCAidGhlTG9haSI6IFsiS+G7uSBuxINuZyJdLCAic29MdW9uZyI6IDAgfSwKICB7ICJtYSI6ICJTMDUiLCAidGVuIjogIkzGsOG7o2Mgc+G7rSB0aOG7nWkgZ2lhbiIsICJ0YWNHaWEiOiAiU3RlcGhlbiBIYXdraW5nIiwgIm5hbSI6IDE5ODgsICJ0aGVMb2FpIjogWyJLaG9hIGjhu41jIl0sICJzb0x1b25nIjogMSB9LAogIHsgIm1hIjogIlMwNiIsICJ0ZW4iOiAiVMO0aSB0aOG6pXkgaG9hIHbDoG5nIHRyw6puIGPhu48geGFuaCIsICJ0YWNHaWEiOiAiTmd1eeG7hW4gTmjhuq10IMOBbmgiLCAibmFtIjogMjAxMCwgInRoZUxvYWkiOiBbIlRoaeG6v3UgbmhpIiwgIlbEg24gaOG7jWMiXSwgInNvTHVvbmciOiAyIH0sCiAgeyAibWEiOiAiUzA3IiwgInRlbiI6ICJTYXBpZW5zOiBMxrDhu6NjIHPhu60gbG/DoGkgbmfGsOG7nWkiLCAidGFjR2lhIjogIll1dmFsIE5vYWggSGFyYXJpIiwgIm5hbSI6IDIwMTEsICJ0aGVMb2FpIjogWyJLaG9hIGjhu41jIiwgIkzhu4tjaCBz4butIl0sICJzb0x1b25nIjogMSB9LAogIHsgIm1hIjogIlMwOCIsICJ0ZW4iOiAiQ2xlYW4gQ29kZSIsICJ0YWNHaWEiOiAiUm9iZXJ0IEMuIE1hcnRpbiIsICJuYW0iOiAyMDA4LCAidGhlTG9haSI6IFsiQ8O0bmcgbmdo4buHIiwgIkvhu7kgbsSDbmciXSwgInNvTHVvbmciOiAyIH0KXWA7CgovLyBCYSBow6BtIG5nw6B5IGNobyBz4bq1biwgZMO5bmcgbmd1ecOqbiB2xINuLCBraMO0bmcgY+G6p24gc+G7rWEuCi8vIE5nw6B5IHZp4bq/dCBk4bqhbmcgY2h14buXaSAieXl5eS1tbS1kZCIsIGdp4buRbmcgZ2nDoSB0cuG7iyBj4bunYSDDtCA8aW5wdXQgdHlwZT0iZGF0ZSI+LgoKLy8gTmfDoHkgaMO0bSBuYXkgdGhlbyBnaeG7nSBj4bunYSBtw6F5LCB2w60gZOG7pSAiMjAyNi0xMS0wMyIuCmZ1bmN0aW9uIGhvbU5heSgpIHsKICBjb25zdCBkID0gbmV3IERhdGUoKTsKICByZXR1cm4gZC5nZXRGdWxsWWVhcigpICsgIi0iICsgU3RyaW5nKGQuZ2V0TW9udGgoKSArIDEpLnBhZFN0YXJ0KDIsICIwIikgKyAiLSIgKyBTdHJpbmcoZC5nZXREYXRlKCkpLnBhZFN0YXJ0KDIsICIwIik7Cn0KCi8vIE5nw6B5IHNhdSBuZ8OgeSAiY2h1b2kiIG4gbmfDoHk6IGNvbmdOZ2F5KCIyMDI2LTExLTI4IiwgNSkgY2hvICIyMDI2LTEyLTAzIi4KZnVuY3Rpb24gY29uZ05nYXkoY2h1b2ksIG4pIHsKICBjb25zdCBwID0gY2h1b2kuc3BsaXQoIi0iKTsKICBjb25zdCBkID0gbmV3IERhdGUoTnVtYmVyKHBbMF0pLCBOdW1iZXIocFsxXSkgLSAxLCBOdW1iZXIocFsyXSkgKyBuKTsKICByZXR1cm4gZC5nZXRGdWxsWWVhcigpICsgIi0iICsgU3RyaW5nKGQuZ2V0TW9udGgoKSArIDEpLnBhZFN0YXJ0KDIsICIwIikgKyAiLSIgKyBTdHJpbmcoZC5nZXREYXRlKCkpLnBhZFN0YXJ0KDIsICIwIik7Cn0KCi8vIFPhu5EgbmfDoHkgdOG7qyBuZ8OgeSAidHUiIMSR4bq/biBuZ8OgeSAiZGVuIjogc29OZ2F5R2l1YSgiMjAyNi0xMS0wMyIsICIyMDI2LTExLTEwIikgY2hvIDcuCmZ1bmN0aW9uIHNvTmdheUdpdWEodHUsIGRlbikgewogIGNvbnN0IGEgPSB0dS5zcGxpdCgiLSIpOwogIGNvbnN0IGIgPSBkZW4uc3BsaXQoIi0iKTsKICBjb25zdCBuZ2F5QSA9IG5ldyBEYXRlKE51bWJlcihhWzBdKSwgTnVtYmVyKGFbMV0pIC0gMSwgTnVtYmVyKGFbMl0pKTsKICBjb25zdCBuZ2F5QiA9IG5ldyBEYXRlKE51bWJlcihiWzBdKSwgTnVtYmVyKGJbMV0pIC0gMSwgTnVtYmVyKGJbMl0pKTsKICByZXR1cm4gTWF0aC5yb3VuZCgobmdheUIgLSBuZ2F5QSkgLyA4NjQwMDAwMCk7Cn0K"}, {"n": "anh-thu-vien.svg", "t": "image/svg+xml", "u": "Ảnh giá sách cho phần giới thiệu (hoặc dùng đường dẫn https trong tệp khung)", "kb": "1,3 KB", "b": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgMTgwIiB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCI+CiAgPHJlY3Qgd2lkdGg9IjMyMCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNmM2VmZTYiLz4KICA8cmVjdCB4PSIyMCIgeT0iMTUwIiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjOGE1YTMzIi8+CiAgPHJlY3QgeD0iMjAiIHk9Ijc4IiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjgiIGZpbGw9IiM4YTVhMzMiLz4KICA8cmVjdCB4PSIzNCIgeT0iMjQiIHdpZHRoPSIxOCIgaGVpZ2h0PSI1NCIgZmlsbD0iIzJmNmY4ZiIvPgogIDxyZWN0IHg9IjU0IiB5PSIzMCIgd2lkdGg9IjE0IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjYzQ1NzJlIi8+CiAgPHJlY3QgeD0iNzAiIHk9IjIwIiB3aWR0aD0iMjAiIGhlaWdodD0iNTgiIGZpbGw9IiMzZjhmNWEiLz4KICA8cmVjdCB4PSI5MiIgeT0iMzQiIHdpZHRoPSIxMiIgaGVpZ2h0PSI0NCIgZmlsbD0iI2Q5YTQ0MSIvPgogIDxyZWN0IHg9IjExMiIgeT0iMjYiIHdpZHRoPSIxOCIgaGVpZ2h0PSI1MiIgdHJhbnNmb3JtPSJyb3RhdGUoMTIgMTIxIDUyKSIgZmlsbD0iIzZkNGM4ZiIvPgogIDxyZWN0IHg9IjE4MCIgeT0iMjgiIHdpZHRoPSIxNiIgaGVpZ2h0PSI1MCIgZmlsbD0iI2M0NTcyZSIvPgogIDxyZWN0IHg9IjE5OCIgeT0iMjIiIHdpZHRoPSIyMiIgaGVpZ2h0PSI1NiIgZmlsbD0iIzJmNmY4ZiIvPgogIDxyZWN0IHg9IjIyMiIgeT0iMzIiIHdpZHRoPSIxNCIgaGVpZ2h0PSI0NiIgZmlsbD0iIzNmOGY1YSIvPgogIDxyZWN0IHg9IjQwIiB5PSI5OCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjUyIiBmaWxsPSIjZDlhNDQxIi8+CiAgPHJlY3QgeD0iNjIiIHk9IjEwNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjQ2IiBmaWxsPSIjMmY2ZjhmIi8+CiAgPHJlY3QgeD0iODAiIHk9Ijk0IiB3aWR0aD0iMTgiIGhlaWdodD0iNTYiIGZpbGw9IiNjNDU3MmUiLz4KICA8cmVjdCB4PSIxNTAiIHk9IjEwMiIgd2lkdGg9IjIyIiBoZWlnaHQ9IjQ4IiBmaWxsPSIjM2Y4ZjVhIi8+CiAgPHJlY3QgeD0iMTc0IiB5PSI5NiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjU0IiBmaWxsPSIjNmQ0YzhmIi8+CiAgPHJlY3QgeD0iMTkwIiB5PSIxMDYiIHdpZHRoPSIyMCIgaGVpZ2h0PSI0NCIgZmlsbD0iI2Q5YTQ0MSIvPgogIDxjaXJjbGUgY3g9IjI2MiIgY3k9IjExOCIgcj0iMTgiIGZpbGw9IiMzZjhmNWEiLz4KICA8cmVjdCB4PSIyNTQiIHk9IjEzNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjOGE1YTMzIi8+Cjwvc3ZnPgo="}];
+
+/* ---------- tô màu mã CSS ---------- */
+/* ---------- tô màu mã JavaScript ---------- */
+var KW = /\b(const|let|var|function|return|if|else|for|while|do|break|continue|true|false|null|undefined|new|typeof|try|catch|finally|throw|switch|case|default|of|in|class)\b/g;
+function hljs(src){
+  var s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var keep = [];
+  function mark(cls){ return function(m){ keep.push('<span class="' + cls + '">' + m + '</span>'); return '\u0001' + String.fromCharCode(0xE000 + keep.length - 1) + '\u0001'; }; }
+  s = s.replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`/g, function(m){
+    return mark(m.charAt(0) === '/' ? 'c' : 's')(m);
+  });
+  s = s.replace(KW, '<span class="t2">$1</span>');
+  s = s.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="a">$1</span>');
+  s = s.replace(/\b([a-zA-Z_$][\w$]*)(?=\()/g, '<span class="t">$1</span>');
+  s = s.replace(/\u0001([-])\u0001/g, function(m, c){ return keep[c.charCodeAt(0) - 0xE000]; });
+  return s;
+}
+
+(function(){
+  var body = document.body;
+  var items = [].slice.call(document.querySelectorAll('.k-item'));
+  var anns  = [].slice.call(document.querySelectorAll('.ann'));
+  var btnAnn = document.getElementById('btnAnn');
+  var btnReset = document.getElementById('btnReset');
+  var tip = document.getElementById('tip');
+  var pinned = false, current = null;
+
+  /* --- mã nguồn: hai tệp --- */
+  var view = document.getElementById('srcView');
+  var bH = document.getElementById('srcHtml'), bC = document.getElementById('srcJs');
+  var cur = 'html';
+  function showSrc(which){
+    cur = which;
+    view.innerHTML = which === 'js' ? hljs(SRC_JS) : hl(SRC_HTML);
+    bC.classList.toggle('on', which === 'js');
+    bH.classList.toggle('on', which === 'html');
+  }
+  var bT = document.getElementById('srcToggle');
+  bT.addEventListener('click', function(){
+    var mini = view.classList.toggle('mini');
+    bT.textContent = mini ? 'Mở rộng' : 'Thu gọn';
+  });
+  bH.addEventListener('click', function(){ showSrc('html'); });
+  bC.addEventListener('click', function(){ showSrc('js'); });
+  showSrc('js');
+
+  document.getElementById('srcDl').addEventListener('click', function(){
+    var isJs = cur === 'js';
+    var blob = new Blob([isJs ? SRC_JS : SRC_HTML],
+                        {type: (isJs ? 'text/javascript' : 'text/html') + ';charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = isJs ? 'script.js' : 'index.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* --- chọn mục kiến thức --- */
+  function clear(){
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    anns.forEach(function(a){ a.classList.remove('hl'); });
+    body.classList.remove('dim');
+  }
+  btnReset.addEventListener('click', function(){ clear(); hideTip(); });
+
+  btnAnn.addEventListener('click', function(){
+    var on = body.classList.toggle('show-ann');
+    btnAnn.textContent = on ? 'Ẩn chú thích' : 'Hiện chú thích';
+    btnAnn.classList.toggle('on', on);
+    if(!on){ clear(); hideTip(); }
+  });
+
+  items.forEach(function(item){
+    item.addEventListener('click', function(){
+      var k = item.getAttribute('data-k');
+      var already = item.classList.contains('sel');
+      clear(); hideTip();
+      if(already) return;
+      if(!body.classList.contains('show-ann')){
+        body.classList.add('show-ann');
+        btnAnn.textContent = 'Ẩn chú thích'; btnAnn.classList.add('on');
+      }
+      item.classList.add('sel');
+      body.classList.add('dim');
+      anns.forEach(function(a){ if(a.getAttribute('data-k') === k) a.classList.add('hl'); });
+    });
+  });
+
+  /* --- thẻ giải thích --- */
+  var FRAME_CSS = 'body{margin:8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#333}button,input{font:inherit;padding:3px 6px}.noi-bat{color:#b3261e;font-weight:bold}pre{background:#f2f2f2;padding:6px;margin:6px 0}';
+
+  function fill(key){
+    var d = RULES[key];
+    if(!d) return false;
+    document.getElementById('tipTag').textContent = d.sel;
+    document.getElementById('tipKind').textContent = d.kind;
+    document.getElementById('tipDef').textContent = d.def;
+    document.getElementById('tipCode').innerHTML = hl(d.html) + '\n\n' + hl('<script>') + '\n' + hljs(d.js) + '\n' + hl('</' + 'script>');
+    document.getElementById('tipNote').textContent = d.note;
+    var f = document.getElementById('tipOut');
+    f.style.height = '40px';
+    f.srcdoc = '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><style>' + FRAME_CSS + '</style></head><body>' +
+               d.html + '<script>' + d.js + '</' + 'script></body></html>';
+    function doCao(){
+      try{
+        var doc = f.contentDocument.documentElement;
+        f.style.height = '40px';
+        f.style.height = Math.min(Math.max(doc.scrollHeight + 2, 46), 260) + 'px';
+      }catch(e){}
+    }
+    f.onload = function(){
+      doCao();
+      try{
+        ['click', 'input', 'submit'].forEach(function(ev){
+          f.contentDocument.addEventListener(ev, function(){ setTimeout(doCao, 30); }, true);
+        });
+      }catch(e){}
+    };
+    return true;
+  }
+
+  function place(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + 18, top = y + 14;
+    if(left + w > window.innerWidth - 10) left = x - w - 18;
+    if(left < 10) left = 10;
+    if(top + h > window.innerHeight - 10) top = window.innerHeight - h - 10;
+    if(top < 10) top = 10;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideTip(){
+    tip.classList.remove('show');
+    pinned = false; current = null;
+    anns.forEach(function(a){ a.classList.remove('opened'); });
+  }
+  document.getElementById('tipClose').addEventListener('click', hideTip);
+
+  function nearest(t){ return (t && t.closest) ? t.closest('.ann[data-r]') : null; }
+
+  document.addEventListener('click', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    if(tip.contains(e.target)) return;
+    var el = nearest(e.target);
+    if(!el){ if(pinned) hideTip(); return; }
+    e.preventDefault();
+    var key = el.getAttribute('data-r');
+    if(pinned && current === el){ hideTip(); return; }
+    current = el;
+    if(fill(key)){
+      anns.forEach(function(a){ a.classList.remove('opened'); });
+      el.classList.add('opened');
+      tip.classList.add('show');
+      pinned = true;
+      place(e.clientX, e.clientY);
+    }
+  }, true);
+
+  document.addEventListener('mousemove', function(e){
+    if(!body.classList.contains('show-ann')) return;
+    var el = nearest(e.target);
+    anns.forEach(function(a){ if(a !== el) a.classList.remove('hov'); });
+    if(el) el.classList.add('hov');
+  });
+
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ hideTip(); clear(); } });
+})();
+
+(function(){
+  var list = document.getElementById('exList');
+  if(!list) return;
+
+  EX.forEach(function(ex){
+    var box = document.createElement('div');
+    box.className = 'ex';
+    var reqs = ex.reqs.map(function(r){ return '<li>' + r + '</li>'; }).join('');
+    box.innerHTML =
+      '<div class="ex-head">' +
+        '<span class="ex-no">' + ex.no + '</span>' +
+        '<span class="ex-title">' + ex.title + '</span>' +
+        '<span class="ex-topic">' + ex.topic + '</span>' +
+      '</div>' +
+      '<p class="ex-goal"><b>Yêu cầu:</b> ' + ex.goal + '</p>' +
+      '<ol class="ex-req">' + reqs + '</ol>' +
+      (HINT[ex.no]
+        ? '<p class="sec-lbl">Gợi ý</p>' +
+          '<p class="note-src">Khung mã dưới đây cho biết mỗi việc cần câu lệnh nào và đặt ở đâu. Chỗ có dấu <code>___</code> là phần tự điền theo trang của mình.</p>' +
+          (HINT[ex.no].html
+            ? '<p class="note-src"><b>Khung HTML</b></p><pre class="ex-code">' + hl(HINT[ex.no].html) + '</pre>' +
+              '<p class="note-src"><b>Khung JavaScript</b></p>'
+            : '') +
+          '<pre class="ex-code">' + hljs(HINT[ex.no].code) + '</pre>' +
+          '<div class="ex-warn"><b>Lưu ý:</b> ' + HINT[ex.no].warn + '</div>'
+        : '');
+    list.appendChild(box);
+  });
+
+  var frows = FILES.map(function(f){
+    return '<tr>' +
+      '<td class="ck-tag">' + f.n + '</td>' +
+      '<td>' + f.u + '</td>' +
+      '<td class="dl-cell">' + f.kb + '</td>' +
+      '<td class="dl-cell"><a class="dl" download="' + f.n +
+        '" href="data:' + f.t + ';base64,' + f.b + '">Tải</a></td></tr>';
+  }).join('');
+
+  var fb = document.createElement('div');
+  fb.className = 'ex';
+  fb.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Tệp demo</span>' +
+    '<span class="ex-title">Tệp demo và tệp khung</span></div>' +
+    '<p class="ex-goal">Tệp demo dùng làm ví dụ trong buổi học. Tệp khung <code>index.html</code> và <code>du-lieu.js</code> là điểm bắt đầu của bài: tải về, đặt vào thư mục bài làm rồi viết tiếp.</p>' +
+    '<table class="ck"><thead><tr><th>Tệp</th><th>Nội dung</th><th>Cỡ</th><th></th></tr></thead>' +
+    '<tbody>' + frows + '</tbody></table>';
+  list.appendChild(fb);
+
+  var rows = CHECK.map(function(r){
+    return '<tr><td class="ck-tag">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
+  }).join('');
+
+  var ck = document.createElement('div');
+  ck.className = 'ex';
+  ck.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Bảng kiểm</span>' +
+    '<span class="ex-title">Mọi thứ phải dùng trong bài</span></div>' +
+    '<p class="ex-goal">Làm xong bài, đối chiếu lại bảng này. Thiếu dòng nào là bài chưa đủ yêu cầu.</p>' +
+    '<table class="ck"><thead><tr><th>Câu lệnh hoặc thuộc tính</th><th>Dùng để làm gì</th><th>Nằm ở bài</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+  list.appendChild(ck);
+
+  var tipBox = document.createElement('div');
+  tipBox.className = 'ex';
+  tipBox.innerHTML =
+    '<div class="ex-head"><span class="ex-no">Trước khi nộp</span>' +
+    '<span class="ex-title">Tự kiểm tra lại bài</span></div>' +
+    '<ol class="ex-req">' + TIPS.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ol>';
+  list.appendChild(tipBox);
+})();
+
+
+/* trang demo chạy thật */
+(function(){
+  var f = document.getElementById('demoLive');
+  if(!f) return;
+  f.srcdoc = SRC_HTML.replace('<script src="demo-danh-ba.js"></' + 'script>', '<script>' + SRC_JS + '</' + 'script>');
+})();
+
+[].forEach.call(document.querySelectorAll('#rows pre.js'), function(p){ p.innerHTML = hljs(p.textContent); });
+</script>
+</body>
+</html>
